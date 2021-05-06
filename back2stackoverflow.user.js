@@ -567,4 +567,4 @@ a{
             return link ? link.href : null;
     }
 
-})().then(u => u && (location.href = u)).catch(console.error.bind(console));
+})().then(u => u && (window.location.replace(u))).catch(console.error.bind(console));

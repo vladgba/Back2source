@@ -6,8 +6,8 @@
 // @author       vladgba@gmail.com
 // @run-at       document-end
 // @icon         https://www.google.com/s2/favicons?domain=stackoverflow.com
-// @downloadURL  https://raw.githubusercontent.com/vladgba/Back2source/master/back2source.user.js
-// @updateURL    https://raw.githubusercontent.com/vladgba/Back2source/master/back2source.user.js
+// @downloadURL  https://github.com/vladgba/Back2source/raw/master/back2source.user.js
+// @updateURL    https://github.com/vladgba/Back2source/raw/master/back2source.user.js
 // @homepageURL  https://github.com/vladgba/Back2source
 // @supportURL   https://github.com/vladgba/Back2source/issues
 // @grant        GM_xmlhttpRequest

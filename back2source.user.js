@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name         Back2source
-// @version      0.1.65
+// @version      0.1.66
 // @description  Redirecting to source sites from sites with machine translation, etc.
 // @namespace    vladgba
 // @author       vladgba@gmail.com
@@ -102,6 +102,7 @@
 // @match        *://*.wikipe.wiki/wiki/*
 // @match        *://*.wikies.wiki/wiki/*
 // @match        *://*.wiki2.wiki/wiki/*
+// @match        *://*.mihalicdictionary.org/*
 // @match        *://*.vvikipedla.com/wiki/*
 // @match        *://*.wiki-wiki.ru/wp/*
 // @match        *://*.nina.az/wiki/*
@@ -112,7 +113,7 @@
 // @match        *://*.360wiki.ru/wiki/*
 // @match        *://*.jejakjabar.com/wiki/*
 // @match        *://*.encyclopaedia.bid/*
-// @match        *://*.wikizero.com/*
+// @match        *://*.wikizero.com/*/*
 // @match        *://*.wiki2.org/*
 // @match        *://*.dir.md/*
 // @match        *://*.wikiredia.ru/*
@@ -120,10 +121,11 @@
 // @match        *://ru.encyclopedia.kz/index.php/*
 // @match        *://*.territorioscuola.it/*
 // @match        *://*.wiki-org.ru/*
-// @match        *://*.wikiwand.com/*
+// @match        *://*.wikiwand.com/*/*
 // @match        *://*.xcv.wiki/*
-// @match        *://*.wikivisually.com/*
+// @match        *://*.wikivisually.com/wiki/*
 // @match        *://*.wikipedia.tel/*
+// @match        *://*.wiki2.net/*
 // ==/UserScript==
 
 // Down list: -----------------------------------------------
@@ -175,6 +177,24 @@ askdev.ru
 
 (async () => {
     'use strict';
+
+    //Wiki functions
+
+    function wikiPath(p,l='en') {
+        return 'https://' + l + '.wikipedia.org/wiki/' + location.pathname.split('/',p+1)[p];
+    }
+    function wikiLink(p,l='en',w=false) {
+        return 'https://' + (l!==undefined ? l:'') + '.wikipedia.org' + (w?'/wiki/':'') + p;
+    }
+
+    function wikiFull(l=0,p=2) {
+        return 'https://' + location.host.split('.',l+1)[l] + '.wikipedia.org/wiki/' + location.pathname.split('/',p+1)[p];
+    }
+
+    function wikiPathLang(l,p) {
+        var s = location.pathname.split('/',(l>p?l:p)+1);
+        return 'https://' + s[l] + '.wikipedia.org/wiki/' + s[p];
+    }
 
     /**
      * @param {string} bgcolor
@@ -599,119 +619,98 @@ a{
             return uv && uv.value;
         case 'it-brain.online':
             return 'https://tutorialspoint.com/' + location.pathname.split('/')[2];
-        case 'hmong.wiki':
-            return 'https://en.wikipedia.org/wiki/' + location.pathname.split('/')[2];
         case 'gaz.wiki':
-            return 'https://en.wikipedia.org/wiki/' + location.pathname.split('/')[3];
-        case 'wikipe.wiki':
-            return 'https://' + location.pathname.split('/')[2] + '.wikipedia.org/wiki/' + location.pathname.split('/')[3];
+            return wikiPath(3);
         case 'wikipedia-on-ipfs.org':
-            return 'https://' + location.host.split('.',3)[0] + '.wikipedia.org/wiki/' + location.pathname.split('/')[2];
+            return wikiFull();
+        case 'wikipe.wiki':
         case 'wikies.wiki':
-            return 'https://' + location.pathname.split('/')[2] + '.wikipedia.org/wiki/' + location.pathname.split('/')[3];
+            return wikiPathLang(2,3);
         case 'wiki-wiki.ru':
-            return 'https://ru.wikipedia.org/wiki/' + location.pathname.split('/')[3];
+            return wikiPath(3,'ru');
         case 'livepcwiki.ru':
-            return 'https://en.wikipedia.org/wiki/' + location.pathname.split('/')[2];
         case 'datewiki.ru':
-            return 'https://en.wikipedia.org/wiki/' + location.pathname.split('/')[2];
         case 'buildwiki.ru':
-            return 'https://en.wikipedia.org/wiki/' + location.pathname.split('/')[2];
         case 'wiki2.wiki':
-            return 'https://en.wikipedia.org/wiki/' + location.pathname.split('/')[2];
         case 'vvikipedla.com':
-            return 'https://en.wikipedia.org/wiki/' + location.pathname.split('/')[2];
         case 'wikichi.ru':
-            return 'https://en.wikipedia.org/wiki/' + location.pathname.split('/')[2];
         case '360wiki.ru':
-            return 'https://en.wikipedia.org/wiki/' + location.pathname.split('/')[2];
+        case 'hmong.wiki':
+            return wikiPath(2);
         case 'wikiredia.ru':
-            return 'https://ru.wikipedia.org' + location.pathname;
         case 'wiki-org.ru':
-            return 'https://ru.wikipedia.org' + location.pathname;
         case 'sbup.com':
-            return 'https://ru.wikipedia.org' + location.pathname;
+            return wikiLink(location.pathname,'ru');
+        case 'wiki2.net':
         case 'wikipedia.tel':
             return 'https://ru.wikipedia.org/wiki' + location.pathname;
         case 'wikizero.com':
-            var wikizero = location.href.match(/https?:\/\/wikizero.com(\/[a-zA-z]{2})?\/(.+)/);
-            if(wikizero!==null) {
-                return 'https:/' + (wikizero[1]!==undefined ? wikizero[1]:'/') + '.wikipedia.org/wiki/' + wikizero[2];
-            }
-            return;
+            return wikiPathLang(1,2);
+        case 'mihalicdictionary.org':
+            var wikizero = location.href.match(/https:\/\/([a-zA-Z]{2})?\.?mihalicdictionary\.org(.+)/);
+            return (wikizero!==null)?wikiLink(wikizero[2],wikizero[1]):null;
         case 'dir.md':
-            //https://dir.md/wiki/%D0%9A%D0%B0%D1%80%D0%BB_%D0%92%D0%B8%D0%B0%D0%BD%D1%81%D0%BA%D0%B8%D0%B9?host=ru.wikipedia.org
-            var dirmd = location.href.match(/https?:\/\/dir\.md\/wiki\/(.+)\?host=([a-zA-Z\.-]+)/);
-            if(dirmd!==null) {
-                return 'https://' + dirmd[2] + '/wiki/' + dirmd[1];
-            }
-            var dirmdregx = /^https?:\/\/dir.md\/(.+)(&|\?)host=(.+)$/;
-            dirmd = location.href.match(dirmdregx);
-            if(dirmd!==null) {
-                window.location.replace('https://' + dirmd[3] + '/' + dirmd[1]);
-            }
-
+            var dirmd = location.href.match(/^https?:\/\/dir.md\/(.+)(&|\?)host=([a-zA-Z\.-]+)$/);
+            if(dirmd!==null) window.location.replace('https://' + dirmd[3] + '/' + dirmd[1]);
             return;
         case 'wikivisually.com':
-            var wikivisually = location.href.match(/https?:\/\/wikivisually\.com\/wiki\/(.+)/);
-            if(wikivisually!==null) {
-                return 'https://en.wikipedia.org/wiki/' + wikivisually[1];
-            }
-            return;
+            return wikiPath(2);
         case 'territorioscuola.it':
             var territorioscuola = location.href.match(/https?:\/\/enhancedwiki\.territorioscuola\.it\/\?title=(.+)/);
-            if(territorioscuola!==null) {
-                return 'https://it.wikipedia.org/wiki/' + territorioscuola[1];
-            }
-            return;
+            return (territorioscuola!==null)?wikiPath(territorioscuola[1],'it'):null;
         case 'encyclopedia.kz':
-            var cyclopkz = location.href.match(/https?:\/\/ru\.encyclopedia\.kz\/index\.php\/(.+)/);
-            if(cyclopkz!==null) {
-                return 'https://ru.wikipedia.org/wiki/' + cyclopkz[1];
-            }
-            return;
+            var cyclopkz = location.hostname.match(/^ru\.encyclopedia\.kz$/);
+            return (cyclopkz!==null)?wikiPath(2,'ru'):null;
         case 'wikiwand.com':
             if(/(\?|&)fullSearch=(true|false)/.test(location.search)) return;
-            var wikiwand = location.pathname.match(/\/([a-zA-z]{2})\/(.+)/);
-            if(wikiwand!==null) {
-                return 'https://' + wikiwand[1] + '.wikipedia.org/wiki/' + wikiwand[2];
-            }
-            return;
+            return wikiPathLang(1,2);
         case 'xcv.wiki':
             //https://deru.xcv.wiki/wiki/Surfside_(Florida)
             var xcv = location.href.match(/https?:\/\/([a-zA-z]{2,4})\.xcv\.wiki\/wiki\/(.+)/);
-            if(xcv!==null) {
-                return 'https://de.wikipedia.org/wiki/' + xcv[2];
-            }
-            return;
+            return (xcv!==null)?wikiLink(xcv[2],'de',1):null;
         case 'wiki2.org':
+            var wiki2s = location.search.match(/\?search=/);
+            if(wiki2s!==null) return;
             var wiki2 = location.href.match(/https?:\/\/wiki2.org\/([a-zA-z]{2})\/(.+)/);
-            if(wiki2!==null) {
-                return 'https://' + wiki2[1] + '.wikipedia.org/wiki/' + wiki2[2];
-            }
-            wiki2 = location.href.match(/https?:\/\/([a-zA-z]{2})\.wiki2.org\/wiki\/(.+)/);
-            if(wiki2!==null) {
-                return 'https://' + wiki2[1] + '.wikipedia.org/wiki/' + wiki2[2];
-            }
-            return;
+            var wiki2q = location.href.match(/https?:\/\/([a-zA-z]{2})\.wiki2.org\/(.+)/);
+            return ((wiki2!==null)?wikiLink('/wiki/' + wiki2[2],wiki2[1]):((wiki2q!==null)?wikiLink('/wiki/' + wiki2q[2],wiki2q[1]):null));
         case 'encyclopaedia.bid':
-            if(location.pathname.startsWith('/%D0%B2%D0%B8%D0%BA%D0%B8%D0%BF%D0%B5%D0%B4%D0%B8%D1%8F')) {
-                return 'https://ru.wikipedia.org' + location.pathname.replace(/^\/%D0%B2%D0%B8%D0%BA%D0%B8%D0%BF%D0%B5%D0%B4%D0%B8%D1%8F/, '/wiki');
+            return wikiLink(location.pathname.replace(/^\/%D0%B2%D0%B8%D0%BA%D0%B8%D0%BF%D0%B5%D0%B4%D0%B8%D1%8F/, '/wiki'),'ru');
+        case 'nina.az':
+            if (location.hostname.includes('wikipedia.ua.')) {
+                return wikiPath(2,'uk');
+            }else if (location.hostname.includes('wikipedia.ru.')) {
+                return wikiPath(2,'ru');
+            }else if (location.hostname.includes('wikipedia.us.')) {
+                return wikiPath(2);
             }
             return;
+
+        case 'kotaeta.com':
+        case 'ciupacabra.com':
+        case 'de-vraag.com':
+        case 'switch-case.ru':
+        case 'switch-case.com':
+        case 'bildiredi.com':
+        case 'donolik.com':
+        case 'pytannie.com':
+        case 'sozdizimi.com':
+        case 'zapytay.com':
+        case 'while-do.com':
+            link = document.querySelector('.footer_question.mt-3 > a');
+            break;
+
+        case 'it-swarm-vi.com':
+        case 'it-swarm.xyz':
+        case 'it-swarm.asia':
+        case 'it-swarm.dev':
+        case 'it-swarm.net':
+            link = document.querySelector('.gat[data-cat="q-source"]');
+            break;
         default:
             if (location.hostname.includes('jejakjabar.com')) {
-
                 var regx = location.href.match(/https?:\/\/([a-zA-z]+\.)?jejakjabar.com\/wiki\/(.+)/);
-                if(regx!==null) {
-                    return 'https://en.wikipedia.org/wiki/' + regx[2];
-                }
-            }else if (location.hostname.includes('wikipedia.ua.nina.az')) {
-                return 'https://uk.wikipedia.org/wiki/' + location.pathname.split('/')[2];
-            }else if (location.hostname.includes('wikipedia.ru.nina.az')) {
-                return 'https://ru.wikipedia.org/wiki/' + location.pathname.split('/')[2];
-            }else if (location.hostname.includes('wikipedia.us.nina.az')) {
-                return 'https://en.wikipedia.org/wiki/' + location.pathname.split('/')[2];
+                return (regx!==null)?wikiLink(regx[2],'en',1):null;
             }else if (location.hostname.includes('codeindex.ru') || location.hostname.includes('qa-help.ru')) {
                 link = document.querySelector('span.text-muted.fake_url');
                 if(link!==null){
@@ -759,7 +758,6 @@ a{
                     'voidcc.com': '.source > a',
                     'qarus.ru': 'em > a',
                     'uwenku.com': '.post-info a',
-                    /*'quick-geek.github.io'*/ 'github.io': '.question-hyperlink',
                     'e-learn.cn': '.zhuanzai + div a',
                     'codeindex.ru': '.text-muted.small[href*="stackoverflow.com/q"]',
                     'husl.ru': '.source-link',
@@ -769,12 +767,6 @@ a{
                     'answeright.com': 'a.link[href*="stackoverflow.com/q"],a.link[href*="stackexchange.com/q"],a.link[href*="superuser.com/q"],a.link[href*="mathoverflow.net/q"]',//necessary?
                     'answer-id.com': 'a.link[href*="stackoverflow.com/q"],a.link[href*="stackexchange.com/q"],a.link[href*="superuser.com/q"],a.link[href*="mathoverflow.net/q"]',
 
-                    'it-swarm-vi.com': '.gat[data-cat="q-source"]',
-                    'it-swarm.xyz': '.gat[data-cat="q-source"]',
-                    'it-swarm.asia': '.gat[data-cat="q-source"]',
-                    'it-swarm.dev': '.gat[data-cat="q-source"]',
-                    'it-swarm.net': '.gat[data-cat="q-source"]',
-
                     'stackru.com': '.q-source',
                     'ask-ubuntu.ru': '.q-source',
 
@@ -782,17 +774,6 @@ a{
                     'stackovernet.com': '.post-meta a',
 
                     //'.footer_question:last-of-type > a'
-                    'kotaeta.com': '.footer_question.mt-3 > a',
-                    'ciupacabra.com': '.footer_question.mt-3 > a',
-                    'de-vraag.com': '.footer_question.mt-3 > a',
-                    'switch-case.ru': '.footer_question.mt-3 > a',
-                    'switch-case.com': '.footer_question.mt-3 > a',
-                    'bildiredi.com': '.footer_question.mt-3 > a',
-                    'donolik.com': '.footer_question.mt-3 > a',
-                    'pytannie.com': '.footer_question.mt-3 > a',
-                    'sozdizimi.com': '.footer_question.mt-3 > a',
-                    'zapytay.com': '.footer_question.mt-3 > a',
-                    'while-do.com': '.footer_question.mt-3 > a',
                     'rudata.ru': 'a.external[href*="ru.wikipedia.org"]',
                     'jejakjabar.com': 'li#footer-info-copyright a[href*="en.wikipedia.org/wiki/"]',
                     'xcv.wiki': 'div#footer li#footer-info-copyright a[href*="de.wikipedia.org/wiki/"]'

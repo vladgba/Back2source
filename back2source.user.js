@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name         Back2source
-// @version      0.1.66
+// @version      0.1.67
 // @description  Redirecting to source sites from sites with machine translation, etc.
 // @namespace    vladgba
 // @author       vladgba@gmail.com
@@ -12,6 +12,8 @@
 // @supportURL   https://github.com/vladgba/Back2source/issues
 // @grant        GM_xmlhttpRequest
 // @noframes
+// @include      *://*.google.*/*
+// @match        *://*.stackoverflow.com/*
 // @match        *://*.answer-id.com/*
 // @match        *://*.answeright.com/*
 // @match        *://*.ask-ubuntu.ru/questions/*
@@ -126,6 +128,7 @@
 // @match        *://*.wikivisually.com/wiki/*
 // @match        *://*.wikipedia.tel/*
 // @match        *://*.wiki2.net/*
+// @match        *://*.legkovopros.ru/questions/*
 // ==/UserScript==
 
 // Down list: -----------------------------------------------
@@ -142,7 +145,6 @@
 /// @match        *://*.brokencontrollers.com/faq/* ??
 /// @match        *://*.qaru.site/questions/*
 /// @match        *://*.icode9.com/* redir(csdn) or nolink
-/// @match        *://*.legkovopros.ru/questions/*
 /// @match        *://*.ffff65535.com/*/q/*   RIP
 /// @match        *://*.qna.one/* PR_END_OF_FILE_ERROR
 /// @match        *://*.programmerz.ru/questions/* ads
@@ -665,15 +667,12 @@ a{
             if(/(\?|&)fullSearch=(true|false)/.test(location.search)) return;
             return wikiPathLang(1,2);
         case 'xcv.wiki':
-            //https://deru.xcv.wiki/wiki/Surfside_(Florida)
             var xcv = location.href.match(/https?:\/\/([a-zA-z]{2,4})\.xcv\.wiki\/wiki\/(.+)/);
             return (xcv!==null)?wikiLink(xcv[2],'de',1):null;
         case 'wiki2.org':
-            var wiki2s = location.search.match(/\?search=/);
-            if(wiki2s!==null) return;
-            var wiki2 = location.href.match(/https?:\/\/wiki2.org\/([a-zA-z]{2})\/(.+)/);
-            var wiki2q = location.href.match(/https?:\/\/([a-zA-z]{2})\.wiki2.org\/(.+)/);
-            return ((wiki2!==null)?wikiLink('/wiki/' + wiki2[2],wiki2[1]):((wiki2q!==null)?wikiLink('/wiki/' + wiki2q[2],wiki2q[1]):null));
+            if(location.search.match(/\?search=/)!==null) return;
+            var wiki2 = location.href.match(/https?:\/\/(([a-z]{2})\.)?wiki2.org\/([a-zA-z]{2})\/(.+)/);
+            return ((wiki2!==null)?wikiLink('/wiki/' + wiki2[4],wiki2[3]):null);
         case 'encyclopaedia.bid':
             return wikiLink(location.pathname.replace(/^\/%D0%B2%D0%B8%D0%BA%D0%B8%D0%BF%D0%B5%D0%B4%D0%B8%D1%8F/, '/wiki'),'ru');
         case 'nina.az':
@@ -685,7 +684,6 @@ a{
                 return wikiPath(2);
             }
             return;
-
         case 'kotaeta.com':
         case 'ciupacabra.com':
         case 'de-vraag.com':
@@ -699,7 +697,6 @@ a{
         case 'while-do.com':
             link = document.querySelector('.footer_question.mt-3 > a');
             break;
-
         case 'it-swarm-vi.com':
         case 'it-swarm.xyz':
         case 'it-swarm.asia':
@@ -722,15 +719,18 @@ a{
                     return link.href;
                 }
             }else if (location.hostname.includes('qastack')) {
-                alert();
                 //return byNumber(location.pathname.split('/', 3)[2]);
-                link = document.querySelector('span.text-muted.fake_url');
+                link = document.querySelector('span.text-muted.fake_url a, span.text-muted.fake_url');
                 if(link!==null){
                     return link.getAttribute('src');//do not touch, dot notation isnt better
                 }
-                link = document.querySelector('.text-muted a[href*="stackoverflow.com/q"],.text-muted a[href*="stackexchange.com/q"],.text-muted a[href*="superuser.com/q"],.text-muted a.link[href*="mathoverflow.net/q"]');
+                link = document.querySelector('.text-muted a:last-child[href*="stackoverflow.com/"],.text-muted a:last-child[href*="stackexchange.com/"],.text-muted a:last-child[href*="superuser.com/"],.text-muted a:last-child[href*="mathoverflow.net/"]');
                 if(link!==null){
                     return link.href;
+                }
+                var qastack = location.href.match(/https?:\/\/qastack.([a-z\.]+)\/([a-z]+)\/([0-9]+)\/(.+)/);
+                if(qastack!==null){
+                    return 'https://' + qastack[2] + '.stackexchange.com/questions/' + qastack[3] + '/' + qastack[4];
                 }
             } else {
                 const cssSelectors = {
@@ -784,43 +784,40 @@ a{
     }
     if(link===undefined || link===null || link.href===undefined || link.href===null) return null;
     link = link.href;
-    if(link.length<1) return null;
+})().then(link => {
+    function run(u) {
+        console.log('Redirect link:');
+        console.log(u);
+        window.location.replace(u);
+    }
+    if(link===undefined || link===null || link.length<1) {
+        console.log('Link not defined');
+        return null;
+    }
+    console.log('Result link:');
+    console.log(link);
     if(link.includes('wikipedia.org/wiki/wiki')) link = link.replace(/wikipedia\.org\/wiki\/wiki/, 'wikipedia.org/wiki');
     //valid links
     if(/^https?:\/\/superuser\.com\/questions\/([0-9]{1,12})/.test(link) ||
        /^https?:\/\/(ru\.)?stackoverflow\.com\/questions\/([0-9]{1,12})/.test(link) ||
        /^https?:\/\/(([a-zA-z\-]+\.)?)stackexchange\.com\/questions\/([0-9]{1,12})/.test(link) ||
-       /^https?:\/\/(([a-zA-z\-]+\.)?)wikipedia.org\/wiki\/([a-zA-Z])/.test(link) ||
-       /^https?:\/\/tutorialspoint\.com\/([a-zA-Z])/.test(link)){
-        return link;
+       /^https?:\/\/(([a-zA-z\-]+\.)?)wikipedia.org\/wiki\/(.+)/.test(link) ||
+       /^https?:\/\/tutorialspoint\.com\/(.+)/.test(link)){
+        console.log('valid');
+        run(link);
     } else {
-        //broken links
-        var regx = link.match(/https?:\/\/(ru\.)?stackoverflow\.com\/([a-z]+)\/([0-9]{1,12})/);
-        if(regx!==null) {
-            if(regx[1]!==undefined) {
-                return 'https://' + regx[1] + 'stackoverflow.com/questions/' + regx[3];
-            }
-            return byNumber(regx[3]);
+        console.log('broken');
+        var regx;
+        if((regx = link.match(/^https?:\/\/(ru\.)?stackoverflow\.com\/([a-z]+)\/([0-9]{1,12})/))!==null){
+            run('https://' + ((regx[1]!==undefined)?regx[1]:'') + 'stackoverflow.com/questions/' + regx[3]);
+        } else if((regx = link.match(/^https?:\/\/([a-z]+\.)?stackexchange\.com\/([a-z]+)\/([0-9]{1,12})/))!==null){
+            run('https://' + (regx[1]!==undefined ? regx[1]:'') + 'stackexchange.com/questions/' + regx[3]);
+        } else if((regx = link.match(/^https?:\/\/([a-z]+\.)?wikipedia\.org\/w\/index\.php\?title=(.+)&oldid=([0-9]{1,12})/))!==null){
+            run('https://' + (regx[1]!==undefined ? regx[1]:'') + 'wikipedia.org/wiki/' + regx[2]);
+        } else if((regx = link.match(/^https?:\/\/([a-z]+\.)?askubuntu\.com\/([a-z]+)\/([0-9]{1,12})/))!==null){
+            run('https://' + (regx[1]!==undefined ? regx[1]:'') + 'askubuntu.com/questions/' + regx[3]);
+        } else if((regx = link.match(/^https?:\/\/([a-z]+\.)?mathoverflow\.net\/([a-z]+)\/([0-9]{1,12})/))!==null){
+            run('https://' + (regx[1]!==undefined ? regx[1]:'') + 'mathoverflow.net/questions/' + regx[3]);
         }
-        regx = link.match(/https?:\/\/([a-zA-z]+\.)?stackexchange\.com\/([a-z]+)\/([0-9]{1,12})/);
-        if(regx!==null) {
-            return 'https://' + (regx[1]!==undefined ? regx[1]:'') + 'stackexchange.com/questions/' + regx[3];
-        }
-        regx = link.match(/https?:\/\/([a-zA-z]+\.)?wikipedia\.org\/w\/index\.php\?title=(.+)&oldid=([0-9]{1,12})/);
-        if(regx!==null) {
-            return 'https://' + (regx[1]!==undefined ? regx[1]:'') + 'wikipedia.org/wiki/' + regx[2];
-        }
-        regx = link.match(/https?:\/\/([a-zA-z]+\.)?askubuntu\.com\/([a-z]+)\/([0-9]{1,12})/);
-        if(regx!==null) {
-            return 'https://' + (regx[1]!==undefined ? regx[1]:'') + 'askubuntu.com/questions/' + regx[3];
-        }
-        regx = link.match(/https?:\/\/([a-zA-z]+\.)?mathoverflow\.net\/([a-z]+)\/([0-9]{1,12})/);
-        if(regx!==null) {
-            return 'https://' + (regx[1]!==undefined ? regx[1]:'') + 'mathoverflow.net/questions/' + regx[3];
-        }
-        console.log('Not allowed link:');
-        console.log(link);
-        return null;
-
     }
-})().then(u => u && (window.location.replace(u))).catch(console.error.bind(console));
+}).catch(console.error.bind(console));

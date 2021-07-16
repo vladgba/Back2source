@@ -122,8 +122,8 @@ Supported sites:
 - wiki2.net
 
 Partially supported sites if page have images from stackoverflow:
-kompsekret.ru
-askdev.ru
+- kompsekret.ru
+- askdev.ru
 
 Partially supported sites (Yandex Translate is used to find the original question - works well only in Tampermonkey)
 - question-it.com

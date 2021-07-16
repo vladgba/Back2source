@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name         Back2source
-// @version      0.1.67
+// @version      0.1.68
 // @description  Redirecting to source sites from sites with machine translation, etc.
 // @namespace    vladgba
 // @author       vladgba@gmail.com
@@ -19,6 +19,7 @@
 // @match        *://*.ask-ubuntu.ru/questions/*
 // @match        *://*.askdev.info/questions/*
 // @match        *://*.askdev.ru/q/*
+// @match        *://*.askubuntu.ru/questions/*
 // @match        *://*.askvoprosy.com/voprosy/*
 // @match        *://*.bildiredi.com/*
 // @match        *://*.bilee.com/*.html
@@ -52,7 +53,7 @@
 // @match        *://*.overcoder.net/q/*
 // @match        *://*.poweruser.guru/*
 // @match        *://*.prog-help.ru/*
-// @match        *://*.qa.1r1g.com/sf/ask/*
+// @match        *://qa.1r1g.com/sf/ask/*
 // @match        *://*.qa-help.ru/*
 // @match        *://*.qacode.ru/questions/*
 // @match        *://*.qarchive.ru/*
@@ -129,6 +130,9 @@
 // @match        *://*.wikipedia.tel/*
 // @match        *://*.wiki2.net/*
 // @match        *://*.legkovopros.ru/questions/*
+// @match        *://*.py4u.net/discuss/*
+// @match        *://*.askentire.net/q/*
+// @match        *://*.question-it.com/*
 // ==/UserScript==
 
 // Down list: -----------------------------------------------
@@ -163,20 +167,6 @@
 /// @match        *://*.rstopup.com/* - is for sale
 /// @match        *://*.profikoder.com/question/* - is for sale
 
-/*
-xbuba.com - cert expired, but site works
-issue.life - cert expired, but site works
-publish.codeday.me - SSL_ERROR_RX_RECORD_TOO_LONG
-donolik.com  - redirect to answer-id.com
-bildiredi.com  - redirect to answer-id.com
-//*/
-
-/*
-partial support if page have images from stackoverflow:
-kompsekret.ru
-askdev.ru
-*/
-
 (async () => {
     'use strict';
 
@@ -185,6 +175,7 @@ askdev.ru
     function wikiPath(p,l='en') {
         return 'https://' + l + '.wikipedia.org/wiki/' + location.pathname.split('/',p+1)[p];
     }
+
     function wikiLink(p,l='en',w=false) {
         return 'https://' + (l!==undefined ? l:'') + '.wikipedia.org' + (w?'/wiki/':'') + p;
     }
@@ -295,18 +286,12 @@ a{
         return location.pathname.split('/').filter(Boolean).slice(-1)[0];
     }
 
-    /**
-     * @param {string} q
-     * @param {Date} [before]
-     * @param {Date} [after]
-     * @param {string[]} [tags]
-     */
-
     async function redirectUseTranslator(response) {
         location.replace(
             await searchStackoverflow(
                 new DOMParser().parseFromString(response.match(/<.+>/), 'text/html').getElementById('tw-answ-target-text').textContent));
     }
+
     async function searchStackoverflow(searchText) {
         // Search with Stack Exchange's API
         return await fetch(`https://api.stackexchange.com/search?intitle=${searchText}&site=stackoverflow`)
@@ -316,6 +301,13 @@ a{
             return item ? item.link : `https://stackexchange.com/search?q=${searchText}`;
         });
     }
+
+    /**
+     * @param {string} q
+     * @param {Date} [before]
+     * @param {Date} [after]
+     * @param {string[]} [tags]
+     */
     function findByApi(q, before, after, tags) {
         q = dropMarks(q);
         var dfgdr = q && fetch(
@@ -333,11 +325,11 @@ a{
     /**
      * @param {string} selector
      */
-
     function textContent(selector) {
         const e = document.querySelector(selector);
         return e ? e.textContent.trim() || null : null
     }
+
     function startsByText(selector, text) {
         const e = document.querySelectorAll(selector);
 
@@ -355,12 +347,12 @@ a{
 
     /**
      * @param {string} s
-     * @param {boolean} [real]
+     * @param {string} [site]
      */
-
-    function toSearch(s, real) {
+    function toSearch(s, site) {
         s = dropMarks(s);
-        return s ? `https://stackoverflow.com/search?back2stackoverflow=${+!!real}&q=` + encodeURIComponent(s) : null;
+        return s ? `https://google.com/search?q=` + encodeURIComponent(s) +
+            ((site!==undefined && Array.isArray(site))?`+site%3A` + site.join('+OR+site%3A'):`+site%3Astackexchange.com+OR+site%3Astackoverflow.com`) : null;
     }
 
     /**
@@ -375,7 +367,6 @@ a{
     /**
     * @param {string} s
     */
-
     function dropMarks(s) {
         return s && s.replace(/\[(на удержании|on hold|duplikować|duplicado|duplicar|duplikat|dublicate|duplicate|дубликат|закрыто|закрытый|closed|geschlossen|zamknięte|cerrado)\]\s*$/i, '').trim();
     }
@@ -383,16 +374,14 @@ a{
     /**
      * @param {string} s
      */
-
     function normalize(s) {
         return s && ' ' + s.toLowerCase() + ' '
     }
 
+    let auxiliaryRe = null;
     /**
      * @param {string} s
      */
-
-    let auxiliaryRe = null;
     function removeAuxiliary(s) {
         return s && s.replace(auxiliaryRe || (auxiliaryRe = new RegExp([
             'a', 'an', 'the',
@@ -471,33 +460,15 @@ a{
 
     const host = location.hostname.split('.').slice(-2).join('.');
     console.log('Checking site: ' + host);
+
     switch (host) {
-        case 'qa.1r1g.com':
         case 'askubuntu.ru':
+            var askubuntu = await yaTranslate(textContent('h1'), 'ru');
+            return promtRedirect('#55b252', toSearch(askubuntu,['askubuntu.com']));
         case 'bilee.com':
-            // Search using Google Translate
-            var selectors = {
-                '1r1g.com': '.col a',
-                'askubuntu.ru': '.catalog-container > .block-title',
-                'bilee.com': 'a > .text-uppercase'
-            };
-
-            var sourceElement = document.querySelector(selectors[host]);
-
-            var postURL = 'https://www.google.com/async/translate?';
-            var postHeader = { 'Content-Type': 'application/x-www-form-urlencoded' };
-            var postData = `async=translate,sl:auto,tl:en,st:${encodeURIComponent(sourceElement.textContent)},id:0,qc:true,ac:true,_fmt:pc`;
-
-            if (typeof GM_xmlhttpRequest == 'function') {
-                // For Tampermonkey & Violentmonkey
-                GM_xmlhttpRequest({ url: postURL, method: 'POST', headers: postHeader, data: postData, onload: response => redirectUseTranslator(response.response) });
-            }
-            else {
-                // For Greasemonkey
-                redirectUseTranslator(await fetch(postURL, { method: 'POST', headers: postHeader, body: postData }).then(response => response.text()));
-            }
-
-            return;
+        case 'question-it.com':
+        case 'quares.ru':
+        case 'askentire.net':
         case 'legkovopros.ru':
             var legkovopros = await yaTranslate(textContent('h1'), 'ru');
             return (await findByApi(legkovopros, null, null, allTexts('.tag'))) || promtRedirect('#55b252', toSearch(legkovopros));
@@ -509,12 +480,12 @@ a{
                 return (await findByApi(vike, d, d, allTexts('.tags__item--blue'))) || promtRedirect('#09c199', toSearch(vike));
             }
             return;
+        case '1r1g.com':
+            var qa1r1g = await yaTranslate(textContent('h1'), 'zh');
+            return qa1r1g && ((await findByApi(qa1r1g, null, null, allTexts('.badge'))) || promtRedirect('#343a40', toSearch(qa1r1g)));
         case 'soinside.com':
             var soinside = await yaTranslate(textContent('h1'), 'zh');
             return soinside && ((await findByApi(soinside, null, null, allTexts('.q-tag'))) || promtRedirect('#007bff', toSearch(soinside)));
-            /*case '1r1g.com':
-            var qa1r1g = await yaTranslate(textContent('h1'), 'zh');
-            return qa1r1g && ((await findByApi(qa1r1g, null, null, allTexts('.badge'))) || promtRedirect('#343a40', toSearch(qa1r1g)));*/
         case 'xszz.org':
             return findByApi(
                 textContent('.page-title'),
@@ -594,10 +565,7 @@ a{
             }
             return toSearch(textContent('h1'), true);
         case 'codeday.me':
-            if (location.hostname.startsWith('publish.')) {
-                //@ts-ignore
-                return all('.panel-body a')[1].href;
-            }
+            return (location.hostname.startsWith('publish.'))?all('.panel-body a')[1].href:null;
         case 'codengineering.ru':
             return toSearch(lastPathPart().replace(/(-closed|-duplicate)?(-\d+)?(\.html)?$/, ''), true);
         case 'askdev.ru':
@@ -637,6 +605,7 @@ a{
         case 'vvikipedla.com':
         case 'wikichi.ru':
         case '360wiki.ru':
+        case 'wikivisually.com':
         case 'hmong.wiki':
             return wikiPath(2);
         case 'wikiredia.ru':
@@ -655,8 +624,6 @@ a{
             var dirmd = location.href.match(/^https?:\/\/dir.md\/(.+)(&|\?)host=([a-zA-Z\.-]+)$/);
             if(dirmd!==null) window.location.replace('https://' + dirmd[3] + '/' + dirmd[1]);
             return;
-        case 'wikivisually.com':
-            return wikiPath(2);
         case 'territorioscuola.it':
             var territorioscuola = location.href.match(/https?:\/\/enhancedwiki\.territorioscuola\.it\/\?title=(.+)/);
             return (territorioscuola!==null)?wikiPath(territorioscuola[1],'it'):null;
@@ -704,16 +671,15 @@ a{
         case 'it-swarm.net':
             link = document.querySelector('.gat[data-cat="q-source"]');
             break;
+        case 'codeindex.ru':
+        case 'qa-help.ru':
+            link = document.querySelector('span.text-muted.fake_url');
+            return ((link!==null)?link.getAttribute('src'):null);
+        case 'jejakjabar.com':
+            var regx = location.href.match(/https?:\/\/([a-zA-z]+\.)?jejakjabar.com\/wiki\/(.+)/);
+            return (regx!==null)?wikiLink(regx[2],'en',1):null;
         default:
-            if (location.hostname.includes('jejakjabar.com')) {
-                var regx = location.href.match(/https?:\/\/([a-zA-z]+\.)?jejakjabar.com\/wiki\/(.+)/);
-                return (regx!==null)?wikiLink(regx[2],'en',1):null;
-            }else if (location.hostname.includes('codeindex.ru') || location.hostname.includes('qa-help.ru')) {
-                link = document.querySelector('span.text-muted.fake_url');
-                if(link!==null){
-                    return link.getAttribute('src');//do not touch, dot notation isnt better
-                }
-            }else if (location.hostname.includes('stackovernet') || location.hostname.includes('stackoverrun')) {
+            if (location.hostname.includes('stackovernet') || location.hostname.includes('stackoverrun')) {
                 link = document.querySelector('.post-meta a[href*="stackoverflow.com/q"]');
                 if(link!==null){
                     return link.href;
@@ -722,7 +688,7 @@ a{
                 //return byNumber(location.pathname.split('/', 3)[2]);
                 link = document.querySelector('span.text-muted.fake_url a, span.text-muted.fake_url');
                 if(link!==null){
-                    return link.getAttribute('src');//do not touch, dot notation isnt better
+                    return link.getAttribute('src');
                 }
                 link = document.querySelector('.text-muted a:last-child[href*="stackoverflow.com/"],.text-muted a:last-child[href*="stackexchange.com/"],.text-muted a:last-child[href*="superuser.com/"],.text-muted a:last-child[href*="mathoverflow.net/"]');
                 if(link!==null){
@@ -733,6 +699,7 @@ a{
                     return 'https://' + qastack[2] + '.stackexchange.com/questions/' + qastack[3] + '/' + qastack[4];
                 }
             } else {
+                console.log('check by selectors');
                 const cssSelectors = {
                     'kompsekret.ru': '.question-text > .a-link[href*="stackoverflow.com/q"]', //self link
                     'qaru.site': '.question-text > .aa-link[href*="stackoverflow.com/q"]',
@@ -776,14 +743,15 @@ a{
                     //'.footer_question:last-of-type > a'
                     'rudata.ru': 'a.external[href*="ru.wikipedia.org"]',
                     'jejakjabar.com': 'li#footer-info-copyright a[href*="en.wikipedia.org/wiki/"]',
-                    'xcv.wiki': 'div#footer li#footer-info-copyright a[href*="de.wikipedia.org/wiki/"]'
+                    'xcv.wiki': 'div#footer li#footer-info-copyright a[href*="de.wikipedia.org/wiki/"]',
+                    'py4u.net': '.question .author .src a',
                 };
                 link = cssSelectors[host] && document.querySelector(cssSelectors[host]);
+                console.log(link);
             }
-
     }
     if(link===undefined || link===null || link.href===undefined || link.href===null) return null;
-    link = link.href;
+    return link.href;
 })().then(link => {
     function run(u) {
         console.log('Redirect link:');

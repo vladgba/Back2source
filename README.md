@@ -1,4 +1,4 @@
-# Back2stackoverflow
+# Back2source
 
 Userscript for redirect to stackoverflow & wikipedia from machine-translated sites & clones.
 
@@ -7,7 +7,7 @@ Userscript for redirect to stackoverflow & wikipedia from machine-translated sit
 Required [Tampermonkey](https://tampermonkey.net/) or [Greasemonkey](https://www.greasespot.net/) or [Violentmonkey](https://violentmonkey.github.io/get-it/) or another browser extension for userscript support.
 
 Supported sites:
-- stackoverflow.com
+- py4u.net
 - answer-id.com
 - answeright.com
 - ask-ubuntu.ru/questions
@@ -126,6 +126,7 @@ kompsekret.ru
 askdev.ru
 
 Partially supported sites (Yandex Translate is used to find the original question - works well only in Tampermonkey)
+- question-it.com
 - askdev.ru
 - vike.io
 - soinside.com

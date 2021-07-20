@@ -2,7 +2,7 @@
 
 // ==UserScript==
 // @name         Back2source
-// @version      0.1.70
+// @version      0.1.71
 // @description  Redirecting to source sites from sites with machine translation, etc.
 // @namespace    vladgba
 // @author       vladgba@gmail.com
@@ -62,6 +62,7 @@
 // @match        *://*.it-swarm.dev/*/*
 // @match        *://*.it-swarm.net/*/*
 // @match        *://*.it-swarm.xyz/*/*
+// @match        *://*.itnan.ru/post.php*
 // @match        *://*.itdaan.com/*
 // @match        *://*.itranslater.com/qa/details/*
 // @match        *://*.javaer101.com/article/*
@@ -104,6 +105,7 @@
 // @match        *://*.question-it.com/questions/*
 // @match        *://*.rudata.ru/wiki/*
 // @match        *://*.sbup.com/wiki/*
+// @match        *://*.savepearlharbor.com/?p=*
 // @match        *://*.sprosi.pro/questions/*
 // @match        *://*.stackanswers.net/questions/*
 // @match        *://*.stackoom.com/question/*
@@ -619,8 +621,8 @@ a{
         case 'wikizero.com':
             return wikiPathLang(1, 2);
         case 'mihalicdictionary.org':
-            var wikizero = location.href.match(/https:\/\/([a-zA-Z]{2})?\.?mihalicdictionary\.org(.+)/);
-            return (wikizero !== null) ? wikiLink(wikizero[2], wikizero[1]) : null;
+            var mhd = location.href.match(/https?:\/\/([a-zA-Z]{2})?\.?mihalicdictionary\.org(.+)/);
+            return (mhd !== null) ? wikiLink(mhd[2], mhd[1]) : null;
         case 'dir.md':
             var dirmd = location.href.match(/^https?:\/\/dir.md\/(.+)(&|\?)host=([a-zA-Z\.-]+)$/);
             if (dirmd !== null) window.location.replace('https://' + dirmd[3] + '/' + dirmd[1]);
@@ -664,8 +666,11 @@ a{
             link = document.querySelector('span.text-muted.fake_url');
             return ((link !== null) ? link.getAttribute('src') : null);
         case 'jejakjabar.com':
-            var regx = location.href.match(/https?:\/\/([a-zA-z]+\.)?jejakjabar.com\/wiki\/(.+)/);
+            var regx = location.href.match(/https?:\/\/([a-zA-z]+\.)?jejakjabar\.com\/wiki\/(.+)/);
             return (regx !== null) ? wikiLink(regx[2], 'en', 1) : null;
+        case 'itnan.ru':
+            var itnan = location.href.match(/https?:\/\/([a-zA-Z]{2})?\.?itnan\.ru\/post\.php\?(.+)?p=([0-9]+)/);
+            return (itnan !== null) ? 'https://habr.com/ru/post/' + itnan[3] : null;
         default:
             if (location.hostname.includes('it-swarm')) {
                 link = document.querySelector('.gat[data-cat="q-source"]');
@@ -682,7 +687,7 @@ a{
                 if (link) {
                     return link.href;
                 }
-                var qastack = location.href.match(/https?:\/\/qastack.([a-z\.]+)\/([a-z]+)\/([0-9]+)\/(.+)/);
+                var qastack = location.href.match(/https?:\/\/qastack\.([a-z\.]+)\/([a-z]+)\/([0-9]+)\/(.+)/);
                 if (qastack) {
                     return 'https://' + qastack[2] + '.stackexchange.com/questions/' + qastack[3] + '/' + qastack[4];
                 }
@@ -728,6 +733,7 @@ a{
                     'py4u.net': '.question .author .src a',
                     'try2explore.com': 'span.source a[title="Source"]',
                     'howtosolves.com': '#question .question .source a',
+                    'savepearlharbor.com': 'article.post > div.entry-content > p > a[href*="://habr.com/"]',
                 };
                 link = cssSelectors[host] && document.querySelector(cssSelectors[host]);
                 console.log(link);
@@ -755,7 +761,8 @@ a{
     if (/^https?:\/\/superuser\.com\/questions\/([0-9]{1,12})/.test(link) ||
         /^https?:\/\/(ru\.)?stackoverflow\.com\/questions\/([0-9]{1,12})/.test(link) ||
         /^https?:\/\/(([a-zA-z\-]+\.)?)stackexchange\.com\/questions\/([0-9]{1,12})/.test(link) ||
-        /^https?:\/\/(([a-zA-z\-]+\.)?)wikipedia.org\/wiki\/(.+)/.test(link) ||
+        /^https?:\/\/(([a-zA-z\-]+\.)?)wikipedia\.org\/wiki\/(.+)/.test(link) ||
+        /^https?:\/\/(([a-zA-z\-]+\.)?)habr\.com\/(.+)/.test(link) || //change this
         /^https?:\/\/tutorialspoint\.com\/(.+)/.test(link)) {
         console.log('valid');
         run(link);

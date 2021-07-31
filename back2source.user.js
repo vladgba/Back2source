@@ -17,6 +17,7 @@
 // @match        *://*.stackoverflow.com/*
 // @match        *://*.*.nina.az/wiki/*
 // @match        *://*.360wiki.ru/wiki/*
+// @match        *://*.abcdef.wiki/*
 // @match        *://*.answer-id.com/*
 // @match        *://*.answeright.com/*
 // @match        *://*.ask-ubuntu.ru/questions/*
@@ -173,7 +174,7 @@
         return 'https://' + l + '.wikipedia.org/wiki/' + location.pathname.split('/', p + 1)[p];
     }
 
-    function wikiLink(p, l = 'en', w = false) {
+    function wikiLink(p = location.pathname, l = 'en', w = false) {
         return 'https://' + (l ? l : '') + '.wikipedia.org' + (w ? '/wiki/' : '') + p;
     }
 
@@ -611,6 +612,8 @@ a{
         case 'wiki-org.ru':
         case 'sbup.com':
             return wikiLink(location.pathname, 'ru');
+        case 'abcdef.wiki':
+            return wikiLink();
         case 'wiki2.net':
         case 'wikipedia.tel':
             return 'https://ru.wikipedia.org/wiki' + location.pathname;

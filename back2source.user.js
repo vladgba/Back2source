@@ -60,6 +60,7 @@
 // @match        *://*.it-swarm.asia/*/*
 // @match        *://*.it-swarm.com.ru/*/*
 // @match        *://*.it-swarm.dev/*/*
+// @match        *://*.it-swarm-ja.com/*/*
 // @match        *://*.it-swarm.net/*/*
 // @match        *://*.it-swarm.xyz/*/*
 // @match        *://*.itnan.ru/post.php*
@@ -117,7 +118,7 @@
 // @match        *://*.stackru.com/questions/*
 // @match        *://*.stormcrow.dev/*
 // @match        *://*.switch-case.com/*
-// @match        *://*.techarks.ru/*
+// @match        *://*.techarks.ru/qa/*
 // @match        *://*.techfeed.net/*
 // @match        *://*.territorioscuola.it/*
 // @match        *://*.thinbug.com/q/*
@@ -148,6 +149,7 @@
 // @match        *://*.xcv.wiki/*
 // @match        *://*.xszz.org/*/question-*
 // @match        *://*.ylhow.com/*
+// @match        *://*.yuanmacha.com/*.html
 // @match        *://*.zapytay.com/*
 // @match        *://code.i-harness.com/*/q/*
 // @match        *://qa.1r1g.com/sf/ask/*
@@ -162,6 +164,25 @@
     function clr(c, f) {
         if (f || sitecolor == '#333') sitecolor = c;
     }
+
+    GM_registerMenuCommand('Redirect', () => {
+        var re = prompt('Enter source url:');
+        if(!re) return;
+
+        var request = new XMLHttpRequest();
+        var req = `https://api.zcxv.icu/b2s.php?q=set&url=${encodeURIComponent(location.href)}&redir=${encodeURIComponent(re)}`;
+        request.open('GET', req, false);
+        request.send(null);
+    });
+    GM_registerMenuCommand('Note/report', () => {
+        var re = prompt('Enter your note for this page:');
+        if(!re) return;
+
+        var request = new XMLHttpRequest();
+        var req = `https://api.zcxv.icu/b2s.php?q=report&url=${encodeURIComponent(location.href)}&note=${encodeURIComponent(re)}`;
+        request.open('GET', req, false);
+        request.send(null);
+    });
 
     function mulreplace(str, a){
         a.forEach((v) => {
@@ -260,8 +281,7 @@ a{
         if (!q) {
             return null;
         }
-        //TODO: google translator inserts spaces where it is not necessary, investigate around which characters it is worth removing spaces
-        q = q.replace(/ \/ /g, '/');
+        //q = q.replace(/ \/ /g, ' ');
         q = 'https://api.browser.yandex.ru/dictionary/translate?statLang=en&targetLang=en&text=' + encodeURIComponent(q) + (sourceLang ? '&fromLang=' + sourceLang : '')
         try {
             //dosn't work in chrome
@@ -298,6 +318,10 @@ a{
 
     function getHeader(h) {
         return (h ? (Array.isArray(h) ? h[0] : textContent(h)) : textContent('h1'));
+    }
+
+    function getTags(t) {
+        return (Array.isArray(t) ? t[0] : allTexts(t));
     }
 
     async function findBypass(s) {
@@ -340,7 +364,7 @@ a{
     async function byHeader(h, t, l, s) {
         var sbh = filterText(((l == 'en' && !s) || l == s) ? getHeader(h) : await yaTranslate(getHeader(h), l), 1);
         if(!sbh) return;
-        return (await findByApi(sbh, null, null, (t ? (Array.isArray(t) ? t[0] : allTexts(t)) : allTexts('.tag')))) || promtRedirect(sitecolor, toSearch(sbh + ' ' + (t ? (Array.isArray(t) ? t[0] : allTexts(t)) : allTexts('.tag')).join(' ').replace(/\s+/g, ' '), s));
+        return (await findByApi(sbh, null, null, (t ? (getTags(t)) : allTexts('.tag')))) || promtRedirect(sitecolor, toSearch(sbh + ' ' + (t ? (getTags(t)) : allTexts('.tag')).join(' ').replace(/\s+/g, ' '), s));
     }
     function bySel(s, a = 'href') {
         link = document.querySelector(s);
@@ -348,8 +372,13 @@ a{
     }
 
     async function findByPath(pos) {
-        var askvopr = location.pathname.split('/')[pos].replace(/[-+ ]/g, ' ').replace(/\.html$/, '').replace(/(-closed|-duplicate)$/, '');
+        var askvopr = location.pathname.split('/')[pos].replace(/[-+ ]/g, ' ').replace(/(-closed|-duplicate)?(\.html)?$/, '');
         return (await findByApi(askvopr, null, null, null)) || promtRedirect(sitecolor, toSearch(askvopr));
+    }
+
+    async function fromBrackets(h = 'h1', t, l, s) {
+        var hdr = document.querySelector(h)?.innerHTML.match(/\(([a-zA-Z-_ ])+\)/);
+        return (hdr) ? byHeader([hdr[0]], t, l, s) : null;
     }
 
     /**
@@ -443,6 +472,8 @@ a{
     console.log('Checking site: ' + host);
 
     switch (host) {
+        case 'yuanmacha.com':
+            return await fromBrackets('h1', '.tag a', 'en');
         case 'stormcrow.dev':
             return bySel('p.text-right > a[href*="stackoverflow.com/q"]') || byNumber(location.pathname.split('/')[3]);
         case 'stackoom.com':
@@ -480,9 +511,9 @@ a{
         case 'quares.ru':
             clr('#fcdb00');
         case 'askentire.net':
-            clr('2c3e50');
+            clr('#2c3e50');
         case 'techarks.ru':
-            clr('2c3e50');
+            clr('#20a169');
         case 'legkovopros.ru':
             clr('#55b252');
             return await byHeader('h1', '.tag', 'ru');
@@ -775,4 +806,3 @@ a{
             fix(/^https?:\/\/([a-z]+\.)?mathoverflow\.net\/([a-z]+)\/([0-9]{1,12})/, 'https://$1mathoverflow.net/questions/$3', 1);
     }
 }).catch(console.error.bind(console));
-

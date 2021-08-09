@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name         Back2source
-// @version      0.1.73
+// @version      0.1.74
 // @description  Redirecting to source sites from sites with machine translation, etc.
 // @namespace    vladgba
 // @author       vladgba@gmail.com
@@ -104,6 +104,7 @@
 // @match        *://*.quabr.com/*
 // @match        *://*.quares.ru/?id=*
 // @match        *://*.question-it.com/questions/*
+// @match        *://*.recalll.co/*
 // @match        *://*.rudata.ru/wiki/*
 // @match        *://*.sbup.com/wiki/*
 // @match        *://*.savepearlharbor.com/?p=*
@@ -159,6 +160,7 @@
 (async() => {
     'use strict';
 
+    var bypassused = false;
     var sitecolor = '#333';
 
     function clr(c, f) {
@@ -276,13 +278,13 @@ a{
      * @param {string} sourceLang
      */
 
-    async function yaTranslate(q, sourceLang) {
+    async function yaTranslate(q, sourceLang, targetLang) {
         q = dropMarks(q);
         if (!q) {
             return null;
         }
         //q = q.replace(/ \/ /g, ' ');
-        q = 'https://api.browser.yandex.ru/dictionary/translate?statLang=en&targetLang=en&text=' + encodeURIComponent(q) + (sourceLang ? '&fromLang=' + sourceLang : '')
+        q = 'https://api.browser.yandex.ru/dictionary/translate?statLang=en&targetLang=' + (targetLang ? targetLang:'en') + '&text=' + encodeURIComponent(q) + (sourceLang ? '&fromLang=' + sourceLang : '')
         try {
             //dosn't work in chrome
             return await fetch(q, {
@@ -325,6 +327,8 @@ a{
     }
 
     async function findBypass(s) {
+        if(bypassused) return;
+        bypassused == true;
         var dfgdr = fetch(
             `https://api.zcxv.icu/b2s.php?q=get&url=${encodeURIComponent(s)}`, {
                 credentials: 'omit'
@@ -362,13 +366,15 @@ a{
      * @param {string} [s] - target site(s) (def: ['stackoverflow.com'])
      */
     async function byHeader(h, t, l, s) {
+        var bp = await findBypass(location.href);
+        if(bp) return bp;
         var sbh = filterText(((l == 'en' && !s) || l == s) ? getHeader(h) : await yaTranslate(getHeader(h), l), 1);
         if(!sbh) return;
         return (await findByApi(sbh, null, null, (t ? (getTags(t)) : allTexts('.tag')))) || promtRedirect(sitecolor, toSearch(sbh + ' ' + (t ? (getTags(t)) : allTexts('.tag')).join(' ').replace(/\s+/g, ' '), s));
     }
-    function bySel(s, a = 'href') {
+    async function bySel(s, a = 'href') {
         link = document.querySelector(s);
-        return (link && link.getAttribute(a)) ? link.getAttribute(a) : null;
+        return (link && link.getAttribute(a)) ? link.getAttribute(a) : (await findBypass(location.href));
     }
 
     async function findByPath(pos) {
@@ -475,7 +481,7 @@ a{
         case 'yuanmacha.com':
             return await fromBrackets('h1', '.tag a', 'en');
         case 'stormcrow.dev':
-            return bySel('p.text-right > a[href*="stackoverflow.com/q"]') || byNumber(location.pathname.split('/')[3]);
+            return await bySel('p.text-right > a[href*="stackoverflow.com/q"]') || byNumber(location.pathname.split('/')[3]);
         case 'stackoom.com':
             return byNumber(document.getElementById('question').dataset.questionid);
         case 'ffff65535.com':
@@ -532,6 +538,10 @@ a{
             if (!/\.html$/.test(location.pathname)) return;
             return await findByPath(1);
             break;
+        case 'recalll.co':
+            var recalll = document.querySelector('div.label-wrap a[href*="stackoverflow.com/"][target="_blank"]');
+            if(recalll) return recalll;
+            return await byHeader('h2#mainTitle', 'a[href*="/tags/"]', 'en');
         case 'extutorial.com':
             return await byHeader('h1', 'a[href*="/tags/"]', 'en');
         case '1r1g.com':
@@ -593,7 +603,9 @@ a{
             return toSearch(lastPathPart().replace(/(-closed|-duplicate)?(-\d+)?(\.html)?$/, ''), true);
         case 'askdev.ru':
             clr('#970f1b');
-            var askdev = await byHeader('h1', '.block_taxonomies a', 'ru');
+            var tgs = (await yaTranslate(allTexts('.block_taxonomies a').join(' '), 'ru')).split(' ');
+            console.log(tgs);
+            var askdev = await byHeader('h1', [tgs], 'ru');
             if(askdev) return askdev;
             askdev = document.querySelector('img[src*="/images/content/"]');
             if (!askdev) return;
@@ -610,7 +622,7 @@ a{
             return await byHeader('h1', '.tags a', 'ru');
             break;
         case 'itdaan.com':
-            var itdaan = bySel('input[name="url"]', 'value');
+            var itdaan = await bySel('input[name="url"]', 'value');
             if (itdaan) window.location.replace(itdaan);
             return;
         case 'stackoverflood.com':
@@ -687,24 +699,23 @@ a{
         case 'sozdizimi.com':
         case 'zapytay.com':
         case 'while-do.com':
-            return bySel('.footer_question.mt-3 > a');
+            return await bySel('.footer_question.mt-3 > a');
         case 'codeindex.ru':
         case 'qa-help.ru':
-            return bySel('span.text-muted.fake_url','src') || bySel('.text-muted.small[href*="stackoverflow.com/q"]');
+            return await bySel('span.text-muted.fake_url','src') || await bySel('.text-muted.small[href*="stackoverflow.com/q"]');
         case 'jejakjabar.com':
             var regx = location.href.match(/https?:\/\/([a-zA-z]+\.)?jejakjabar\.com\/wiki\/(.+)/);
             return (regx !== null) ? wikiLink(regx[2], 'en', 1) : null;
         case 'itnan.ru':
-            var itnan = location.href.match(/https?:\/\/([a-zA-Z]{2})?\.?itnan\.ru\/post\.php\?(.+)?p=([0-9]+)/);
-            return (itnan !== null) ? 'https://habr.com/ru/post/' + itnan[3] : null;
+            var itnan = location.href.match(/https?:\/\/([a-zA-Z]{2})?\.?itnan\.ru\/post\.php\?(.+)?p=([0-9]+)/);33333
         default:
             if (location.hostname.includes('it-swarm')) {
-                return bySel('.gat[data-cat="q-source"]');
+                return await bySel('.gat[data-cat="q-source"]');
             } else if (location.hostname.includes('stackovernet') || location.hostname.includes('stackoverrun')) {
-                return bySel('.post-meta a[href*="stackoverflow.com/q"]');
+                return await bySel('.post-meta a[href*="stackoverflow.com/q"]');
             } else if (location.hostname.includes('qastack')) {
-                var qastack = bySel('span.text-muted.fake_url a, span.text-muted.fake_url','src') ||
-                    bySel('.text-muted a:last-child[href*="stackoverflow.com/"],.text-muted a:last-child[href*="stackexchange.com/"],.text-muted a:last-child[href*="superuser.com/"],.text-muted a:last-child[href*="mathoverflow.net/"]');
+                var qastack = await bySel('span.text-muted.fake_url a, span.text-muted.fake_url','src') ||
+                    await bySel('.text-muted a:last-child[href*="stackoverflow.com/"],.text-muted a:last-child[href*="stackexchange.com/"],.text-muted a:last-child[href*="serverfault.com/"],.text-muted a:last-child[href*="superuser.com/"],.text-muted a:last-child[href*="mathoverflow.net/"]');
                 if(qastack) return qastack;
                 qastack = location.href.match(/https?:\/\/qastack\.([a-z\.]+)\/([a-z]+)\/([0-9]+)\/(.+)/);
                 if (qastack) {
@@ -786,12 +797,10 @@ a{
     console.log(link);
     if (link.includes('wikipedia.org/wiki/wiki')) link = link.replace(/wikipedia\.org\/wiki\/wiki/, 'wikipedia.org/wiki');
     //valid links
-    if (/^https?:\/\/superuser\.com\/questions\/([0-9]{1,12})/.test(link) ||
-        /^https?:\/\/(ru\.)?stackoverflow\.com\/questions\/([0-9]{1,12})/.test(link) ||
-        /^https?:\/\/(([a-zA-z\-]+\.)?)habr\.com\/(.+)/.test(link) || //change this
-        /^https?:\/\/(([a-zA-z\-]+\.)?)mathoverflow\.net\/questions\/([0-9]{1,12})/.test(link) ||
-        /^https?:\/\/(([a-zA-z\-]+\.)?)askubuntu\.com\/questions\/([0-9]{1,12})/.test(link) ||
-        /^https?:\/\/(([a-zA-z\-]+\.)?)stackexchange\.com\/questions\/([0-9]{1,12})/.test(link)) {
+    if (/^https?:\/\/((pt|ja|ru|es)\.)?stackoverflow\.com\/questions\/([0-9]{1,12})/.test(link) ||
+        /^https?:\/\/(([a-zA-z\-]+\.)?)stackexchange\.com\/questions\/([0-9]{1,12})/.test(link) ||
+        /^https?:\/\/(superuser\.com|askubuntu\.com|mathoverflow\.net|serverfault.com)\/questions\/([0-9]{1,12})/.test(link) ||
+        /^https?:\/\/(([a-zA-z\-]+\.)?)habr\.com\/(.+)/.test(link)) {
         run(link, 1);
     } else if (/^https?:\/\/(([a-zA-z\-]+\.)?)wikipedia\.org\/wiki\/(.+)/.test(link) ||
                /^https?:\/\/github\.com\/(.+)?/.test(link) ||
@@ -799,10 +808,9 @@ a{
         run(link);
     } else {
         var regx;
-        fix(/^https?:\/\/(ru\.)?stackoverflow\.com\/([a-z]+)\/([0-9]{1,12})/, 'https://$1stackoverflow.com/questions/$3', 1) ||
-            fix(/^https?:\/\/([a-z]+\.)?stackexchange\.com\/([a-z]+)\/([0-9]{1,12})/, 'https://$1stackoverflow.com/questions/$3', 1) ||
-            fix(/^https?:\/\/([a-z]+\.)?wikipedia\.org\/w\/index\.php\?title=(.+)&oldid=([0-9]{1,12})/, 'https://$1wikipedia.org/wiki/$2') ||
-            fix(/^https?:\/\/([a-z]+\.)?askubuntu\.com\/([a-z]+)\/([0-9]{1,12})/, 'https://$1askubuntu.com/questions/$3', 1) ||
-            fix(/^https?:\/\/([a-z]+\.)?mathoverflow\.net\/([a-z]+)\/([0-9]{1,12})/, 'https://$1mathoverflow.net/questions/$3', 1);
+        fix(/^https?:\/\/((pt|ja|ru|es)\.)?stackoverflow\.com\/([a-z]+)\/([0-9]{1,12})/, 'https://$1stackoverflow.com/questions/$4', 1) ||
+            fix(/^https?:\/\/([a-z]+\.)?stackexchange\.com\/([a-z]+)\/([0-9]{1,12})/, 'https://$2.stackexchange.com/questions/$3', 1) ||
+            fix(/^https?:\/\/([a-z]+\.)?(superuser\.com|askubuntu\.com|mathoverflow\.net|serverfault.com)\/([a-z]+)\/([0-9]{1,12})/, 'https://$1$2/questions/$4', 1) ||
+            fix(/^https?:\/\/([a-z]+\.)?wikipedia\.org\/w\/index\.php\?title=(.+)&oldid=([0-9]{1,12})/, 'https://$1wikipedia.org/wiki/$2');
     }
 }).catch(console.error.bind(console));

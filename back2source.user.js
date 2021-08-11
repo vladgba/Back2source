@@ -13,7 +13,6 @@
 // @grant        GM_xmlhttpRequest
 // @grant        GM_registerMenuCommand
 // @noframes
-// @include      *://*.google.*/*
 // @match        *://*.stackoverflow.com/*
 // @match        *://*.*.nina.az/wiki/*
 // @match        *://*.360wiki.ru/wiki/*
@@ -47,6 +46,7 @@
 // @match        *://*.exceptionshub.com/*
 // @match        *://*.extutorial.com/ask/*
 // @match        *://*.fluffyfables.com/*
+// @match        *://*.fixes.pub/*/*.html
 // @match        *://*.fooobar.com/questions/*
 // @match        *://*.gaz.wiki/wiki/*
 // @match        *://*.generacodice.com/*
@@ -58,8 +58,8 @@
 // @match        *://*.it-brain.online/question/*
 // @match        *://*.it-swarm-vi.com/*/*
 // @match        *://*.it-swarm.asia/*/*
-// @match        *://*.it-swarm.com.ru/*/*
 // @match        *://*.it-swarm.com.de/*/*
+// @match        *://*.it-swarm.com.ru/*/*
 // @match        *://*.it-swarm.dev/*/*
 // @match        *://*.it-swarm-ja.com/*/*
 // @match        *://*.it-swarm.net/*/*
@@ -76,6 +76,7 @@
 // @match        *://*.mihalicdictionary.org/*
 // @match        *://*.nina.az/wiki/*
 // @match        *://*.overcoder.net/q/*
+// @match        *://*.overcoder.ru/q/*
 // @match        *://*.poweruser.guru/*
 // @match        *://*.prog-help.ru/*
 // @match        *://*.progi.pro/*
@@ -470,7 +471,6 @@ a{
 
     const href = location.href;
     var link;
-
     const host = location.hostname.split('.').slice(-2).join('.');
     console.log('Checking site: ' + host);
 
@@ -504,6 +504,8 @@ a{
             return byNumber(location.pathname.split('/', 3)[2]);
         case 'javaer101.com':
             return await byHeader('h1', 'nav .col-tag');
+        case 'fixes.pub':
+            return await byHeader('h1', 'aside li a[href*="fixes.pub/topics"]', 'ja');
         case 'askubuntu.ru':
             //#Question div.question-text span[itemprop="author"] span[itemprop="name"]
             return await byHeader('h1', 'nav .col-tag', 'ru', ['askubuntu.com']);
@@ -704,7 +706,8 @@ a{
             var regx = location.href.match(/https?:\/\/([a-zA-z]+\.)?jejakjabar\.com\/wiki\/(.+)/);
             return (regx !== null) ? wikiLink(regx[2], 'en', 1) : null;
         case 'itnan.ru':
-            var itnan = location.href.match(/https?:\/\/([a-zA-Z]{2})?\.?itnan\.ru\/post\.php\?(.+)?p=([0-9]+)/);33333
+            var itnan = location.href.match(/https?:\/\/([a-zA-Z]{2})?\.?itnan\.ru\/post\.php\?(.+)?p=([0-9]+)/);
+            return;
         default:
             if (location.hostname.includes('it-swarm')) {
                 return await bySel('.gat[data-cat="q-source"]');
@@ -732,6 +735,7 @@ a{
                     'web-answers.ru': '.source > a',
                     'sprosi.pro': '#qsource > a',
                     'overcoder.net': '.info_outlink',
+                    'overcoder.ru': '.info_outlink',
                     'qacode.ru': '.question-info .cc-link',
                     'rstopup.com': '.td-post-content .origlink > a',
                     'itranslater.com': '.body > div:last-child > a',
@@ -758,6 +762,7 @@ a{
                 console.log(link);
             }
     }
+
     if (!link) return null;
     if (typeof link === 'string') return link;
     return (link.href && typeof link.href === 'string') ? link.href : null;

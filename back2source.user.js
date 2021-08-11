@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name         Back2source
-// @version      0.1.74
+// @version      0.1.75
 // @description  Redirecting to source sites from sites with machine translation, etc.
 // @namespace    vladgba
 // @author       vladgba@gmail.com
@@ -59,6 +59,7 @@
 // @match        *://*.it-swarm-vi.com/*/*
 // @match        *://*.it-swarm.asia/*/*
 // @match        *://*.it-swarm.com.ru/*/*
+// @match        *://*.it-swarm.com.de/*/*
 // @match        *://*.it-swarm.dev/*/*
 // @match        *://*.it-swarm-ja.com/*/*
 // @match        *://*.it-swarm.net/*/*
@@ -112,10 +113,6 @@
 // @match        *://*.stackanswers.net/questions/*
 // @match        *://*.stackoom.com/question/*
 // @match        *://*.stackoverflood.com/*
-// @match        *://*.stackovernet.com/*
-// @match        *://*.stackovernet.xyz/*
-// @match        *://*.stackoverrun.com/*
-// @match        *://*.stackoverrun.xyz/*
 // @match        *://*.stackru.com/questions/*
 // @match        *://*.stormcrow.dev/*
 // @match        *://*.switch-case.com/*
@@ -711,8 +708,6 @@ a{
         default:
             if (location.hostname.includes('it-swarm')) {
                 return await bySel('.gat[data-cat="q-source"]');
-            } else if (location.hostname.includes('stackovernet') || location.hostname.includes('stackoverrun')) {
-                return await bySel('.post-meta a[href*="stackoverflow.com/q"]');
             } else if (location.hostname.includes('qastack')) {
                 var qastack = await bySel('span.text-muted.fake_url a, span.text-muted.fake_url','src') ||
                     await bySel('.text-muted a:last-child[href*="stackoverflow.com/"],.text-muted a:last-child[href*="stackexchange.com/"],.text-muted a:last-child[href*="serverfault.com/"],.text-muted a:last-child[href*="superuser.com/"],.text-muted a:last-child[href*="mathoverflow.net/"]');
@@ -751,8 +746,6 @@ a{
                     'switch-case.ru': 'a.link[href*="stackoverflow.com/q"],a.link[href*="stackexchange.com/q"],a.link[href*="superuser.com/q"],a.link[href*="mathoverflow.net/q"]',
                     'stackru.com': '.q-source',
                     'ask-ubuntu.ru': '.q-source',
-                    'stackoverrun.com': '.post-meta a',
-                    'stackovernet.com': '.post-meta a',
                     'rudata.ru': 'a.external[href*="ru.wikipedia.org"]',
                     'jejakjabar.com': 'li#footer-info-copyright a[href*="en.wikipedia.org/wiki/"]',
                     'xcv.wiki': 'div#footer li#footer-info-copyright a[href*="de.wikipedia.org/wiki/"]',

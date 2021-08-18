@@ -14,6 +14,7 @@
 // @grant        GM_registerMenuCommand
 // @grant        GM_setValue
 // @grant        GM_getValue
+// @connect      api.browser.yandex.ru
 // @noframes
 // @match        *://*.stackoverflow.com/*
 // @match        *://*.*.nina.az/wiki/*
@@ -102,9 +103,11 @@
 // @match        *://*.qastack.it/*
 // @match        *://*.qastack.jp/*
 // @match        *://*.qastack.kr/*
+// @match        *://*.qastack.lk/*
 // @match        *://*.qastack.mx/*
 // @match        *://*.qastack.net.bd/*
 // @match        *://*.qastack.pl/*
+// @match        *://*.qa-stack.pl/*
 // @match        *://*.qastack.ru/*
 // @match        *://*.qastack.vn/*
 // @match        *://*.quabr.com/*
@@ -792,11 +795,11 @@ a{
         default:
             if (location.hostname.includes('it-swarm')) {
                 return bySel('.gat[data-cat="q-source"]');
-            } else if (location.hostname.includes('qastack')) {
+            } else if (location.hostname.includes('qastack') || location.hostname.includes('qa-stack')) {
                 var qastack = await bySel('span.text-muted.fake_url a, span.text-muted.fake_url','src') ||
                     await bySel('.text-muted a:last-child[href*="stackoverflow.com/"],.text-muted a:last-child[href*="stackexchange.com/"],.text-muted a:last-child[href*="serverfault.com/"],.text-muted a:last-child[href*="superuser.com/"],.text-muted a:last-child[href*="mathoverflow.net/"]');
                 if(qastack) return qastack;
-                qastack = location.href.match(/https?:\/\/qastack\.([a-z\.]+)\/([a-z]+)\/([0-9]+)\/(.+)/);
+                qastack = location.href.match(/https?:\/\/qa-?stack\.([a-z\.]+)\/([a-z]+)\/([0-9]+)\/(.+)/);
                 if (qastack) {
                     return 'https://' + qastack[2] + '.stackexchange.com/questions/' + qastack[3] + '/' + qastack[4];
                 }

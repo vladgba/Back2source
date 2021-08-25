@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name         Back2source
-// @version      0.1.76
+// @version      0.1.77
 // @description  Redirecting to source sites from sites with machine translation, etc.
 // @namespace    vladgba
 // @author       vladgba@gmail.com
@@ -36,6 +36,7 @@
 // @match        *://*.codeindex.ru/q/*
 // @match        *://*.codengineering.ru/q/*
 // @match        *://*.coderoad.ru/*
+// @match        *://*.coderoad.in/*
 // @match        *://*.coderquestion.ru/q/*
 // @match        *://*.coredump.biz/questions/*
 // @match        *://*.datewiki.ru/wiki/*
@@ -141,7 +142,10 @@
 // @match        *://*.wiki-org.ru/*
 // @match        *://*.wiki-wiki.ru/wp/*
 // @match        *://*.wiki2.net/*
+// @match        *://*.wiki2.online/*
+// @match        *://*.wiki2.info/*
 // @match        *://*.wiki2.org/*
+// @match        *://*.wiki.cologne/*
 // @match        *://*.wiki2.wiki/wiki/*
 // @match        *://*.wikichi.ru/wiki/*
 // @match        *://*.wikies.wiki/wiki/*
@@ -149,6 +153,7 @@
 // @match        *://*.wikipedia-on-ipfs.org/wiki/*
 // @match        *://*.wikipedia.tel/*
 // @match        *://*.wikiredia.ru/*
+// @match        *://*.wikipedia24.ru/*
 // @match        *://*.wikiroot.ru/question/*
 // @match        *://*.wikivisually.com/wiki/*
 // @match        *://*.wikiwand.com/*/*
@@ -166,24 +171,19 @@
 // @match        *://respuestas.me/*
 // @match        *://antwortenhier.me/*
 // ==/UserScript==
-
 (async() => {
     'use strict';
+    var db = JSON.parse(GM_getValue('b2s') || '{}');
+    for (var y in db) {
+        if(location.href==db[y][0]) {
+            window.location.replace(db[y][1]);
+            throw new Error('Redirect from cache');
+        }
+    }
 
     var bypassused = false;
     var sitecolor = '#333';
     var lang = 'ru';
-
-    function cbufr() {
-        var db = JSON.parse(GM_getValue('b2s') || '{}');
-        for (var y in db) {
-            if(location.href==db[y][0]) {
-                window.location.replace(db[y][1]);
-                return true;
-            }
-        }
-    }
-    if (cbufr()) return;
 
     function clr(c, f) {
         if (f || sitecolor == '#333') sitecolor = c;
@@ -244,7 +244,7 @@
      * @param {string} bgcolor
      * @param {string} link
      */
-    async function promtRedirect(bgcolor, link) {
+    async function promtRedirect(bgcolor, link, codef, imgf) {
         const dialog = document.createElement('div');
         try {
             document.body.appendChild(dialog);
@@ -286,8 +286,10 @@ a{
 }
 </style>
 <div class="m">[ Back2stackoverflow ]
-<a id="ok-btn" href="#">Try to find the original question? <span href="#" class="search-icon">&#8981;<span></a>
-<span id="close-btn">&#10006;</span>
+<a id="ok-btn" href="#">Try to find the original question? <span href="#" class="search-icon">&#8981;<span></a>` +
+(codef && codef.length>0 ? ` <a id="cd-btn" href="` + toSearch(codef.join(' ')) +`">[ByCode]</a>` : ``) +
+(imgf && imgf.length>0 ? ` <a id="mg-btn" href="` + toSearch(imgf.join(' ')) +`">[ByImgs]</a>` : ``) +
+`<span id="close-btn">&#10006;</span>
 </div>`;
             shadowRoot.querySelector('#ok-btn').href = shadowRoot.querySelector('.search-icon').href = link;
             await new Promise((_, reject) => {
@@ -412,7 +414,8 @@ a{
         if(bp) return bp;
         var sbh = filterText((l == 'en') ? getHeader(h) : await yaTranslate(getHeader(h), l), 1);
         if(!sbh) return;
-        return (await findByApi(sbh, null, null, (t ? (getTags(t)) : allTexts('.tag')))) || promtRedirect(sitecolor, toSearch(sbh + ' ' + (t ? (getTags(t)) : allTexts('.tag')).join(' ').replace(/\s+/g, ' '), s));
+var codef = allTexts('pre code'), imgf = allAttr('img[src*="://i.stack.imgur.com/"], a[href*="://i.stack.imgur.com/"]','href');
+        return (await findByApi(sbh, null, null, (t ? (getTags(t)) : allTexts('.tag')))) || promtRedirect(sitecolor, toSearch(sbh + ' ' + (t ? (getTags(t)) : allTexts('.tag')).join(' ').replace(/\s+/g, ' '), s), codef, imgf);
     }
 
     async function bySel(s, a = 'href') {
@@ -421,24 +424,13 @@ a{
     }
 
     async function findByPath(pos) {
-        var askvopr = location.pathname.split('/')[pos].replace(/[-+ ]/g, ' ').replace(/(-closed|-duplicate)?(\.html)?$/, '');
-        return (await findByApi(askvopr, null, null, null)) || promtRedirect(sitecolor, toSearch(askvopr));
+        var fbp = location.pathname.split('/')[pos].replace(/[-+ ]/g, ' ').replace(/(-closed|-duplicate)?(\.html)?$/, '');
+        return (await findByApi(fbp, null, null, null)) || promtRedirect(sitecolor, toSearch(fbp));
     }
 
     async function fromBrackets(h = 'h1', t, l, s) {
         var hdr = document.querySelector(h)?.innerHTML.match(/\(([a-zA-Z-_ ])+\)/);
         return hdr ? byHeader([hdr[0]], t, l, s) : null;
-    }
-
-    /**
-    * @todo Get a link using uniqueness of stackoverflow images
-    * @body A large number of clones use direct links to stackoverflow images and we can find a question on Google for them, but there are difficulties with Google and its API.
-    */
-    async function findByImg() {
-        //https?:\/\/i\.stack\.imgur\.com\/([a-zA-Z0-9]+)\.(png|jpg|gif)
-        //+site%3Astackexchange.com+OR+site%3Amathoverflow.net+OR+site%3Asuperuser.com+OR+site%3Aserverfault.com+OR+site%3Aaskubuntu.com
-        //var img = document.querySelector('img[src*="//i.stack.imgur.com/"]')?.src;
-        return null;
     }
 
     /**
@@ -470,8 +462,7 @@ a{
      */
     function toSearch(s, site) {
         s = dropMarks(s);
-        return s ? `https://google.com/search?q=` + encodeURIComponent(s) +
-            ((site && Array.isArray(site)) ? `+site%3A` + site.join('+OR+site%3A') : `+site%3Astackexchange.com+OR+site%3Astackoverflow.com`) : null;
+        return s ? `https://google.com/search?q=` + ((site && Array.isArray(site)) ? `site%3A` + site.join('+OR+site%3A') + `+` : `site%3Astackexchange.com+OR+site%3Astackoverflow.com+`) + encodeURIComponent(s) : null;
     }
 
     /**
@@ -522,7 +513,11 @@ a{
      * @return {string[]}
      */
     function allTexts(s) {
-        return all(s).map(a => a.textContent.trim())
+        return all(s).map(a => a.textContent.trim());
+    }
+
+    function allAttr(s, t) {
+        return all(s).map(a => a[t].trim());
     }
 
     const href = location.href;
@@ -616,6 +611,8 @@ a{
             if (!/^\/([0-9]+)([a-z\-]+)$/.test(location.pathname)) return;
             clr('#2c3e50');
             return byHeader('h1', 0, 'ru');
+        case 'coderoad.in':
+            return findByPath(3);
         case 'exceptionshub.com':
             if (!/\.html$/.test(location.pathname)) return;
             return findByPath(1);
@@ -630,7 +627,7 @@ a{
             clr('#343a40');
             return byHeader();
         case 'soinside.com':
-            clr('#007bff');
+            clr('#333');
             return byHeader('h1', '.q-tag', 'zh');
         case 'xszz.org':
             clr('#ff6f06');
@@ -731,6 +728,12 @@ a{
         case 'wikivisually.com':
         case 'hmong.wiki':
             return wikiPath(2);
+        case 'wiki2.info':
+        case 'wiki2.online':
+        case 'wikipedia24.ru':
+        case 'wiki.cologne':
+            if(document.querySelector('.mw-parser-output')===null) return;
+            return wikiPath(1,'ru');
         case 'wikiredia.ru':
         case 'wiki-org.ru':
         case 'sbup.com':

@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name         Back2source
-// @version      0.1.75
+// @version      0.1.77
 // @description  Redirecting to source sites from sites with machine translation, etc.
 // @namespace    vladgba
 // @author       vladgba@gmail.com
@@ -12,8 +12,10 @@
 // @supportURL   https://github.com/vladgba/Back2source/issues
 // @grant        GM_xmlhttpRequest
 // @grant        GM_registerMenuCommand
+// @grant        GM_setValue
+// @grant        GM_getValue
+// @connect      api.browser.yandex.ru
 // @noframes
-// @match        *://*.stackoverflow.com/*
 // @match        *://*.*.nina.az/wiki/*
 // @match        *://*.360wiki.ru/wiki/*
 // @match        *://*.abcdef.wiki/*
@@ -22,7 +24,7 @@
 // @match        *://*.ask-ubuntu.ru/questions/*
 // @match        *://*.askdev.info/questions/*
 // @match        *://*.askdev.ru/q/*
-// @match        *://*.askentire.net/q/*
+// @match        *://*.askentire.net/q/*-*
 // @match        *://*.askubuntu.ru/questions/*
 // @match        *://*.askvoprosy.com/voprosy/*
 // @match        *://*.bildiredi.com/*
@@ -33,6 +35,7 @@
 // @match        *://*.codeindex.ru/q/*
 // @match        *://*.codengineering.ru/q/*
 // @match        *://*.coderoad.ru/*
+// @match        *://*.coderoad.in/*
 // @match        *://*.coderquestion.ru/q/*
 // @match        *://*.coredump.biz/questions/*
 // @match        *://*.datewiki.ru/wiki/*
@@ -50,6 +53,7 @@
 // @match        *://*.fooobar.com/questions/*
 // @match        *://*.gaz.wiki/wiki/*
 // @match        *://*.generacodice.com/*
+// @match        *://*.gitrush.ru/*/*/*
 // @match        *://*.hmong.wiki/wiki/*
 // @match        *://*.howtosolves.com/q/*
 // @match        *://*.husl.ru/questions/*
@@ -74,6 +78,7 @@
 // @match        *://*.legkovopros.ru/questions/*
 // @match        *://*.livepcwiki.ru/wiki/*
 // @match        *://*.mihalicdictionary.org/*
+// @match        *://*.mlog.club/article/*
 // @match        *://*.nina.az/wiki/*
 // @match        *://*.overcoder.net/q/*
 // @match        *://*.overcoder.ru/q/*
@@ -98,9 +103,11 @@
 // @match        *://*.qastack.it/*
 // @match        *://*.qastack.jp/*
 // @match        *://*.qastack.kr/*
+// @match        *://*.qastack.lk/*
 // @match        *://*.qastack.mx/*
 // @match        *://*.qastack.net.bd/*
 // @match        *://*.qastack.pl/*
+// @match        *://*.qa-stack.pl/*
 // @match        *://*.qastack.ru/*
 // @match        *://*.qastack.vn/*
 // @match        *://*.quabr.com/*
@@ -108,6 +115,7 @@
 // @match        *://*.question-it.com/questions/*
 // @match        *://*.recalll.co/*
 // @match        *://*.rudata.ru/wiki/*
+// @match        *://*.ruphp.com/*.html
 // @match        *://*.sbup.com/wiki/*
 // @match        *://*.savepearlharbor.com/?p=*
 // @match        *://*.sprosi.pro/questions/*
@@ -115,7 +123,7 @@
 // @match        *://*.stackoom.com/question/*
 // @match        *://*.stackoverflood.com/*
 // @match        *://*.stackru.com/questions/*
-// @match        *://*.stormcrow.dev/*
+// @match        *://*.stormcrow.dev/*/questions/*
 // @match        *://*.switch-case.com/*
 // @match        *://*.techarks.ru/qa/*
 // @match        *://*.techfeed.net/*
@@ -133,7 +141,10 @@
 // @match        *://*.wiki-org.ru/*
 // @match        *://*.wiki-wiki.ru/wp/*
 // @match        *://*.wiki2.net/*
+// @match        *://*.wiki2.online/*
+// @match        *://*.wiki2.info/*
 // @match        *://*.wiki2.org/*
+// @match        *://*.wiki.cologne/*
 // @match        *://*.wiki2.wiki/wiki/*
 // @match        *://*.wikichi.ru/wiki/*
 // @match        *://*.wikies.wiki/wiki/*
@@ -141,6 +152,8 @@
 // @match        *://*.wikipedia-on-ipfs.org/wiki/*
 // @match        *://*.wikipedia.tel/*
 // @match        *://*.wikiredia.ru/*
+// @match        *://*.wikipedia24.ru/*
+// @match        *://*.wikiroot.ru/question/*
 // @match        *://*.wikivisually.com/wiki/*
 // @match        *://*.wikiwand.com/*/*
 // @match        *://*.wikizero.com/*/*
@@ -153,16 +166,29 @@
 // @match        *://code.i-harness.com/*/q/*
 // @match        *://qa.1r1g.com/sf/ask/*
 // @match        *://ru.encyclopedia.kz/index.php/*
+// @match        *://askfrance.me/*
+// @match        *://respuestas.me/*
+// @match        *://antwortenhier.me/*
 // ==/UserScript==
-
 (async() => {
     'use strict';
+    var db = JSON.parse(GM_getValue('b2s') || '{}');
+    for (var y in db) {
+        if(location.href==db[y][0]) {
+            window.location.replace(db[y][1]);
+            throw new Error('Redirect from cache');
+        }
+    }
 
     var bypassused = false;
     var sitecolor = '#333';
+    var lang = 'ru';
 
     function clr(c, f) {
         if (f || sitecolor == '#333') sitecolor = c;
+    }
+    function lng(c, f) {
+        if (f || lang == 'ru') lang = c;
     }
 
     GM_registerMenuCommand('Redirect', () => {
@@ -192,7 +218,7 @@
     }
 
     function wikiPath(p, l = 'en') {
-        return 'https://' + l + '.wikipedia.org/wiki/' + location.pathname.split('/', p + 1)[p];
+        return 'https://' + l + '.wikipedia.org/wiki/' + location.pathname.split('/')[p];
     }
 
     function wikiLink(p = location.pathname, l = 'en', w = false) {
@@ -200,11 +226,12 @@
     }
 
     function wikiFull(l = 0, p = 2) {
-        return 'https://' + location.host.split('.', l + 1)[l] + '.wikipedia.org/wiki/' + location.pathname.split('/', p + 1)[p];
+        var s = location.pathname.split('/');
+        return 'https://' + s[l] + '.wikipedia.org/wiki/' + s[p];
     }
 
     function wikiPathLang(l, p) {
-        var s = location.pathname.split('/', (l > p ? l : p) + 1);
+        var s = location.pathname.split('/');
         return 'https://' + s[l] + '.wikipedia.org/wiki/' + s[p];
     }
 
@@ -217,7 +244,7 @@
      * @param {string} bgcolor
      * @param {string} link
      */
-    async function promtRedirect(bgcolor, link) {
+    async function promtRedirect(bgcolor, link, codef, imgf) {
         const dialog = document.createElement('div');
         try {
             document.body.appendChild(dialog);
@@ -259,8 +286,10 @@ a{
 }
 </style>
 <div class="m">[ Back2stackoverflow ]
-<a id="ok-btn" href="#">Try to find the original question? <span href="#" class="search-icon">&#8981;<span></a>
-<span id="close-btn">&#10006;</span>
+<a id="ok-btn" href="#">Try to find the original question? <span href="#" class="search-icon">&#8981;<span></a>` +
+                (codef && codef.length>0 ? ` <a id="cd-btn" href="` + toSearch(codef.join(' ')) +`">[ByCode]</a>` : ``) +
+                (imgf && imgf.length>0 ? ` <a id="mg-btn" href="` + toSearch(imgf.join(' ')) +`">[ByImgs]</a>` : ``) +
+`<span id="close-btn">&#10006;</span>
 </div>`;
             shadowRoot.querySelector('#ok-btn').href = shadowRoot.querySelector('.search-icon').href = link;
             await new Promise((_, reject) => {
@@ -281,7 +310,6 @@ a{
         if (!q) {
             return null;
         }
-        //q = q.replace(/ \/ /g, ' ');
         q = 'https://api.browser.yandex.ru/dictionary/translate?statLang=en&targetLang=' + (targetLang ? targetLang:'en') + '&text=' + encodeURIComponent(q) + (sourceLang ? '&fromLang=' + sourceLang : '')
         try {
             //dosn't work in chrome
@@ -312,12 +340,29 @@ a{
         }
     }
 
+    var auxiliaryRe = null;
+    function removeAuxiliary(s) {
+        return s && s.replace(auxiliaryRe || (auxiliaryRe = new RegExp([
+            'a', 'an', 'the',
+            //Conjunctions http://englishgu.ru/soyuzyi-v-angliyskom-yazyike-tablitsa-spisok/
+            //https://7esl.com/english-conjunctions/
+            'according to', 'after', 'against', 'also', 'although', 'and', 'as far as', 'as if', 'as long as', 'as much as', 'as soon as', 'as though', 'as well as', 'as', 'assuming that', 'at last', 'at least', 'because of', 'because', 'before', 'beyond', 'both', 'but', 'by the time', 'either', 'even if', 'even though', 'for', 'from now on', 'from time to time', 'how', 'however', 'if', 'in case', 'in order', 'in spite of', 'in terms of', 'lest', 'like', 'meanwhile', 'moreover', 'neither', 'nevertheless', 'no matter how', 'no matter what', 'no matter when', 'no matter where', 'no matter who', 'no matter why', 'nor', 'not so as', 'not yet', 'now that', 'on behalf of', 'on condition', 'on the contrary', 'on the other hand', 'once', 'only if', 'or', 'otherwise', 'owing to', 'provided that', 'rather than', 'since', 'so that', 'so', 'still', 'than', 'that is why', 'that', 'therefore', 'though', 'thus', 'till', 'unless', 'unlike', 'until', 'what', 'whatever', 'when', 'whenever', 'where', 'whereas', 'wherever', 'whether', 'which', 'whichever', 'while', 'who', 'whoever', 'whom', 'whomever', 'whose', 'with', 'within', 'without', 'yet',
+            //some of Preposition https://www.englishclub.com/grammar/prepositions-list.htm
+            //https://www.talkenglish.com/vocabulary/top-50-prepositions.aspx
+            'aboard', 'about', 'above', 'across', 'after', 'against', 'along', 'amid', 'among', 'anti', 'around', 'at', 'behind', 'below', 'beneath', 'beside', 'besides', 'beyond', 'but', 'by', 'concerning', 'considering', 'despite', 'down', 'during', 'excepting', 'excluding', 'following', 'for', 'from', 'in', 'including', 'inside', 'into', 'of', 'off', 'on', 'onto', 'opposite', 'out', 'outside', 'over', 'past', 'per', 'regarding', 'since', 'than', 'through', 'throughout', 'to', 'toward', 'towards', 'under', 'underneath', 'unlike', 'until', 'up', 'upon', 'versus', 'via', 'within', 'without',
+            //some of https://7esl.com/interjections-exclamations/
+            'aah', 'ah', 'aha', 'ahem', 'alas', 'argh', 'aw', 'aww', 'bah', 'behold', 'bingo', 'boo', 'bravo', 'brr', 'dear', 'duh', 'eek', 'eh', 'er', 'eww', 'gah', 'gee', 'grr', 'hah', 'hello', 'hey', 'hi', 'hmm', 'huh', 'hullo', 'humph', 'hurrah', 'meh', 'mhm', 'muahaha', 'nuh-uh', 'oh', 'ooh', 'ooh-la-la', 'oomph', 'oops', 'ouch', 'oww', 'oy', 'pew', 'pff', 'phew', 'psst', 'sheesh', 'shh', 'shoo', 'tsk-tsk', 'uh-hu', 'uh-oh', 'uh-uh', 'uhh', 'um', 'umm', 'wee', 'well', 'whoa', 'wow', 'yahoo', 'yay', 'yeah', 'yikes', 'yippee', 'yoo-hoo', 'yuck', 'yuh-uh', 'zing',
+            //modals
+            'can', 'could', 'be able to', 'may', 'might', 'shall', 'should', 'must', 'have to', 'will', 'would',
+        ].sort((a, b) => b.length - a.length).map(w => `\\W${w}(?!\\w)`).join('|'), 'g')), ' ');
+    }
+
     function lastPathPart() {
         return location.pathname.split('/').filter(Boolean).slice(-1)[0];
     }
 
     function getHeader(h) {
-        return (h ? (Array.isArray(h) ? h[0] : textContent(h)) : textContent('h1'));
+        return removeAuxiliary(h ? (Array.isArray(h) ? h[0] : textContent(h)) : textContent('h1'));
     }
 
     function getTags(t) {
@@ -353,7 +398,7 @@ a{
                 credentials: 'omit'
             })
         .then(r => r.json())
-        .then(r => r.items && r.items[0] && r.items[0].link);
+        .then(r => r?.items[0]?.link);
         return dfgdr;
     }
 
@@ -366,23 +411,26 @@ a{
     async function byHeader(h, t, l, s) {
         var bp = await findBypass(location.href);
         if(bp) return bp;
-        var sbh = filterText(((l == 'en' && !s) || l == s) ? getHeader(h) : await yaTranslate(getHeader(h), l), 1);
+        var sbh = filterText((l == 'en') ? getHeader(h) : await yaTranslate(getHeader(h), l), 1);
         if(!sbh) return;
-        return (await findByApi(sbh, null, null, (t ? (getTags(t)) : allTexts('.tag')))) || promtRedirect(sitecolor, toSearch(sbh + ' ' + (t ? (getTags(t)) : allTexts('.tag')).join(' ').replace(/\s+/g, ' '), s));
+        var codef = allTexts('pre code');
+        var imgf = allAttr('img[src*="://i.stack.imgur.com/"], a[href*="://i.stack.imgur.com/"]','href');
+        return (await findByApi(sbh, null, null, (t ? (getTags(t)) : allTexts('.tag')))) || promtRedirect(sitecolor, toSearch(sbh + ' ' + (t ? (getTags(t)) : allTexts('.tag')).join(' ').replace(/\s+/g, ' '), s), codef, imgf);
     }
+
     async function bySel(s, a = 'href') {
         link = document.querySelector(s);
         return (link && link.getAttribute(a)) ? link.getAttribute(a) : (await findBypass(location.href));
     }
 
     async function findByPath(pos) {
-        var askvopr = location.pathname.split('/')[pos].replace(/[-+ ]/g, ' ').replace(/(-closed|-duplicate)?(\.html)?$/, '');
-        return (await findByApi(askvopr, null, null, null)) || promtRedirect(sitecolor, toSearch(askvopr));
+        var fbp = location.pathname.split('/')[pos].replace(/[-+ ]/g, ' ').replace(/(-closed|-duplicate)?(\.html)?$/, '');
+        return (await findByApi(fbp, null, null, null)) || promtRedirect(sitecolor, toSearch(fbp));
     }
 
     async function fromBrackets(h = 'h1', t, l, s) {
         var hdr = document.querySelector(h)?.innerHTML.match(/\(([a-zA-Z-_ ])+\)/);
-        return (hdr) ? byHeader([hdr[0]], t, l, s) : null;
+        return hdr ? byHeader([hdr[0]], t, l, s) : null;
     }
 
     /**
@@ -390,7 +438,7 @@ a{
      */
     function textContent(selector) {
         const e = document.querySelector(selector);
-        return e ? e.textContent.trim() || null : null
+        return e?.textContent.trim();
     }
 
     function startsByText(selector, text) {
@@ -410,12 +458,11 @@ a{
 
     /**
      * @param {string} s
-     * @param {string} [site]
+     * @param {array} [site]
      */
     function toSearch(s, site) {
         s = dropMarks(s);
-        return s ? `https://google.com/search?q=` + encodeURIComponent(s) +
-            ((site && Array.isArray(site)) ? `+site%3A` + site.join('+OR+site%3A') : `+site%3Astackexchange.com+OR+site%3Astackoverflow.com`) : null;
+        return s ? `https://google.com/search?q=` + ((site && Array.isArray(site)) ? `site%3A` + site.join('+OR+site%3A') + `+` : `site%3Astackexchange.com+OR+site%3Astackoverflow.com+`) + encodeURIComponent(s) : null;
     }
 
     /**
@@ -466,7 +513,11 @@ a{
      * @return {string[]}
      */
     function allTexts(s) {
-        return all(s).map(a => a.textContent.trim())
+        return all(s).map(a => a.textContent.trim());
+    }
+
+    function allAttr(s, t) {
+        return all(s).map(a => a[t].trim());
     }
 
     const href = location.href;
@@ -475,10 +526,24 @@ a{
     console.log('Checking site: ' + host);
 
     switch (host) {
+        case 'wikiroot.ru':
+            var wikiroot = document.querySelector('section section div.footer-post div.d-inline-block button');
+            if(wikiroot) {
+                if(wikiroot.hasAttribute('data-url')) {
+                    wikiroot = wikiroot.getAttribute('data-url').replace(/https?:\/\/wikiroot\.ru\/comment\/new\/([0-9]+)/,'$1');
+                    return wikiroot ? 'https://superuser.com/questions/' + wikiroot : null;
+                } else if(wikiroot.hasAttribute('data-target')) {
+                    wikiroot = wikiroot.getAttribute('data-target').replace(/#buttoncollapse-([0-9]+)/,'$1');
+                    return wikiroot ? 'https://superuser.com/questions/' + wikiroot : null;
+                }
+            }
+            return byHeader('h1', 'ul.tags-list li a','ru');
+        case 'ruphp.com':
+            return byHeader('h1', '.breadcrumb-item .badge a', 'ru');
         case 'yuanmacha.com':
-            return await fromBrackets('h1', '.tag a', 'en');
+            return fromBrackets('h1', '.tag a', 'en');
         case 'stormcrow.dev':
-            return await bySel('p.text-right > a[href*="stackoverflow.com/q"]') || byNumber(location.pathname.split('/')[3]);
+            return byNumber(location.pathname.split('/')[3]);
         case 'stackoom.com':
             return byNumber(document.getElementById('question').dataset.questionid);
         case 'ffff65535.com':
@@ -488,7 +553,7 @@ a{
             return byNumber(lastPathPart(), 16);
         case 'coderoad.ru':
         case 'quabr.com':
-            return byNumber(location.pathname.split('/', 2)[1]);
+            return byNumber(location.pathname.split('/')[1]);
         case 'programqa.com':
         case 'thinbug.com':
         case 'profikoder.com':
@@ -501,61 +566,73 @@ a{
         case 'issue.life':
         case 'qaru.tech':
         case 'xbuba.com':
-            return byNumber(location.pathname.split('/', 3)[2]);
+        case 'gitrush.ru':
+            return byNumber(location.pathname.split('/')[2]);
         case 'javaer101.com':
-            return await byHeader('h1', 'nav .col-tag');
+            return byHeader('h1', 'nav .col-tag');
         case 'fixes.pub':
-            return await byHeader('h1', 'aside li a[href*="fixes.pub/topics"]', 'ja');
+            return byHeader('h1', 'aside li a[href*="fixes.pub/topics"]', 'ja');
         case 'askubuntu.ru':
             //#Question div.question-text span[itemprop="author"] span[itemprop="name"]
-            return await byHeader('h1', 'nav .col-tag', 'ru', ['askubuntu.com']);
+            return byHeader('h1', 'nav .col-tag', 'ru', ['askubuntu.com']);
+        case 'askfrance.me':
+            lng('fr');
+        case 'respuestas.me':
+            lng('es');
+        case 'antwortenhier.me':
+            lng('de');
+        case 'askentire.net':
+            clr('#2c3e50');
+            lng('ru');
+            return byHeader('h1', [(await yaTranslate(allTexts('ul.x-tags li a[href*="/t/"]').join(' '), lang)).split(' ')], lang);
+        case 'mlog.club':
+            lng('zh');
+            //var mlog = window.__NUXT__.data[0].article.sourceUrl;
+            return byHeader('h1', '.article-tag', lang);
         case 'bilee.com':
             clr('#178acc');
         case 'question-it.com':
             clr('#2c3e50');
         case 'quares.ru':
             clr('#fcdb00');
-        case 'askentire.net':
-            clr('#2c3e50');
         case 'techarks.ru':
             clr('#20a169');
         case 'legkovopros.ru':
             clr('#55b252');
-            return await byHeader('h1', '.tag', 'ru');
+            return byHeader('h1', '.tag', 'ru');
         case 'techfeed.net':
-            return await byHeader('main h1', '.tag', 'ru');
-            /*case 'vike.io':
-            return await byHeader([vike.replace(/[^–]+–\s/, '')], '.tags__item--blue', location.pathname.split('/', 2).find(Boolean));*/
+            return byHeader('main h1', '.tag', 'ru');
         case 'utyatnishna.ru':
-            return await byHeader('h1.entry-title', '.tag', 'ru');
+            return byHeader('h1.entry-title', '.tag', 'ru');
         case 'fluffyfables.com':
-            //https://ru.fluffyfables.com/281809-article-uncaught-syntaxerror-unexpected-token-u
             if (!/^\/([0-9]+)([a-z\-]+)$/.test(location.pathname)) return;
             clr('#2c3e50');
-            return await byHeader('h1', 0, 'ru');
+            return byHeader('h1', 0, 'ru');
+        case 'coderoad.in':
+            return findByPath(3);
         case 'exceptionshub.com':
             if (!/\.html$/.test(location.pathname)) return;
-            return await findByPath(1);
+            return findByPath(1);
             break;
         case 'recalll.co':
             var recalll = document.querySelector('div.label-wrap a[href*="stackoverflow.com/"][target="_blank"]');
             if(recalll) return recalll;
-            return await byHeader('h2#mainTitle', 'a[href*="/tags/"]', 'en');
+            return byHeader('h2#mainTitle', 'a[href*="/tags/"]', 'en');
         case 'extutorial.com':
-            return await byHeader('h1', 'a[href*="/tags/"]', 'en');
+            return byHeader('h1', 'a[href*="/tags/"]', 'en');
         case '1r1g.com':
             clr('#343a40');
-            return await byHeader();
+            return byHeader();
         case 'soinside.com':
-            clr('#007bff');
-            return await byHeader('h1', '.q-tag', 'zh');
+            clr('#333');
+            return byHeader('h1', '.q-tag', 'zh');
         case 'xszz.org':
             clr('#ff6f06');
-            return await byHeader('.post-h1title h1', 0, 'en');
+            return byHeader('.post-h1title h1', 0, 'en');
         case 'progi.pro':
             //.question-type .author a
             clr('#4e82c2');
-            return await byHeader('h1[itemprop="name"]', '.tag-list a', 'ru');
+            return byHeader('h1[itemprop="name"]', '.tag-list a', 'ru');
         case 'developreference.com':
             var parts = document.title.split(' - ');
             var devpref = await findByApi(parts.join(' - '), null, null, [parts.pop()]);
@@ -565,9 +642,9 @@ a{
         case 'intellipaat.com':
             var intellipaat = await byHeader('h1', '.qa-q-view-main .qa-tag-link', 'en', '');
             if(intellipaat) window.location.replace(intellipaat);
-            return;
+            throw new Error('Redirect');
         case 'oipapio.com':
-            return await findByApi(
+            return findByApi(
                 textContent('h1').replace(/^.*? - /, ''),
                 new Date(textContent('.post-meta .date')),
                 null,
@@ -575,10 +652,7 @@ a{
             );
         case 'ylhow.com':
             var ylhow = document.querySelector('.entry-content > p > a[href*="stackoverflow.com/"]');
-            if (ylhow && ylhow.innerText.includes('原文')) {
-                return ylhow.href;
-            }
-            return null;
+            return (ylhow && ylhow.innerText.includes('原文')) ? ylhow.href : null;
         case 'e-learn.cn':
             return startsByText('div.content p:last-child', '来源：');
         case 'icode9.com':
@@ -589,43 +663,37 @@ a{
             return document.querySelector('div.post-menu a.suggest-edit-post[href*="superuser.com/questions/"]');
         case 'stackanswers.net':
             clr('#999');
-            var stackanswers = await findByPath(2);
-            if (stackanswers) return stackanswers;
-            return await byHeader('h1', '.tags a', 'en');
+            lng('en');
         case 'askvoprosy.com':
-            var askvoprosy = await findByPath(2);
-            if (askvoprosy) return askvoprosy;
-            return await byHeader('h1', '.tags a', 'ru');
+            return (await findByPath(2)) || byHeader('h1', '.tags a', lang);
         case 'codeday.me':
             return (location.hostname.startsWith('publish.')) ? all('.panel-body a')[1].href : null;
         case 'codengineering.ru':
             return toSearch(lastPathPart().replace(/(-closed|-duplicate)?(-\d+)?(\.html)?$/, ''), true);
         case 'askdev.ru':
             clr('#970f1b');
-            var tgs = (await yaTranslate(allTexts('.block_taxonomies a').join(' '), 'ru')).split(' ');
-            console.log(tgs);
-            var askdev = await byHeader('h1', [tgs], 'ru');
-            if(askdev) return askdev;
-            askdev = document.querySelector('img[src*="/images/content/"]');
-            if (!askdev) return;
+            var askdev = document.querySelector('img[src*="/images/content/"]');
+            if (!askdev) {
+                return byHeader('h1', [(await yaTranslate(allTexts('.block_taxonomies a').join(' '), 'ru')).split(' ')], 'ru');
+            }
             link = new URL(askdev.src);
             return 'https://stackoverflow.com/questions/' + link.pathname.split('/')[3];
         case 'kompsekret.ru':
             clr('#292d2f');
-            var kompsekret = document.querySelector('img[src*="/images/content/"]');
-            if (kompsekret && kompsekret.src) {
-                link = new URL(kompsekret.src);
-                return 'https://superuser.com/questions/' + link.pathname.split('/')[3];
+            var kompsekret = document.querySelector('img[src*="/images/content/"]')?.src;
+            if (kompsekret) {
+                link = (new URL(kompsekret)).pathname.split('/')[3];
+                return link && ('https://superuser.com/questions/' + link);
             }
             link = document.querySelector('.question-text > .a-link[href*="stackoverflow.com/q"]');
-            return await byHeader('h1', '.tags a', 'ru');
+            return byHeader('h1', '.tags a', 'ru',['superuser.com']);
             break;
         case 'itdaan.com':
             var itdaan = await bySel('input[name="url"]', 'value');
             if (itdaan) window.location.replace(itdaan);
-            return;
+            throw new Error('Redirect');
         case 'stackoverflood.com':
-            var stof = location.href.match(/^https?:\/\/stackoverflood\.com\/([a-zA-Z]{2})\/q\/(.+)/);
+            var stof = href.match(/^https?:\/\/stackoverflood\.com\/([a-zA-Z]{2})\/q\/(.+)/);
             return byNumber(stof[2]);
         case 'it-brain.online':
             return 'https://tutorialspoint.com/' + location.pathname.split('/')[2];
@@ -650,6 +718,12 @@ a{
         case 'wikivisually.com':
         case 'hmong.wiki':
             return wikiPath(2);
+        case 'wiki2.info':
+        case 'wiki2.online':
+        case 'wikipedia24.ru':
+        case 'wiki.cologne':
+            if(!document.querySelector('.mw-parser-output')) return;
+            return wikiPath(1,'ru');
         case 'wikiredia.ru':
         case 'wiki-org.ru':
         case 'sbup.com':
@@ -662,30 +736,30 @@ a{
         case 'wikizero.com':
             return wikiPathLang(1, 2);
         case 'mihalicdictionary.org':
-            var mhd = location.href.match(/https?:\/\/([a-zA-Z]{2})?\.?mihalicdictionary\.org(.+)/);
+            var mhd = href.match(/https?:\/\/([a-zA-Z]{2})?\.?mihalicdictionary\.org(.+)/);
             return (mhd) ? wikiLink(mhd[2], mhd[1]) : null;
         case 'dir.md':
-            var dirmd = location.href.match(/^https?:\/\/dir.md\/(.+)(&|\?)host=([a-zA-Z\.-]+)$/);
+            var dirmd = href.match(/^https?:\/\/dir.md\/(.+)(&|\?)host=([a-zA-Z\.-]+)$/);
             if (dirmd !== null) window.location.replace('https://' + dirmd[3] + '/' + dirmd[1]);
             return;
         case 'territorioscuola.it':
-            var trscl = location.href.match(/https?:\/\/enhancedwiki\.territorioscuola\.it\/\?title=(.+)/);
+            var trscl = href.match(/https?:\/\/enhancedwiki\.territorioscuola\.it\/\?title=(.+)/);
             return (trscl !== null) ? wikiPath(trscl[1], 'it') : null;
         case 'encyclopedia.kz':
             return location.hostname.match(/^ru\.encyclopedia\.kz$/) && wikiPath(2, 'ru');
         case 'wikiwand.com':
             return !(/(\?|&)fullSearch=(true|false)/.test(location.search)) && wikiPathLang(1, 2);
         case 'xcv.wiki':
-            var xcv = location.href.match(/https?:\/\/([a-zA-z]{2,4})\.xcv\.wiki\/wiki\/(.+)/);
+            var xcv = href.match(/https?:\/\/([a-zA-z]{2,4})\.xcv\.wiki\/wiki\/(.+)/);
             return (xcv !== null) ? wikiLink(xcv[2], 'de', 1) : null;
         case 'wiki2.org':
             if (location.search.match(/\?search=/) !== null) return;
-            var wiki2 = location.href.match(/https?:\/\/(([a-z]{2})\.)?wiki2\.org\/([a-zA-z]{2})\/(.+)/);
+            var wiki2 = href.match(/https?:\/\/(([a-z]{2})\.)?wiki2\.org\/([a-zA-z]{2})\/(.+)/);
             return ((wiki2 !== null) ? wikiLink('/wiki/' + wiki2[4], wiki2[3]) : null);
         case 'encyclopaedia.bid':
             return wikiLink(location.pathname.replace(/^\/%D0%B2%D0%B8%D0%BA%D0%B8%D0%BF%D0%B5%D0%B4%D0%B8%D1%8F/, '/wiki'), 'ru');
         case 'nina.az':
-            var ninaz = location.href.match(/https?:\/\/wikipedia\.(([a-z]{2})\.)?nina\.az\/wiki\/(.+)/);
+            var ninaz = href.match(/https?:\/\/wikipedia\.(([a-z]{2})\.)?nina\.az\/wiki\/(.+)/);
             return ninaz && wikiLink(ninaz[3], mulreplace(ninaz[2], [['ua','uk'],['us','en']]), 1);
         case 'kotaeta.com':
         case 'ciupacabra.com':
@@ -698,24 +772,25 @@ a{
         case 'sozdizimi.com':
         case 'zapytay.com':
         case 'while-do.com':
-            return await bySel('.footer_question.mt-3 > a');
+            return bySel('.footer_question.mt-3 > a');
         case 'codeindex.ru':
         case 'qa-help.ru':
             return await bySel('span.text-muted.fake_url','src') || await bySel('.text-muted.small[href*="stackoverflow.com/q"]');
         case 'jejakjabar.com':
-            var regx = location.href.match(/https?:\/\/([a-zA-z]+\.)?jejakjabar\.com\/wiki\/(.+)/);
+            var regx = href.match(/https?:\/\/([a-zA-z]+\.)?jejakjabar\.com\/wiki\/(.+)/);
             return (regx !== null) ? wikiLink(regx[2], 'en', 1) : null;
         case 'itnan.ru':
-            var itnan = location.href.match(/https?:\/\/([a-zA-Z]{2})?\.?itnan\.ru\/post\.php\?(.+)?p=([0-9]+)/);
-            return;
+            var itnan = href.match(/https?:\/\/([a-zA-Z]{2})?\.?itnan\.ru\/post\.php\?(.+)?p=([0-9]+)/);
+            if(!itnan) return;
+            return bySel('article.entry .entry-meta a[title="Оригинальная публикация"]');
         default:
             if (location.hostname.includes('it-swarm')) {
-                return await bySel('.gat[data-cat="q-source"]');
-            } else if (location.hostname.includes('qastack')) {
+                return bySel('.gat[data-cat="q-source"]');
+            } else if (location.hostname.includes('qastack') || location.hostname.includes('qa-stack')) {
                 var qastack = await bySel('span.text-muted.fake_url a, span.text-muted.fake_url','src') ||
-                    await bySel('.text-muted a:last-child[href*="stackoverflow.com/"],.text-muted a:last-child[href*="stackexchange.com/"],.text-muted a:last-child[href*="serverfault.com/"],.text-muted a:last-child[href*="superuser.com/"],.text-muted a:last-child[href*="mathoverflow.net/"]');
+                    bySel('.text-muted a:last-child[href*="stackoverflow.com/"],.text-muted a:last-child[href*="stackexchange.com/"],.text-muted a:last-child[href*="serverfault.com/"],.text-muted a:last-child[href*="superuser.com/"],.text-muted a:last-child[href*="mathoverflow.net/"]');
                 if(qastack) return qastack;
-                qastack = location.href.match(/https?:\/\/qastack\.([a-z\.]+)\/([a-z]+)\/([0-9]+)\/(.+)/);
+                qastack = href.match(/https?:\/\/qa-?stack\.([a-z\.]+)\/([a-z]+)\/([0-9]+)\/(.+)/);
                 if (qastack) {
                     return 'https://' + qastack[2] + '.stackexchange.com/questions/' + qastack[3] + '/' + qastack[4];
                 }
@@ -754,7 +829,7 @@ a{
                     'jejakjabar.com': 'li#footer-info-copyright a[href*="en.wikipedia.org/wiki/"]',
                     'xcv.wiki': 'div#footer li#footer-info-copyright a[href*="de.wikipedia.org/wiki/"]',
                     'py4u.net': '.question .author .src a',
-                    'try2explore.com': 'span.source a[title="Source"]',
+                    'try2explore.com': 'div.tagsandsource span.source a[target="_blank"]',
                     'howtosolves.com': '#question .question .source a',
                     'savepearlharbor.com': 'article.post > div.entry-content > p > a[href*="://habr.com/"]',
                 };
@@ -768,10 +843,22 @@ a{
     return (link.href && typeof link.href === 'string') ? link.href : null;
 })().then(link => {
     function sredir(r){
+        cbufw(location.href,r);
         var request = new XMLHttpRequest();
         var req = `https://api.zcxv.icu/b2s.php?q=set&url=${encodeURIComponent(location.href)}&redir=${encodeURIComponent(r)}`;
         request.open('GET', req, false);
         request.send(null);
+    }
+    function cbufw(u, s) {
+        var count = 10;
+        var pos = GM_getValue('b2s-pos') || 0;
+        var db = GM_getValue('b2s') || '{}';
+        db = JSON.parse(db);
+        pos++;
+        if(pos>25) pos = 0;
+        GM_setValue('b2s-pos', pos);
+        db[pos]=[u,s];
+        GM_setValue('b2s', JSON.stringify(db));
     }
     function run(u, s) {
         if(s) sredir(u);
@@ -798,7 +885,7 @@ a{
     if (/^https?:\/\/((pt|ja|ru|es)\.)?stackoverflow\.com\/questions\/([0-9]{1,12})/.test(link) ||
         /^https?:\/\/(([a-zA-z\-]+\.)?)stackexchange\.com\/questions\/([0-9]{1,12})/.test(link) ||
         /^https?:\/\/(superuser\.com|askubuntu\.com|mathoverflow\.net|serverfault.com)\/questions\/([0-9]{1,12})/.test(link) ||
-        /^https?:\/\/(([a-zA-z\-]+\.)?)habr\.com\/(.+)/.test(link)) {
+        /^https?:\/\/(([a-zA-z\-]+\.)?)(habr\.com|geektimes\.ru)\/(.+)/.test(link)) {
         run(link, 1);
     } else if (/^https?:\/\/(([a-zA-z\-]+\.)?)wikipedia\.org\/wiki\/(.+)/.test(link) ||
                /^https?:\/\/github\.com\/(.+)?/.test(link) ||

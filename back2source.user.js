@@ -118,6 +118,7 @@
 // @match        *://*.ruphp.com/*.html
 // @match        *://*.sbup.com/wiki/*
 // @match        *://*.savepearlharbor.com/?p=*
+// @match        *://*.soinside.com/question/*
 // @match        *://*.sprosi.pro/questions/*
 // @match        *://*.stackanswers.net/questions/*
 // @match        *://*.stackoom.com/question/*
@@ -329,7 +330,7 @@ a{
                     anonymous: true,
                     onload: (xhr) => {
                         if (xhr.status === 200) {
-                            resolve(xhr.response.text)
+                            resolve(xhr.response.text.replace(/ *\[repeat\]/i," [duplicate]"))
                         } else {
                             reject(xhr)
                         }

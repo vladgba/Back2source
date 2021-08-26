@@ -16,7 +16,6 @@
 // @grant        GM_getValue
 // @connect      api.browser.yandex.ru
 // @noframes
-// @match        *://*.stackoverflow.com/*
 // @match        *://*.*.nina.az/wiki/*
 // @match        *://*.360wiki.ru/wiki/*
 // @match        *://*.abcdef.wiki/*
@@ -124,7 +123,7 @@
 // @match        *://*.stackoom.com/question/*
 // @match        *://*.stackoverflood.com/*
 // @match        *://*.stackru.com/questions/*
-// @match        *://*.stormcrow.dev/*
+// @match        *://*.stormcrow.dev/*/questions/*
 // @match        *://*.switch-case.com/*
 // @match        *://*.techarks.ru/qa/*
 // @match        *://*.techfeed.net/*
@@ -219,7 +218,7 @@
     }
 
     function wikiPath(p, l = 'en') {
-        return 'https://' + l + '.wikipedia.org/wiki/' + location.pathname.split('/', p + 1)[p];
+        return 'https://' + l + '.wikipedia.org/wiki/' + location.pathname.split('/')[p];
     }
 
     function wikiLink(p = location.pathname, l = 'en', w = false) {
@@ -227,11 +226,12 @@
     }
 
     function wikiFull(l = 0, p = 2) {
-        return 'https://' + location.host.split('.', l + 1)[l] + '.wikipedia.org/wiki/' + location.pathname.split('/', p + 1)[p];
+        var s = location.pathname.split('/');
+        return 'https://' + s[l] + '.wikipedia.org/wiki/' + s[p];
     }
 
     function wikiPathLang(l, p) {
-        var s = location.pathname.split('/', (l > p ? l : p) + 1);
+        var s = location.pathname.split('/');
         return 'https://' + s[l] + '.wikipedia.org/wiki/' + s[p];
     }
 
@@ -287,8 +287,8 @@ a{
 </style>
 <div class="m">[ Back2stackoverflow ]
 <a id="ok-btn" href="#">Try to find the original question? <span href="#" class="search-icon">&#8981;<span></a>` +
-(codef && codef.length>0 ? ` <a id="cd-btn" href="` + toSearch(codef.join(' ')) +`">[ByCode]</a>` : ``) +
-(imgf && imgf.length>0 ? ` <a id="mg-btn" href="` + toSearch(imgf.join(' ')) +`">[ByImgs]</a>` : ``) +
+                (codef && codef.length>0 ? ` <a id="cd-btn" href="` + toSearch(codef.join(' ')) +`">[ByCode]</a>` : ``) +
+                (imgf && imgf.length>0 ? ` <a id="mg-btn" href="` + toSearch(imgf.join(' ')) +`">[ByImgs]</a>` : ``) +
 `<span id="close-btn">&#10006;</span>
 </div>`;
             shadowRoot.querySelector('#ok-btn').href = shadowRoot.querySelector('.search-icon').href = link;
@@ -310,7 +310,6 @@ a{
         if (!q) {
             return null;
         }
-        //q = q.replace(/ \/ /g, ' ');
         q = 'https://api.browser.yandex.ru/dictionary/translate?statLang=en&targetLang=' + (targetLang ? targetLang:'en') + '&text=' + encodeURIComponent(q) + (sourceLang ? '&fromLang=' + sourceLang : '')
         try {
             //dosn't work in chrome
@@ -399,7 +398,7 @@ a{
                 credentials: 'omit'
             })
         .then(r => r.json())
-        .then(r => r.items && r.items[0] && r.items[0].link);
+        .then(r => r?.items[0]?.link);
         return dfgdr;
     }
 
@@ -414,7 +413,8 @@ a{
         if(bp) return bp;
         var sbh = filterText((l == 'en') ? getHeader(h) : await yaTranslate(getHeader(h), l), 1);
         if(!sbh) return;
-var codef = allTexts('pre code'), imgf = allAttr('img[src*="://i.stack.imgur.com/"], a[href*="://i.stack.imgur.com/"]','href');
+        var codef = allTexts('pre code');
+        var imgf = allAttr('img[src*="://i.stack.imgur.com/"], a[href*="://i.stack.imgur.com/"]','href');
         return (await findByApi(sbh, null, null, (t ? (getTags(t)) : allTexts('.tag')))) || promtRedirect(sitecolor, toSearch(sbh + ' ' + (t ? (getTags(t)) : allTexts('.tag')).join(' ').replace(/\s+/g, ' '), s), codef, imgf);
     }
 
@@ -438,7 +438,7 @@ var codef = allTexts('pre code'), imgf = allAttr('img[src*="://i.stack.imgur.com
      */
     function textContent(selector) {
         const e = document.querySelector(selector);
-        return e ? e.textContent.trim() || null : null
+        return e?.textContent.trim();
     }
 
     function startsByText(selector, text) {
@@ -538,13 +538,12 @@ var codef = allTexts('pre code'), imgf = allAttr('img[src*="://i.stack.imgur.com
                 }
             }
             return byHeader('h1', 'ul.tags-list li a','ru');
-            break;
         case 'ruphp.com':
             return byHeader('h1', '.breadcrumb-item .badge a', 'ru');
         case 'yuanmacha.com':
             return fromBrackets('h1', '.tag a', 'en');
         case 'stormcrow.dev':
-            return bySel('p.text-right > a[href*="stackoverflow.com/q"]') || byNumber(location.pathname.split('/')[3]);
+            return byNumber(location.pathname.split('/')[3]);
         case 'stackoom.com':
             return byNumber(document.getElementById('question').dataset.questionid);
         case 'ffff65535.com':
@@ -554,7 +553,7 @@ var codef = allTexts('pre code'), imgf = allAttr('img[src*="://i.stack.imgur.com
             return byNumber(lastPathPart(), 16);
         case 'coderoad.ru':
         case 'quabr.com':
-            return byNumber(location.pathname.split('/', 2)[1]);
+            return byNumber(location.pathname.split('/')[1]);
         case 'programqa.com':
         case 'thinbug.com':
         case 'profikoder.com':
@@ -568,7 +567,7 @@ var codef = allTexts('pre code'), imgf = allAttr('img[src*="://i.stack.imgur.com
         case 'qaru.tech':
         case 'xbuba.com':
         case 'gitrush.ru':
-            return byNumber(location.pathname.split('/', 3)[2]);
+            return byNumber(location.pathname.split('/')[2]);
         case 'javaer101.com':
             return byHeader('h1', 'nav .col-tag');
         case 'fixes.pub':
@@ -585,13 +584,11 @@ var codef = allTexts('pre code'), imgf = allAttr('img[src*="://i.stack.imgur.com
         case 'askentire.net':
             clr('#2c3e50');
             lng('ru');
-            var tgs = (await yaTranslate(allTexts('ul.x-tags li a[href*="/t/"]').join(' '), lang)).split(' ');
-            var askentire = findByImg();
-            return askentire ? (await byHeader('h1', [tgs], lang)) : null;
+            return byHeader('h1', [(await yaTranslate(allTexts('ul.x-tags li a[href*="/t/"]').join(' '), lang)).split(' ')], lang);
         case 'mlog.club':
             lng('zh');
-            var mlog = findByImg();
-            return mlog ? (await byHeader('h1', '.article-tag', lang)) : null;
+            //var mlog = window.__NUXT__.data[0].article.sourceUrl;
+            return byHeader('h1', '.article-tag', lang);
         case 'bilee.com':
             clr('#178acc');
         case 'question-it.com':
@@ -645,7 +642,7 @@ var codef = allTexts('pre code'), imgf = allAttr('img[src*="://i.stack.imgur.com
         case 'intellipaat.com':
             var intellipaat = await byHeader('h1', '.qa-q-view-main .qa-tag-link', 'en', '');
             if(intellipaat) window.location.replace(intellipaat);
-            return;
+            throw new Error('Redirect');
         case 'oipapio.com':
             return findByApi(
                 textContent('h1').replace(/^.*? - /, ''),
@@ -655,10 +652,7 @@ var codef = allTexts('pre code'), imgf = allAttr('img[src*="://i.stack.imgur.com
             );
         case 'ylhow.com':
             var ylhow = document.querySelector('.entry-content > p > a[href*="stackoverflow.com/"]');
-            if (ylhow && ylhow.innerText.includes('原文')) {
-                return ylhow.href;
-            }
-            return null;
+            return (ylhow && ylhow.innerText.includes('原文')) ? ylhow.href : null;
         case 'e-learn.cn':
             return startsByText('div.content p:last-child', '来源：');
         case 'icode9.com':
@@ -669,13 +663,9 @@ var codef = allTexts('pre code'), imgf = allAttr('img[src*="://i.stack.imgur.com
             return document.querySelector('div.post-menu a.suggest-edit-post[href*="superuser.com/questions/"]');
         case 'stackanswers.net':
             clr('#999');
-            var stackanswers = await findByPath(2);
-            if (stackanswers) return stackanswers;
-            return byHeader('h1', '.tags a', 'en');
+            lng('en');
         case 'askvoprosy.com':
-            var askvoprosy = await findByPath(2);
-            if (askvoprosy) return askvoprosy;
-            return byHeader('h1', '.tags a', 'ru');
+            return (await findByPath(2)) || byHeader('h1', '.tags a', lang);
         case 'codeday.me':
             return (location.hostname.startsWith('publish.')) ? all('.panel-body a')[1].href : null;
         case 'codengineering.ru':
@@ -701,9 +691,9 @@ var codef = allTexts('pre code'), imgf = allAttr('img[src*="://i.stack.imgur.com
         case 'itdaan.com':
             var itdaan = await bySel('input[name="url"]', 'value');
             if (itdaan) window.location.replace(itdaan);
-            return;
+            throw new Error('Redirect');
         case 'stackoverflood.com':
-            var stof = location.href.match(/^https?:\/\/stackoverflood\.com\/([a-zA-Z]{2})\/q\/(.+)/);
+            var stof = href.match(/^https?:\/\/stackoverflood\.com\/([a-zA-Z]{2})\/q\/(.+)/);
             return byNumber(stof[2]);
         case 'it-brain.online':
             return 'https://tutorialspoint.com/' + location.pathname.split('/')[2];
@@ -732,7 +722,7 @@ var codef = allTexts('pre code'), imgf = allAttr('img[src*="://i.stack.imgur.com
         case 'wiki2.online':
         case 'wikipedia24.ru':
         case 'wiki.cologne':
-            if(document.querySelector('.mw-parser-output')===null) return;
+            if(!document.querySelector('.mw-parser-output')) return;
             return wikiPath(1,'ru');
         case 'wikiredia.ru':
         case 'wiki-org.ru':
@@ -746,30 +736,30 @@ var codef = allTexts('pre code'), imgf = allAttr('img[src*="://i.stack.imgur.com
         case 'wikizero.com':
             return wikiPathLang(1, 2);
         case 'mihalicdictionary.org':
-            var mhd = location.href.match(/https?:\/\/([a-zA-Z]{2})?\.?mihalicdictionary\.org(.+)/);
+            var mhd = href.match(/https?:\/\/([a-zA-Z]{2})?\.?mihalicdictionary\.org(.+)/);
             return (mhd) ? wikiLink(mhd[2], mhd[1]) : null;
         case 'dir.md':
-            var dirmd = location.href.match(/^https?:\/\/dir.md\/(.+)(&|\?)host=([a-zA-Z\.-]+)$/);
+            var dirmd = href.match(/^https?:\/\/dir.md\/(.+)(&|\?)host=([a-zA-Z\.-]+)$/);
             if (dirmd !== null) window.location.replace('https://' + dirmd[3] + '/' + dirmd[1]);
             return;
         case 'territorioscuola.it':
-            var trscl = location.href.match(/https?:\/\/enhancedwiki\.territorioscuola\.it\/\?title=(.+)/);
+            var trscl = href.match(/https?:\/\/enhancedwiki\.territorioscuola\.it\/\?title=(.+)/);
             return (trscl !== null) ? wikiPath(trscl[1], 'it') : null;
         case 'encyclopedia.kz':
             return location.hostname.match(/^ru\.encyclopedia\.kz$/) && wikiPath(2, 'ru');
         case 'wikiwand.com':
             return !(/(\?|&)fullSearch=(true|false)/.test(location.search)) && wikiPathLang(1, 2);
         case 'xcv.wiki':
-            var xcv = location.href.match(/https?:\/\/([a-zA-z]{2,4})\.xcv\.wiki\/wiki\/(.+)/);
+            var xcv = href.match(/https?:\/\/([a-zA-z]{2,4})\.xcv\.wiki\/wiki\/(.+)/);
             return (xcv !== null) ? wikiLink(xcv[2], 'de', 1) : null;
         case 'wiki2.org':
             if (location.search.match(/\?search=/) !== null) return;
-            var wiki2 = location.href.match(/https?:\/\/(([a-z]{2})\.)?wiki2\.org\/([a-zA-z]{2})\/(.+)/);
+            var wiki2 = href.match(/https?:\/\/(([a-z]{2})\.)?wiki2\.org\/([a-zA-z]{2})\/(.+)/);
             return ((wiki2 !== null) ? wikiLink('/wiki/' + wiki2[4], wiki2[3]) : null);
         case 'encyclopaedia.bid':
             return wikiLink(location.pathname.replace(/^\/%D0%B2%D0%B8%D0%BA%D0%B8%D0%BF%D0%B5%D0%B4%D0%B8%D1%8F/, '/wiki'), 'ru');
         case 'nina.az':
-            var ninaz = location.href.match(/https?:\/\/wikipedia\.(([a-z]{2})\.)?nina\.az\/wiki\/(.+)/);
+            var ninaz = href.match(/https?:\/\/wikipedia\.(([a-z]{2})\.)?nina\.az\/wiki\/(.+)/);
             return ninaz && wikiLink(ninaz[3], mulreplace(ninaz[2], [['ua','uk'],['us','en']]), 1);
         case 'kotaeta.com':
         case 'ciupacabra.com':
@@ -785,24 +775,22 @@ var codef = allTexts('pre code'), imgf = allAttr('img[src*="://i.stack.imgur.com
             return bySel('.footer_question.mt-3 > a');
         case 'codeindex.ru':
         case 'qa-help.ru':
-            return bySel('span.text-muted.fake_url','src') || await bySel('.text-muted.small[href*="stackoverflow.com/q"]');
+            return await bySel('span.text-muted.fake_url','src') || await bySel('.text-muted.small[href*="stackoverflow.com/q"]');
         case 'jejakjabar.com':
-            var regx = location.href.match(/https?:\/\/([a-zA-z]+\.)?jejakjabar\.com\/wiki\/(.+)/);
+            var regx = href.match(/https?:\/\/([a-zA-z]+\.)?jejakjabar\.com\/wiki\/(.+)/);
             return (regx !== null) ? wikiLink(regx[2], 'en', 1) : null;
         case 'itnan.ru':
-            var itnan = location.href.match(/https?:\/\/([a-zA-Z]{2})?\.?itnan\.ru\/post\.php\?(.+)?p=([0-9]+)/);
-            if(itnan){
-                return bySel('article.entry .entry-meta a[title="Оригинальная публикация"]');
-            }
-            return;
+            var itnan = href.match(/https?:\/\/([a-zA-Z]{2})?\.?itnan\.ru\/post\.php\?(.+)?p=([0-9]+)/);
+            if(!itnan) return;
+            return bySel('article.entry .entry-meta a[title="Оригинальная публикация"]');
         default:
             if (location.hostname.includes('it-swarm')) {
                 return bySel('.gat[data-cat="q-source"]');
             } else if (location.hostname.includes('qastack') || location.hostname.includes('qa-stack')) {
                 var qastack = await bySel('span.text-muted.fake_url a, span.text-muted.fake_url','src') ||
-                    await bySel('.text-muted a:last-child[href*="stackoverflow.com/"],.text-muted a:last-child[href*="stackexchange.com/"],.text-muted a:last-child[href*="serverfault.com/"],.text-muted a:last-child[href*="superuser.com/"],.text-muted a:last-child[href*="mathoverflow.net/"]');
+                    bySel('.text-muted a:last-child[href*="stackoverflow.com/"],.text-muted a:last-child[href*="stackexchange.com/"],.text-muted a:last-child[href*="serverfault.com/"],.text-muted a:last-child[href*="superuser.com/"],.text-muted a:last-child[href*="mathoverflow.net/"]');
                 if(qastack) return qastack;
-                qastack = location.href.match(/https?:\/\/qa-?stack\.([a-z\.]+)\/([a-z]+)\/([0-9]+)\/(.+)/);
+                qastack = href.match(/https?:\/\/qa-?stack\.([a-z\.]+)\/([a-z]+)\/([0-9]+)\/(.+)/);
                 if (qastack) {
                     return 'https://' + qastack[2] + '.stackexchange.com/questions/' + qastack[3] + '/' + qastack[4];
                 }

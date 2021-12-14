@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name         Back2source
-// @version      0.1.81
+// @version      0.1.82
 // @description  Redirecting to source sites from sites with machine translation, etc.
 // @namespace    vladgba
 // @author       vladgba@gmail.com
@@ -37,6 +37,7 @@
 // @match        *://*.codeindex.ru/q/*
 // @match        *://*.codengineering.ru/q/*
 // @match        *://*.codenong.com/*
+// @match        *://*.coderedirect.com/*
 // @match        *://*.coderoad.ru/*
 // @match        *://*.coderoad.in/questions/*
 // @match        *://*.coderoad.wiki/*
@@ -434,6 +435,8 @@ a{
         case 'i-harness.com':
         case 'code-examples.net':
             return byNumber(lastPathPart(), 16);
+        case 'coderedirect.com':
+			return byHeader('h1', '.custom-head .post-tag', 'en');
         case 'coderoad.ru':
         case 'coderoad.wiki':
         case 'codenong.com':

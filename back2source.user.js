@@ -16,7 +16,6 @@
 // @grant        GM_getValue
 // @connect      api.browser.yandex.ru
 // @noframes
-// @match        *://*.*.nina.az/wiki/*
 // @match        *://*.360wiki.ru/wiki/*
 // @match        *://*.abcdef.wiki/*
 // @match        *://*.answer-id.com/*
@@ -34,6 +33,7 @@
 // @match        *://*.buildwiki.ru/wiki/*
 // @match        *://*.ciupacabra.com/*
 // @match        *://*.code-examples.net/*/q/*
+// @match        *://*.codegear.dev/*/questions/*
 // @match        *://*.codeindex.ru/q/*
 // @match        *://*.codengineering.ru/q/*
 // @match        *://*.codenong.com/*
@@ -90,7 +90,7 @@
 // @match        *://*.mihalicdictionary.org/*
 // @match        *://*.mlog.club/article/*
 // @match        *://*.newbedev.com/*
-// @match        *://*.nina.az/wiki/*
+// @match        *://*.*.nina.az/wiki/*
 // @match        *://*.overcoder.net/q/*
 // @match        *://*.overcoder.ru/q/*
 // @match        *://*.poweruser.guru/*
@@ -226,11 +226,11 @@
     var dropMarks = (s) => s && s.replace(/\[(на удержании|on hold|duplikować|duplicado|duplicar|duplikat|dublicate|duplicate|дубликат|закрыто|закрытый|closed|geschlossen|zamknięte|cerrado|重复|repeat)\]\s*$/i, '').trim();
     var fromBrackets = (h = 'h1', t, l, s) => (ll = _t(h)?.innerHTML.match(/\(([a-zA-Z-_ ])+\)/)) && byHeader([ll[0]], t, l, s);
 
-	function _tc (s) {
-		var allw = ['stackoverflow.com/q','superuser.com/q','mathoverflow.net/q','askubuntu.com/q','stackexchange.com/q'];
-		var nods = all(s);
-		for (var nod in nods) for (var pt in allw) if(nods[nod]?.href?.indexOf(allw[pt])>=0) return nods[nod].href;
-	}
+    function _tc (s) {
+        var allw = ['stackoverflow.com/q','superuser.com/q','mathoverflow.net/q','askubuntu.com/q','stackexchange.com/q'];
+        var nods = all(s);
+        for (var nod in nods) for (var pt in allw) if(nods[nod]?.href?.indexOf(allw[pt])>=0) return nods[nod].href;
+    }
 
     function urlByImg(v, s = 'img[src*="/images/content/"]', n = 3) {
         var p = _t(s)?.src;
@@ -373,12 +373,12 @@ a{
      */
     async function findByApi(q, before, after, tags) {
         var dfgdr = q && fetch(
-                `https://api.stackexchange.com/2.2/search?page=1&pagesize=1&order=desc&sort=relevance&intitle=${encodeURIComponent(q)}&site=stackoverflow` +
-                (after ? '&fromdate=' + (after.getTime() / 1000 - 120 | 0) : '') +
-                (before ? '&todate=' + (before.getTime() / 1000 + 120 | 0) : '') +
-                (Array.isArray(tags) && tags.length > 0 ? '&tagged=' + encodeURIComponent(Array.from(new Set(tags)).join(';')) : ''), {
-                    credentials: 'omit'
-                })
+            `https://api.stackexchange.com/2.2/search?page=1&pagesize=1&order=desc&sort=relevance&intitle=${encodeURIComponent(q)}&site=stackoverflow` +
+            (after ? '&fromdate=' + (after.getTime() / 1000 - 120 | 0) : '') +
+            (before ? '&todate=' + (before.getTime() / 1000 + 120 | 0) : '') +
+            (Array.isArray(tags) && tags.length > 0 ? '&tagged=' + encodeURIComponent(Array.from(new Set(tags)).join(';')) : ''), {
+                credentials: 'omit'
+            })
             .then(r => r.json())
             .then(r => r?.items[0]?.link);
         return dfgdr;
@@ -505,7 +505,6 @@ a{
             return _c(/\.html$/) && byPath(1);
         case 'recalll.co':
             return _t('div.label-wrap a[href*="stackoverflow.com/"][target="_blank"]')?.href || byHeader('h2#mainTitle', 'a[href*="/tags/"]', 'en');
-
         case 'coder.work':
             return bySel('div>p>a[rel="noreferrer noopener nofollow"]') || startsByText('p', 'stackoverflow链接', 'a[href*="stackoverflow.com"]') || startsByText('p', 'stackoverflow原址', 'a[href*="stackoverflow.com"]') || byHeader('h1', _/*'div[style="width: 100%;"] a[href*="/blog?tag="]'*/, 'zh');
         case 'extutorial.com':
@@ -630,16 +629,17 @@ a{
             return bySel('a.external[href*="ru.wikipedia.org"]');
         case 'savepearlharbor.com':
             return bySel('article.post > div.entry-content > p > a[href*="://habr.com/"]');
-		default:
+        default:
             if (_hst('it-swarm')) {
                 return bySel('.gat[data-cat="q-source"]');
             } else if (_hst('qastack') || _hst('qa-stack')) {
                 return bySel('span.text-muted.fake_url a, span.text-muted.fake_url', 'src') ||
                     bySel('.text-muted a:last-child[href*="stackoverflow.com/"],.text-muted a:last-child[href*="stackexchange.com/"],.text-muted a:last-child[href*="serverfault.com/"],.text-muted a:last-child[href*="superuser.com/"],.text-muted a:last-child[href*="mathoverflow.net/"]') ||
-                   ((tt = _h.match(/https?:\/\/qa-?stack\.([a-z\.]+)\/([a-z]+)\/([0-9]+)\/(.+)/)) && 'https://' + tt[2] + '.stackexchange.com/questions/' + tt[3] + '/' + tt[4]);
+                    ((tt = _h.match(/https?:\/\/qa-?stack\.([a-z\.]+)\/([a-z]+)\/([0-9]+)\/(.+)/)) && 'https://' + tt[2] + '.stackexchange.com/questions/' + tt[3] + '/' + tt[4]);
             } else {
                 console.log('check by selectors');
                 const cssSelectors = {
+                    'codegear.dev': 'p.text-right>a',
                     'fooobar.com': '.question-text > .aa-link',
                     'askdev.info': '.question-text > .a-link',
                     'ubuntugeeks.com': '.question-text > .a-link',
@@ -674,15 +674,9 @@ a{
                 console.log(link);
             }
     }
-
-    if (!link) return null;
-    return (typeof link === 'string' && link) || (typeof link.href === 'string' && link.href);
+    return link;
 })().then(link => {
-    function sredir(r) {
-        var req = new XMLHttpRequest();
-        req.open('GET', `https://api.zcxv.icu/b2s.php?q=set&url=${encodeURIComponent(location.href)}&redir=${encodeURIComponent(r)}`, false);
-        req.send(null);
-    }
+    var sredir = (r) => r && fetch(`https://api.zcxv.icu/b2s.php?q=set&url=${encodeURIComponent(location.href)}&redir=${encodeURIComponent(r)}`, { method: 'GET', credentials: 'omit' });
 
     function cbufw(u, s) {
         var count = 10;
@@ -695,19 +689,17 @@ a{
     }
 
     function run(u, s) {
-        if (s) sredir(u);
-        console.log('Redirect link: ' + u);
+        console.log('Redirect link: ' + u) || sredir(u);
         cbufw(location.href, u) || window.location.replace(u);
     }
 
-    function fix(a, b, c = 0) {
-        var regx;
-        if ((regx = link.match(a))) return run(link.replace(a, b), c) || true;
-    }
-    if (!link) return null;
-    if (link.href) link = link.href;
+    var fix = (a, b, s = 0) => (!link.match(a)) ?? (run(link.replace(a, b), s) || true);
+
+    link = link?.href ?? link;
     console.log('Result link: ' + link);
+    if (!link || typeof link !== 'string') return;
     if (link.includes('wikipedia.org/wiki/wiki')) link = link.replace(/wikipedia\.org\/wiki\/wiki/, 'wikipedia.org/wiki');
+
     //valid links
     if (/^https?:\/\/((pt|ja|ru|es)\.)?stackoverflow\.com\/questions\/([0-9]{1,12})/.test(link) ||
         /^https?:\/\/(([a-zA-z\-]+\.)?)stackexchange\.com\/questions\/([0-9]{1,12})/.test(link) ||

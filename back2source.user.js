@@ -693,7 +693,7 @@ a{
         cbufw(location.href, u) || window.location.replace(u);
     }
 
-    var fix = (a, b, s = 0) => (!link.match(a)) ?? (run(link.replace(a, b), s) || true);
+    var fix = (a, b, s = 0) => (link.match(a)) ? (run(link.replace(a, b), s) || true) : false;
 
     link = link?.href ?? link;
     console.log('Result link: ' + link);

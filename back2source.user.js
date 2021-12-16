@@ -68,6 +68,8 @@
 // @match        *://*.issue.life/questions/*
 // @match        *://*.it-brain.online/question/*
 // @match        *://*.it-roy-ru.com/*/*
+// @match        *://*.it-swarm.it/*/*
+// @match        *://*.it-swarm-id.com/*/*
 // @match        *://*.it-swarm-vi.com/*/*
 // @match        *://*.it-swarm.asia/*/*
 // @match        *://*.it-swarm.com.de/*/*

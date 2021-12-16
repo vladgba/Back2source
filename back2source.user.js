@@ -67,6 +67,7 @@
 // @match        *://*.intellipaat.com/community/*/*
 // @match        *://*.issue.life/questions/*
 // @match        *://*.it-brain.online/question/*
+// @match        *://*.it-roy-ru.com/*/*
 // @match        *://*.it-swarm-vi.com/*/*
 // @match        *://*.it-swarm.asia/*/*
 // @match        *://*.it-swarm.com.de/*/*
@@ -630,7 +631,7 @@ a{
         case 'savepearlharbor.com':
             return bySel('article.post > div.entry-content > p > a[href*="://habr.com/"]');
         default:
-            if (_hst('it-swarm')) {
+            if (_hst('it-swarm') || _hst('it-roy')) {
                 return bySel('.gat[data-cat="q-source"]');
             } else if (_hst('qastack') || _hst('qa-stack')) {
                 return bySel('span.text-muted.fake_url a, span.text-muted.fake_url', 'src') ||

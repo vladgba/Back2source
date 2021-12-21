@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name         Back2source
-// @version      0.1.82
+// @version      0.1.83
 // @description  Redirecting to source sites from sites with machine translation, etc.
 // @namespace    vladgba
 // @author       vladgba@gmail.com
@@ -91,6 +91,7 @@
 // @match        *://*.legkovopros.ru/questions/*
 // @match        *://*.livepcwiki.ru/wiki/*
 // @match        *://*.mihalicdictionary.org/*
+// @match        *://*.mlink.in/*
 // @match        *://*.mlog.club/article/*
 // @match        *://*.newbedev.com/*
 // @match        *://*.*.nina.az/wiki/*
@@ -140,6 +141,7 @@
 // @match        *://*.stackoverflood.com/*
 // @match        *://*.stackru.com/questions/*
 // @match        *://*.stormcrow.dev/*/questions/*
+// @match        *://*.sqlite.in/*
 // @match        *://*.switch-case.com/*
 // @match        *://*.techarks.ru/qa/*
 // @match        *://*.techfeed.net/*
@@ -153,6 +155,7 @@
 // @match        *://*.voidcc.com/question/*
 // @match        *://*.vvikipedla.com/wiki/*
 // @match        *://*.web-answers.ru/*/*
+// @match        *://*.webdevqa.jp.net/*/*
 // @match        *://*.while-do.com/*
 // @match        *://*.wiki-org.ru/*
 // @match        *://*.wiki-wiki.ru/wp/*
@@ -196,6 +199,7 @@
     var sitecolor = '#333';
     var lang = 'ru';
     var badCode = false;
+    var badImgs = false;
     var _ = undefined;
     var ll, tt;
     const _p = location.pathname;
@@ -215,7 +219,7 @@
     var getTags = (t) => t ? (Array.isArray(t) ? t[0] : allTexts(t)) : allTexts('.tag');
     var mulreplace = (str, a) => a.forEach((v) => (str = str.replace(v[0], v[1]))) || str;
     var wiki = (l = 0, p = 2, w = true) => 'https://' + (_$s(l) ? l : _ps[l]) + '.wikipedia.org' + (w ? '/wiki/' : '') + (_$s(p) ? p : _ps[p]);
-    var prepareSearch = (h, t, s) => promtRedirect(sitecolor, toSearch(h + ' ' + getTags(t).join(' ').replace(/\s+/g, ' '), s), !badCode && allTexts('pre code'), [...new Set([...allAttr('img[src*="://i.stack.imgur.com/"]', 'src'), ...allAttr('a[href*="://i.stack.imgur.com/"]', 'href')])]);
+    var prepareSearch = (h, t, s) => promtRedirect(sitecolor, toSearch(h + ' ' + getTags(t).join(' ').replace(/\s+/g, ' '), s), !badCode && allTexts('pre code'), !badImgs && [...new Set([...allAttr('img[src*="://i.stack.imgur.com/"]', 'src'), ...allAttr('a[href*="://i.stack.imgur.com/"]', 'href')])]);
     var transTags = async (t) => (await yaTranslate(allTexts(t).join(' '), lang)).split(' ');
     var toSearch = (s, site) => (s = dropMarks(s) && s ? `https://google.com/search?q=` + ((site && Array.isArray(site)) ? (site.length < 1 ? '' : `site%3A` + site.join('+OR+site%3A') + `+`) : `site%3Astackexchange.com+OR+site%3Astackoverflow.com+`) + encodeURIComponent(s) : null);
     var textContent = (selector) => _t(selector)?.textContent.trim();
@@ -632,8 +636,13 @@ a{
             return bySel('a.external[href*="ru.wikipedia.org"]');
         case 'savepearlharbor.com':
             return bySel('article.post > div.entry-content > p > a[href*="://habr.com/"]');
+        case 'sqlite.in':
+        case 'mlink.in':
+            if(!_t('h1 a')) return;
+            badImgs = true;
+            return bySel('a[rel="nofollow"][target="_blank"]') || byHeader([_t('.qa-main-heading h1').innerText.replace(/^(\s+)?([a-z])+\s-/, '').trim()], '.qa-q-view-main .qa-tag-link', 'en', '');
         default:
-            if (_hst('it-swarm') || _hst('it-roy')) {
+            if (_hst('it-swarm') || _hst('it-roy') || _hst('webdevqa.jp.net')) {
                 return bySel('.gat[data-cat="q-source"]');
             } else if (_hst('qastack') || _hst('qa-stack')) {
                 return bySel('span.text-muted.fake_url a, span.text-muted.fake_url', 'src') ||

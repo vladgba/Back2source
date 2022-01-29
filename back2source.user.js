@@ -18,6 +18,7 @@
 // @noframes
 // @match        *://*.360wiki.ru/wiki/*
 // @match        *://*.abcdef.wiki/*
+// @match        *://*.answacode.com/questions/*
 // @match        *://*.answer-id.com/*
 // @match        *://*.answeright.com/*
 // @match        *://*.ask-ubuntu.ru/questions/*
@@ -61,6 +62,7 @@
 // @match        *://*.generacodice.com/*
 // @match        *://*.gitrush.ru/*/*/*
 // @match        *://*.hmong.wiki/wiki/*
+// @match        *://*.hmong.ru/wiki/*
 // @match        *://*.howtosolves.com/q/*
 // @match        *://*.husl.ru/questions/*
 // @match        *://*.icode9.com/*
@@ -170,6 +172,7 @@
 // @match        *://*.wikipe.wiki/wiki/*
 // @match        *://*.wikipedia-on-ipfs.org/wiki/*
 // @match        *://*.wikipedia.tel/*
+// @match        *://*.wikidark.ru/*
 // @match        *://*.wikiredia.ru/*
 // @match        *://*.wikipedia24.ru/*
 // @match        *://*.wikiroot.ru/question/*
@@ -462,6 +465,7 @@ a{
         case 'qaru.tech':
         case 'xbuba.com':
         case 'gitrush.ru':
+        case 'answacode.com':
             return byNumber(_ps[2]);
         case 'proubuntu.ru':
             return byHeader('h1>a>span[itemprop="name"]', [await transTags('a[rel="tag"]')],'ru', ['askubuntu.com']);
@@ -560,6 +564,8 @@ a{
             return 'https://tutorialspoint.com/' + _ps[2];
         case 'dwf.life':
             return 'https://github.com' + _p;
+        case 'wikidark.ru':
+            return _go('https://ru.wikipedia.org' + _p + location.search);
         case 'gaz.wiki':
             return wiki('en', 3);
         case 'wikipedia-on-ipfs.org':
@@ -578,6 +584,7 @@ a{
         case '360wiki.ru':
         case 'wikivisually.com':
         case 'hmong.wiki':
+        case 'hmong.ru':
             return wiki('en', 2);
         case 'wiki2.info':
         case 'wiki2.online':

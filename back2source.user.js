@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name         Back2source
-// @version      0.1.83
+// @version      0.1.84
 // @description  Redirecting to source sites from sites with machine translation, etc.
 // @namespace    vladgba
 // @author       vladgba@gmail.com
@@ -48,6 +48,7 @@
 // @match        *://*.datewiki.ru/wiki/*
 // @match        *://*.de-vraag.com/*
 // @match        *://*.developreference.com/*
+// @match        *://*.devfaq.fr/question/*
 // @match        *://*.dir.md/*
 // @match        *://*.donolik.com/*
 // @match        *://*.dwf.life/*
@@ -475,6 +476,8 @@ a{
             return byHeader('h1', 'aside li a[href*="fixes.pub/topics"]', 'ja');
         case 'askubuntu.ru': //#Question div.question-text span[itemprop="author"] span[itemprop="name"]
             return byHeader('h1', 'nav .col-tag', 'ru', ['askubuntu.com']);
+	case 'devfaq.fr':
+            return byHeader('h1', '.badge-info', 'fr');
         case 'askfrance.me':
             lng('fr');
         case 'respuestas.me':

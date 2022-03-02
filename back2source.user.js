@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name         Back2source
-// @version      0.1.84
+// @version      0.1.85
 // @description  Redirecting to source sites from sites with machine translation, etc.
 // @namespace    vladgba
 // @author       vladgba@gmail.com
@@ -187,15 +187,16 @@
 // @match        *://*.ylhow.com/*
 // @match        *://*.yuanmacha.com/*.html
 // @match        *://*.zapytay.com/*
-// @match        *://code.i-harness.com/*/q/*
-// @match        *://qa.1r1g.com/sf/ask/*
-// @match        *://ru.encyclopedia.kz/index.php/*
-// @match        *://askfrance.me/*
-// @match        *://respuestas.me/*
 // @match        *://antwortenhier.me/*
-// @match        *://pythonq.com/*/*/*
-// @match        *://proubuntu.ru/*/*
+// @match        *://askfrance.me/*
 // @match        *://cloud.tencent.com/developer/ask/*
+// @match        *://code.i-harness.com/*/q/*
+// @match        *://html-agility-pack.net/knowledge-base/*
+// @match        *://qa.1r1g.com/sf/ask/*
+// @match        *://respuestas.me/*
+// @match        *://ru.encyclopedia.kz/index.php/*
+// @match        *://proubuntu.ru/*/*
+// @match        *://pythonq.com/*/*/*
 // ==/UserScript==
 (async () => {
     'use strict';
@@ -453,20 +454,21 @@ a{
         case 'codenong.com':
         case 'quabr.com':
             return byNumber(_ps[1]);
-        case 'programqa.com':
-        case 'thinbug.com':
-        case 'profikoder.com':
-        case 'progexact.com':
+        case 'answacode.com':
         case 'bestecode.com':
         case 'bonprog.com':
-        case 'progaide.com':
         case 'coderquestion.ru':
         case 'coredump.biz':
-        case 'issue.life':
-        case 'qaru.tech':
-        case 'xbuba.com':
         case 'gitrush.ru':
-        case 'answacode.com':
+        case 'html-agility-pack.net':
+        case 'issue.life':
+        case 'profikoder.com':
+        case 'progaide.com':
+        case 'progexact.com':
+        case 'programqa.com':
+        case 'qaru.tech':
+        case 'thinbug.com':
+        case 'xbuba.com':
             return byNumber(_ps[2]);
         case 'proubuntu.ru':
             return byHeader('h1>a>span[itemprop="name"]', [await transTags('a[rel="tag"]')],'ru', ['askubuntu.com']);

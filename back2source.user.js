@@ -35,6 +35,7 @@
 // @match        *://*.ciupacabra.com/*
 // @match        *://*.code-examples.net/*/q/*
 // @match        *://*.codegear.dev/*/questions/*
+// @match        *://*.codegrepper.com/*
 // @match        *://*.codeindex.ru/q/*
 // @match        *://*.codengineering.ru/q/*
 // @match        *://*.codenong.com/*
@@ -43,6 +44,7 @@
 // @match        *://*.coderoad.in/questions/*
 // @match        *://*.coderoad.wiki/*
 // @match        *://*.coderquestion.ru/q/*
+// @match        *://*.codersatellite.com/question-with-identifier-*
 // @match        *://*.coder.work/article/*
 // @match        *://*.coredump.biz/questions/*
 // @match        *://*.datewiki.ru/wiki/*
@@ -135,6 +137,7 @@
 // @match        *://*.rudata.ru/wiki/*
 // @match        *://*.ruphp.com/*.html
 // @match        *://*.sbup.com/wiki/*
+// @match        *://*.serveanswer.com/questions/*
 // @match        *://*.savepearlharbor.com/?p=*
 // @match        *://*.sobrelinux.info/questions/*
 // @match        *://*.soinside.com/question/*
@@ -448,7 +451,7 @@ a{
         case 'code-examples.net':
             return byNumber(lastPathPart(), 16);
         case 'coderedirect.com':
-			return byHeader('h1', '.custom-head .post-tag', 'en');
+            return byHeader('h1', '.custom-head .post-tag', 'en');
         case 'coderoad.ru':
         case 'coderoad.wiki':
         case 'codenong.com':
@@ -653,6 +656,10 @@ a{
             if(!_t('h1 a')) return;
             badImgs = true;
             return bySel('a[rel="nofollow"][target="_blank"]') || byHeader([_t('.qa-main-heading h1').innerText.replace(/^(\s+)?([a-z])+\s-/, '').trim()], '.qa-q-view-main .qa-tag-link', 'en', '');
+        case 'codersatellite.com':
+            return byNumber(_ps[1].split('-')[3]);
+        case 'codegrepper.com':
+            return _go(bySel('.answer_source>a'));
         default:
             if (_hst('it-swarm') || _hst('it-roy') || _hst('webdevqa.jp.net')) {
                 return bySel('.gat[data-cat="q-source"]');
@@ -693,6 +700,7 @@ a{
                     'try2explore.com': 'div.tagsandsource span.source a[target="_blank"]',
                     'howtosolves.com': '#question .question .source a',
                     'pythonq.com':'a[style="color:red"]',
+                    'serveanswer.com':'a[title="Source"]',
                 };
                 link = cssSelectors[host] && _tc(cssSelectors[host]);
                 console.log(link);

@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name         Back2source
-// @version      0.1.85
+// @version      0.1.86
 // @description  Redirecting to source sites from sites with machine translation, etc.
 // @namespace    vladgba
 // @author       vladgba@gmail.com
@@ -63,6 +63,7 @@
 // @match        *://*.fooobar.com/questions/*
 // @match        *://*.gaz.wiki/wiki/*
 // @match        *://*.generacodice.com/*
+// @match        *://*.githubmemory.com/repo/*/*
 // @match        *://*.gitrush.ru/*/*/*
 // @match        *://*.hmong.wiki/wiki/*
 // @match        *://*.hmong.ru/wiki/*
@@ -71,6 +72,7 @@
 // @match        *://*.icode9.com/*
 // @match        *://*.intellipaat.com/community/*/*
 // @match        *://*.issue.life/questions/*
+// @match        *://*.issueexplorer.com/repo/*/*
 // @match        *://*.it-brain.online/question/*
 // @match        *://*.it-roy-ru.com/*/*
 // @match        *://*.it-swarm.it/*/*
@@ -91,6 +93,7 @@
 // @match        *://*.itranslater.com/qa/details/*
 // @match        *://*.javaer101.com/article/*
 // @match        *://*.jejakjabar.com/wiki/*
+// @match        *://*.jsrepos.com/*/*
 // @match        *://*.kompsekret.ru/q/*
 // @match        *://*.kotaeta.com/*
 // @match        *://*.legkovopros.ru/questions/*
@@ -660,6 +663,15 @@ a{
             return byNumber(_ps[1].split('-')[3]);
         case 'codegrepper.com':
             return _go(bySel('.answer_source>a'));
+        case 'issueexplorer.com':
+            return _go('https://github.com' + _p.replace(/^\/repo/,''));
+        case 'githubmemory.com':
+            let user = _p.match(/^\/@(.+)/);
+            if(user) return _go('https://github.com/' + user[1]);
+            let repo = _p.match(/^\/repo\/((.+)\/(.+))/);
+            if(repo) return _go('https://github.com/' + repo[1]);
+        case 'jsrepos.com':
+            return _go(bySel('article.markdown-body>a[rel="nofollow"]:last-child'));
         default:
             if (_hst('it-swarm') || _hst('it-roy') || _hst('webdevqa.jp.net')) {
                 return bySel('.gat[data-cat="q-source"]');

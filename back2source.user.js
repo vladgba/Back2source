@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name         Back2source
-// @version      0.1.86
+// @version      0.1.87
 // @description  Redirecting to source sites from sites with machine translation, etc.
 // @namespace    vladgba
 // @author       vladgba@gmail.com
@@ -53,7 +53,6 @@
 // @match        *://*.devfaq.fr/question/*
 // @match        *://*.dir.md/*
 // @match        *://*.donolik.com/*
-// @match        *://*.dwf.life/*
 // @match        *://*.e-learn.cn/topic/*
 // @match        *://*.encyclopaedia.bid/*
 // @match        *://*.exceptionshub.com/*
@@ -63,9 +62,13 @@
 // @match        *://*.fooobar.com/questions/*
 // @match        *://*.gaz.wiki/wiki/*
 // @match        *://*.generacodice.com/*
-// @match        *://*.githubmemory.com/repo/*/*
+// @match        *://*.giters.com/*
+// @match        *://*.githubhot.com/*
+// @match        *://*.githublab.com/*/*
+// @match        *://*.githubmemory.com/*
 // @match        *://*.gitrush.ru/*/*/*
 // @match        *://*.hmong.wiki/wiki/*
+// @match        *://*.higithub.com/*/*
 // @match        *://*.hmong.ru/wiki/*
 // @match        *://*.howtosolves.com/q/*
 // @match        *://*.husl.ru/questions/*
@@ -73,6 +76,7 @@
 // @match        *://*.intellipaat.com/community/*/*
 // @match        *://*.issue.life/questions/*
 // @match        *://*.issueexplorer.com/repo/*/*
+// @match        *://*.issueantenna.com/*/*
 // @match        *://*.it-brain.online/question/*
 // @match        *://*.it-roy-ru.com/*/*
 // @match        *://*.it-swarm.it/*/*
@@ -573,8 +577,6 @@ a{
             return (tt = _h.match(/^https?:\/\/stackoverflood\.com\/([a-zA-Z]{2})\/q\/(.+)/)) && byNumber(tt[2]);
         case 'it-brain.online':
             return 'https://tutorialspoint.com/' + _ps[2];
-        case 'dwf.life':
-            return 'https://github.com' + _p;
         case 'wikidark.ru':
             return _go('https://ru.wikipedia.org' + _p + location.search);
         case 'gaz.wiki':
@@ -663,13 +665,19 @@ a{
             return byNumber(_ps[1].split('-')[3]);
         case 'codegrepper.com':
             return _go(bySel('.answer_source>a'));
+        case 'giters.com':
+            return _go('https://github.com' + _p);
+        case 'githubhot.com':
+        case 'githubmemory.com':
+            return _c(/^\/(repo\/|@)/) && _go('https://github.com' + _p.replace(/^\/(repo\/|@)/,'/'));
+        case 'githublab.com':
+            return _go('https://github.com' + _p.replace(/^\/(repository|profile)/,'').replace(/^(\/issues)(\/.*\/.*)(\/.*)/,"$2$1$3").replace(/^(\/issues)(\/.*\/.*)/,"$2$1"));
+        case 'higithub.com':
+            return _go('https://github.com' + _p.replace(/\/(repo\/|user$)/,'/').replace(/^(\/.*)(\/issue)(\/.*)(\/.*)/,"$1$3$2s$4").replace(/^(\/.*)\/repo_(issues)(\/.*)/,"$1$3/$2"));
+        case 'issueantenna.com':
+            return _go('https://github.com' + _p.replace(/^\/(repo|author)/,''));
         case 'issueexplorer.com':
             return _go('https://github.com' + _p.replace(/^\/repo/,''));
-        case 'githubmemory.com':
-            let user = _p.match(/^\/@(.+)/);
-            if(user) return _go('https://github.com/' + user[1]);
-            let repo = _p.match(/^\/repo\/((.+)\/(.+))/);
-            if(repo) return _go('https://github.com/' + repo[1]);
         case 'jsrepos.com':
             return _go(bySel('article.markdown-body>a[rel="nofollow"]:last-child'));
         default:

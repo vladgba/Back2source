@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name         Back2source
-// @version      0.1.87
+// @version      0.1.88
 // @description  Redirecting to source sites from sites with machine translation, etc.
 // @namespace    vladgba
 // @author       vladgba@gmail.com
@@ -49,6 +49,7 @@
 // @match        *://*.coredump.biz/questions/*
 // @match        *://*.datewiki.ru/wiki/*
 // @match        *://*.de-vraag.com/*
+// @match        *://*.developpaper.com/*
 // @match        *://*.developreference.com/*
 // @match        *://*.devfaq.fr/question/*
 // @match        *://*.dir.md/*
@@ -680,6 +681,8 @@ a{
             return _go('https://github.com' + _p.replace(/^\/repo/,''));
         case 'jsrepos.com':
             return _go(bySel('article.markdown-body>a[rel="nofollow"]:last-child'));
+	case 'developpaper.com':
+            return atob(bySel('.dwqa-question-content p a').split('=')[1]);
         default:
             if (_hst('it-swarm') || _hst('it-roy') || _hst('webdevqa.jp.net')) {
                 return bySel('.gat[data-cat="q-source"]');

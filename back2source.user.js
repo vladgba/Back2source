@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name         Back2source
-// @version      0.1.87
+// @version      0.1.88
 // @description  Redirecting to source sites from sites with machine translation, etc.
 // @namespace    vladgba
 // @author       vladgba@gmail.com
@@ -202,9 +202,11 @@
 // @match        *://cloud.tencent.com/developer/ask/*
 // @match        *://code.i-harness.com/*/q/*
 // @match        *://html-agility-pack.net/knowledge-base/*
+// @match        *://npmmirror.com/package/*
 // @match        *://qa.1r1g.com/sf/ask/*
 // @match        *://respuestas.me/*
 // @match        *://ru.encyclopedia.kz/index.php/*
+// @match        *://snyk.io/advisor/npm-package/*
 // @match        *://proubuntu.ru/*/*
 // @match        *://pythonq.com/*/*/*
 // ==/UserScript==
@@ -665,6 +667,10 @@ a{
             return byNumber(_ps[1].split('-')[3]);
         case 'codegrepper.com':
             return _go(bySel('.answer_source>a'));
+        case 'npmmirror.com':
+            return _go('https://www.npmjs.com'+_p);
+        case 'snyk.io':
+            return _go('https://www.npmjs.com/'+_ps[3]);
         case 'giters.com':
             return _go('https://github.com' + _p);
         case 'githubhot.com':

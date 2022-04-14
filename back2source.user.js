@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name         Back2source
-// @version      0.1.88
+// @version      0.1.89
 // @description  Redirecting to source sites from sites with machine translation, etc.
 // @namespace    vladgba
 // @author       vladgba@gmail.com
@@ -34,6 +34,7 @@
 // @match        *://*.buildwiki.ru/wiki/*
 // @match        *://*.ciupacabra.com/*
 // @match        *://*.code-examples.net/*/q/*
+// @match        *://*.codefactor.io/repository/*
 // @match        *://*.codegear.dev/*/questions/*
 // @match        *://*.codegrepper.com/*
 // @match        *://*.codeindex.ru/q/*
@@ -101,6 +102,7 @@
 // @match        *://*.kompsekret.ru/q/*
 // @match        *://*.kotaeta.com/*
 // @match        *://*.legkovopros.ru/questions/*
+// @match        *://*.lifesaver.codes/answer/*
 // @match        *://*.livepcwiki.ru/wiki/*
 // @match        *://*.mihalicdictionary.org/*
 // @match        *://*.mlink.in/*
@@ -432,6 +434,13 @@ a{
             if (f == 0) return (href ? e[i].querySelector(href)?.href : t.substr(text.length).trim());
         }
     }
+    
+    function byInner(selector, text) {
+        const e = document.querySelectorAll(selector);
+        for (var i = 0; i < e.length; i++) {
+            if (e[i].innerText.trim().indexOf(text) >= 0) return e[i].href;
+        }
+    }
 
     var link;
     const host = location.hostname.split('.').slice(-2).join('.');
@@ -490,7 +499,7 @@ a{
             return byHeader('h1', 'aside li a[href*="fixes.pub/topics"]', 'ja');
         case 'askubuntu.ru': //#Question div.question-text span[itemprop="author"] span[itemprop="name"]
             return byHeader('h1', 'nav .col-tag', 'ru', ['askubuntu.com']);
-	case 'devfaq.fr':
+        case 'devfaq.fr':
             return byHeader('h1', '.badge-info', 'fr');
         case 'askfrance.me':
             lng('fr');
@@ -686,6 +695,10 @@ a{
             return _go('https://github.com' + _p.replace(/^\/repo/,''));
         case 'jsrepos.com':
             return _go(bySel('article.markdown-body>a[rel="nofollow"]:last-child'));
+        case 'lifesaver.codes':
+            return byInner('a[role="link"]','Original');
+        case 'codefactor.io':
+            return bySel('a[title="View on GitHub"]');
         default:
             if (_hst('it-swarm') || _hst('it-roy') || _hst('webdevqa.jp.net')) {
                 return bySel('.gat[data-cat="q-source"]');

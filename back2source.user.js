@@ -655,7 +655,7 @@ a{
         case 'sozdizimi.com':
         case 'zapytay.com':
         case 'while-do.com':
-            return bySel('.footer_question.mt-3 > a');
+            return bySel('a.link.block');
         case 'codeindex.ru':
         case 'qa-help.ru':
             return bySel('span.text-muted.fake_url', 'src') || _tc('.text-muted.small');

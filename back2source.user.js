@@ -698,7 +698,11 @@ a{
         case 'lifesaver.codes':
             return byInner('a[role="link"]','Original');
         case 'codefactor.io':
-            return bySel('a[title="View on GitHub"]');
+            document.addEventListener("DOMContentLoaded", (e)=>{
+                if (_ps[2]=='github' && _ps[5]=='source') return _go(bySel('a[title^="View on"]') + '/blob/' + _ps.splice(6).join('/'));
+                return _go(bySel('a.page-title-link') || bySel('a[analytics-event^="View file on"]') || bySel('a[title^="View on"]'));
+            });
+            break;
         default:
             if (_hst('it-swarm') || _hst('it-roy') || _hst('webdevqa.jp.net')) {
                 return bySel('.gat[data-cat="q-source"]');

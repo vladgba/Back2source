@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name         Back2source
-// @version      0.1.89
+// @version      0.1.90
 // @description  Redirecting to source sites from sites with machine translation, etc.
 // @namespace    vladgba
 // @author       vladgba@gmail.com
@@ -204,6 +204,7 @@
 // @match        *://cloud.tencent.com/developer/ask/*
 // @match        *://code.i-harness.com/*/q/*
 // @match        *://html-agility-pack.net/knowledge-base/*
+// @match        *://localcoder.org/*
 // @match        *://npmmirror.com/package/*
 // @match        *://qa.1r1g.com/sf/ask/*
 // @match        *://respuestas.me/*
@@ -457,6 +458,8 @@ a{
             return byHeader('h1', '.tags .tag a', 'pt', ['superuser.com', 'serverfault.com', 'stackoverflow.com', 'stackexchange.com']);
         case 'ruphp.com':
             return byHeader('h1', '.breadcrumb-item .badge a', 'ru');
+        case 'localcoder.org':
+            return byHeader('h1', '.categories a', 'en');
         case 'yuanmacha.com':
             return fromBrackets('h1', '.tag a', 'en');
         case 'stormcrow.dev':

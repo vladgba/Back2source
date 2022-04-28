@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name         Back2source
-// @version      0.1.90
+// @version      0.1.91
 // @description  Redirecting to source sites from sites with machine translation, etc.
 // @namespace    vladgba
 // @author       vladgba@gmail.com
@@ -251,7 +251,6 @@
     var allAttr = (s, t) => all(s).map(a => a[t].trim());
     var getAttr = (t, a, r, s = '$1') => (t.hasAttribute(a)) && t.getAttribute(a).replace(r, s);
     var dropMarks = (s) => s && s.replace(/\[(на удержании|on hold|duplikować|duplicado|duplicar|duplikat|dublicate|duplicate|дубликат|закрыто|закрытый|closed|geschlossen|zamknięte|cerrado|重复|repeat)\]\s*$/i, '').trim();
-    var fromBrackets = (h = 'h1', t, l, s) => (ll = _t(h)?.innerHTML.match(/\(([a-zA-Z-_ ])+\)/)) && byHeader([ll[0]], t, l, s);
 
     function _tc (s) {
         var allw = ['stackoverflow.com/q','superuser.com/q','mathoverflow.net/q','askubuntu.com/q','stackexchange.com/q'];
@@ -461,7 +460,7 @@ a{
         case 'localcoder.org':
             return byHeader('h1', '.categories a', 'en');
         case 'yuanmacha.com':
-            return fromBrackets('h1', '.tag a', 'en');
+            return (ll = _t('h1')?.innerHTML.match(/\((.+)\)/)) && byHeader([ll[1]], '.tag a', 'en', ['stackoverflow.com']);
         case 'stormcrow.dev':
             return byNumber(_ps[3]);
         case 'stackoom.com':

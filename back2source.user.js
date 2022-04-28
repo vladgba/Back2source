@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name         Back2source
-// @version      0.1.91
+// @version      0.1.90
 // @description  Redirecting to source sites from sites with machine translation, etc.
 // @namespace    vladgba
 // @author       vladgba@gmail.com
@@ -447,36 +447,8 @@ a{
     console.log('Checking site: ' + location.hostname + ' as ' + host);
 
     switch (host) {
-        case 'wikiroot.ru':
-            tt = _t('section section div.footer-post div.d-inline-block button');
-            tt = tt && (getAttr(tt, 'data-url', /https?:\/\/wikiroot\.ru\/comment\/new\/([0-9]+)/) || getAttr(tt, 'data-target', /#buttoncollapse-([0-9]+)/));
-            return tt ? 'https://superuser.com/questions/' + tt : byHeader('h1', 'ul.tags-list li a', 'ru');
-        case 'newbedev.com':
-            return _t('article') && byHeader('h1', 'h4.tags a.item-tag', 'en', ['superuser.com', 'serverfault.com', 'stackoverflow.com', 'stackexchange.com']);
-        case 'sobrelinux.info':
-            return byHeader('h1', '.tags .tag a', 'pt', ['superuser.com', 'serverfault.com', 'stackoverflow.com', 'stackexchange.com']);
-        case 'ruphp.com':
-            return byHeader('h1', '.breadcrumb-item .badge a', 'ru');
-        case 'localcoder.org':
-            return byHeader('h1', '.categories a', 'en');
-        case 'yuanmacha.com':
-            return (ll = _t('h1')?.innerHTML.match(/\((.+)\)/)) && byHeader([ll[1]], '.tag a', 'en', ['stackoverflow.com']);
-        case 'stormcrow.dev':
-            return byNumber(_ps[3]);
-        case 'stackoom.com':
-            return byNumber(document.getElementById('question').dataset.questionid);
-        case 'ffff65535.com':
-        case 'src-bin.com':
-        case 'i-harness.com':
-        case 'code-examples.net':
-            return byNumber(lastPathPart(), 16);
-        case 'coderedirect.com':
-            return byHeader('h1', '.custom-head .post-tag', 'en');
-        case 'coderoad.ru':
-        case 'coderoad.wiki':
-        case 'codenong.com':
-        case 'quabr.com':
-            return byNumber(_ps[1]);
+        case '1r1g.com':
+            return clr('#343a40') && byHeader();
         case 'answacode.com':
         case 'bestecode.com':
         case 'bonprog.com':
@@ -493,195 +465,219 @@ a{
         case 'thinbug.com':
         case 'xbuba.com':
             return byNumber(_ps[2]);
-        case 'proubuntu.ru':
-            return byHeader('h1>a>span[itemprop="name"]', [await transTags('a[rel="tag"]')],'ru', ['askubuntu.com']);
-        case 'javaer101.com':
-            return byHeader('h1', 'nav .col-tag');
-        case 'fixes.pub':
-            return byHeader('h1', 'aside li a[href*="fixes.pub/topics"]', 'ja');
-        case 'askubuntu.ru': //#Question div.question-text span[itemprop="author"] span[itemprop="name"]
-            return byHeader('h1', 'nav .col-tag', 'ru', ['askubuntu.com']);
-        case 'devfaq.fr':
-            return byHeader('h1', '.badge-info', 'fr');
+        case 'antwortenhier.me':
+            lng('de');
         case 'askfrance.me':
             lng('fr');
         case 'respuestas.me':
             lng('es');
-        case 'antwortenhier.me':
-            lng('de');
         case 'askentire.net':
             clr('#2c3e50') && lng('ru');
             return byHeader('h1', [await transTags('ul.x-tags li a[href*="/t/"]')], lang);
-        case 'xiu2.net':
-            addJS('var redir = window.__NUXT__.data[0].info.sourceUrl; redir && window.location.replace(redir);');
-            return lng('zh') && byHeader('h1', '.contents .tag-time a[href*="/it/tag/"]', 'zh');
-        case 'mlog.club':
-            addJS('var redir = window.__NUXT__.data[0].article.sourceUrl; redir && window.location.replace(redir);');
-            return lng('zh') && byHeader('h1', [await transTags('.article-tag')], 'zh');
-        case 'bilee.com':
-            clr('#178acc');
-        case 'question-it.com':
-            clr('#2c3e50');
-        case 'quares.ru':
-            clr('#fcdb00');
-        case 'techarks.ru':
-            clr('#20a169');
-        case 'legkovopros.ru':
-            return clr('#55b252') && byHeader('h1', '.tag', 'ru');
-        case 'tencent.com':
-            return byHeader('.ask-title h2', _, 'zh');
+        case 'askdev.ru':
+            return clr('#970f1b') && urlByImg('https://superuser.com/questions/') || byHeader('h1', [await transTags('.block_taxonomies a')], 'ru');
+        case 'askubuntu.ru': //#Question div.question-text span[itemprop="author"] span[itemprop="name"]
+            return byHeader('h1', 'nav .col-tag', 'ru', ['askubuntu.com']);
+        case 'askvoprosy.com':
+            return byPath(2);
         case 'bcqaw.com':
             return byHeader('h1.article-title', _, 'zh');
-        case 'techfeed.net':
-            return byHeader('main h1', '.tag', 'ru');
-        case 'utyatnishna.ru':
-            return byHeader('h1.entry-title', '.tag', 'ru');
-        case 'fluffyfables.com':
-            return _c(/^\/([0-9]+)([a-z\-]+)$/) && clr('#2c3e50') && (badCode = true) && byHeader('h1', 0, 'nl');
-        case 'coderoad.in':
-            return byPath(3);
-        case 'exceptionshub.com':
-            return _c(/\.html$/) && byPath(1);
-        case 'recalll.co':
-            return _t('div.label-wrap a[href*="stackoverflow.com/"][target="_blank"]')?.href || byHeader('h2#mainTitle', 'a[href*="/tags/"]', 'en');
+        case 'bildiredi.com':
+        case 'ciupacabra.com':
+        case 'de-vraag.com':
+        case 'donolik.com':
+        case 'kotaeta.com':
+        case 'pytannie.com':
+        case 'sozdizimi.com':
+        case 'switch-case.com':
+        case 'while-do.com':
+        case 'zapytay.com':
+            return bySel('a.link.block');
+        case 'bilee.com':
+            clr('#178acc');
+        case 'techarks.ru':
+            clr('#20a169');
+        case 'quares.ru':
+            clr('#fcdb00');
+        case 'question-it.com':
+            clr('#2c3e50');
+        case 'legkovopros.ru':
+            return clr('#55b252') && byHeader('h1', '.tag', 'ru');
+        case 'code-examples.net':
+        case 'ffff65535.com':
+        case 'i-harness.com':
+        case 'src-bin.com':
+            return byNumber(lastPathPart(), 16);
+        case 'codegrepper.com':
+            return _go(bySel('.answer_source>a'));
+        case 'codeindex.ru':
+        case 'qa-help.ru':
+            return bySel('span.text-muted.fake_url', 'src') || _tc('.text-muted.small');
+        case 'codengineering.ru':
+            return toSearch(lastPathPart().replace(/(-closed|-duplicate)?(-\d+)?(\.html)?$/, ''), true);
+        case 'codenong.com':
+        case 'coderoad.ru':
+        case 'coderoad.wiki':
+        case 'quabr.com':
+            return byNumber(_ps[1]);
         case 'coder.work':
             return bySel('div>p>a[rel="noreferrer noopener nofollow"]') || startsByText('p', 'stackoverflow链接', 'a[href*="stackoverflow.com"]') || startsByText('p', 'stackoverflow原址', 'a[href*="stackoverflow.com"]') || byHeader('h1', _/*'div[style="width: 100%;"] a[href*="/blog?tag="]'*/, 'zh');
-        case 'extutorial.com':
-            return byHeader('h1', 'a[href*="/tags/"]', 'en');
-        case '1r1g.com':
-            return clr('#343a40') && byHeader();
-        case 'soinside.com':
-            return clr('#333') && byHeader('h1', '.q-tag', 'zh');
-        case 'xszz.org':
-            return clr('#ff6f06') && byHeader('.post-h1title h1', 0, 'en');
-        case 'progi.pro': //.question-type .author a
-            return clr('#4e82c2') && byHeader('h1[itemprop="name"]', '.tag-list a', 'ru');
+        case 'coderedirect.com':
+            return byHeader('h1', '.custom-head .post-tag', 'en');
+        case 'coderoad.in':
+            return byPath(3);
+        case 'codersatellite.com':
+            return byNumber(_ps[1].split('-')[3]);
         case 'developreference.com': // https://html.developreference.com/article/23259983/How+extension+get+the+text+selected+in+chrome+pdf+viewer%EF%BC%9F
             var parts = document.title.split(' - ');
             var devpref = _ps[3].replace(/[-+ ]/g, ' ').replace(/(%ef|%bc|%9f)+$/i, '');
             return (await findByApi(devpref)) || (await findByApi(parts.join(' - '), _, _, [parts.pop()])) || promtRedirect(sitecolor, toSearch(devpref));
-        case 'intellipaat.com': //Cloudflare Error 1020 (03.10.21)
-            return byHeader('h1', '.qa-q-view-main .qa-tag-link', 'en', '');
-        case 'ylhow.com': //Cert expired 03.09.21 (02.10.21)
-            return (tt = _t('.entry-content > p > a[href*="stackoverflow.com/"]')) && tt.innerText.includes('原文') && tt.href;
+        case 'devfaq.fr':
+            return byHeader('h1', '.badge-info', 'fr');
         case 'e-learn.cn':
             return startsByText('div.content p:last-child', '来源：');
+        case 'exceptionshub.com':
+            return _c(/\.html$/) && byPath(1);
+        case 'extutorial.com':
+            return byHeader('h1', 'a[href*="/tags/"]', 'en');
+        case 'fixes.pub':
+            return byHeader('h1', 'aside li a[href*="fixes.pub/topics"]', 'ja');
+        case 'fluffyfables.com':
+            return _c(/^\/([0-9]+)([a-z\-]+)$/) && clr('#2c3e50') && (badCode = true) && byHeader('h1', 0, 'nl');
         case 'icode9.com':
             return _go(textContent('#paragraph > p:last-child').split('来源：', 2)[1].trim());
-        case 'v-resheno.ru':
-            return textContent('.linkurl > b');
-        case 'poweruser.guru':
-            return _t('div.post-menu a.suggest-edit-post[href*="superuser.com/questions/"]');
-        case 'stackanswers.net':
-            clr('#999') && lng('en');
-        case 'askvoprosy.com':
-            return byPath(2);
-        case 'codeday.me': // ads or deleted (03.10.21)
-            return location.hostname.startsWith('publish.') && all('.panel-body a')[1].href;
-        case 'codengineering.ru':
-            return toSearch(lastPathPart().replace(/(-closed|-duplicate)?(-\d+)?(\.html)?$/, ''), true);
-        case 'askdev.ru':
-            return clr('#970f1b') && urlByImg('https://superuser.com/questions/') || byHeader('h1', [await transTags('.block_taxonomies a')], 'ru');
-        case 'kompsekret.ru':
-            return clr('#292d2f') && (urlByImg('https://superuser.com/questions/') || byHeader([lastPathPart().replace(/(-closed|-duplicate)?(\d+)?(\.html)?$/, '').replace(/-/g, ' ')], '.tags a', 'en', ['superuser.com']));
+        case 'intellipaat.com': //Cloudflare Error 1020 (03.10.21)
+            return byHeader('h1', '.qa-q-view-main .qa-tag-link', 'en', '');
         case 'itdaan.com':
             return _go(bySel('input[name="url"]', 'value'));
-        case 'stackoverflood.com':
-            return (tt = _h.match(/^https?:\/\/stackoverflood\.com\/([a-zA-Z]{2})\/q\/(.+)/)) && byNumber(tt[2]);
-        case 'it-brain.online':
-            return 'https://tutorialspoint.com/' + _ps[2];
-        case 'wikidark.ru':
-            return _go('https://ru.wikipedia.org' + _p + location.search);
-        case 'gaz.wiki':
-            return wiki('en', 3);
-        case 'wikipedia-on-ipfs.org':
-            return wiki(_hp(3), 2);
-        case 'wikipe.wiki':
-        case 'wikies.wiki':
-            return wiki(2, 3);
-        case 'wiki-wiki.ru':
-            return wiki('ru', 3);
-        case 'livepcwiki.ru':
-        case 'datewiki.ru':
-        case 'buildwiki.ru':
-        case 'wiki2.wiki':
-        case 'vvikipedla.com':
-        case 'wikichi.ru':
-        case '360wiki.ru':
-        case 'wikivisually.com':
-        case 'hmong.wiki':
-        case 'hmong.ru':
-            return wiki('en', 2);
-        case 'wiki2.info':
-        case 'wiki2.online':
-        case 'wikipedia24.ru':
-        case 'wiki.cologne':
-            return _t('.mw-parser-output') && wiki('ru', 1);
-        case 'wikiredia.ru':
-        case 'wiki-org.ru':
-        case 'sbup.com':
-            return wiki('ru', _p, false);
-        case 'abcdef.wiki':
-            return wiki('en', _p, false);
-        case 'wiki2.net':
-        case 'wikipedia.tel':
-            return 'https://ru.wikipedia.org/wiki' + _p;
-        case 'wikizero.com':
-            return wiki(1, 2);
-        case 'mihalicdictionary.org':
-            return (tt = _h.match(/https?:\/\/([a-zA-Z]{2})?\.?mihalicdictionary\.org(.+)/)) && wiki(tt[1], tt[2], false);
-        case 'dir.md':
-            return (tt = _h.match(/^https?:\/\/dir.md\/(.+)(&|\?)host=([a-zA-Z\.-]+)$/)) && _go('https://' + tt[3] + '/' + tt[1]);
-        case 'territorioscuola.it':
-            return (tt = _h.match(/https?:\/\/enhancedwiki\.territorioscuola\.it\/\?title=(.+)/)) && wiki('it', tt[1]);
-        case 'encyclopedia.kz':
-            return _hst('ru.encyclopedia.kz') && wiki('ru', 2);
-        case 'wikiwand.com':
-            return !(/(\?|&)fullSearch=(true|false)/.test(location.search)) && wiki(1, 2);
-        case 'xcv.wiki':
-            return (tt = _h.match(/https?:\/\/([a-zA-z]{2,4})\.xcv\.wiki\/wiki\/(.+)/)) && wiki('de', tt[2]);
-        case 'wiki2.org':
-            if (/\?search=/.test(location.search)) return;
-            return (tt = _h.match(/https?:\/\/(([a-z]{2})\.)?wiki2\.org\/([a-zA-z]{2})\/(.+)/)) && wiki(tt[3], '/wiki/' + tt[4], false);
-        case 'encyclopaedia.bid':
-            return wiki('ru', _p.replace(/^\/%D0%B2%D0%B8%D0%BA%D0%B8%D0%BF%D0%B5%D0%B4%D0%B8%D1%8F/, '/wiki'), false);
-        case 'nina.az':
-            return (tt = _h.match(/https?:\/\/wikipedia\.(([a-z]{2})\.)?nina\.az\/wiki\/(.+)/)) && wiki(mulreplace(tt[2], [ ['ua', 'uk'], ['us', 'en'] ]), tt[3]);
-        case 'kotaeta.com':
-        case 'ciupacabra.com':
-        case 'de-vraag.com':
-        case 'switch-case.com':
-        case 'bildiredi.com':
-        case 'donolik.com':
-        case 'pytannie.com':
-        case 'sozdizimi.com':
-        case 'zapytay.com':
-        case 'while-do.com':
-            return bySel('a.link.block');
-        case 'codeindex.ru':
-        case 'qa-help.ru':
-            return bySel('span.text-muted.fake_url', 'src') || _tc('.text-muted.small');
-        case 'jejakjabar.com':
-            return (tt = _h.match(/https?:\/\/([a-zA-z]+\.)?jejakjabar\.com\/wiki\/(.+)/)) && wiki('en', tt[2]);
-        case 'itnan.ru':
-            return _h.match(/https?:\/\/([a-zA-Z]{2})?\.?itnan\.ru\/post\.php\?(.+)?p=([0-9]+)/) && bySel('article.entry .entry-meta a[title="Оригинальная публикация"]');
-        case 'rudata.ru':
-            return bySel('a.external[href*="ru.wikipedia.org"]');
-        case 'savepearlharbor.com':
-            return bySel('article.post > div.entry-content > p > a[href*="://habr.com/"]');
-        case 'sqlite.in':
+        case 'javaer101.com':
+            return byHeader('h1', 'nav .col-tag');
+        case 'kompsekret.ru':
+            return clr('#292d2f') && (urlByImg('https://superuser.com/questions/') || byHeader([lastPathPart().replace(/(-closed|-duplicate)?(\d+)?(\.html)?$/, '').replace(/-/g, ' ')], '.tags a', 'en', ['superuser.com']));
+        case 'localcoder.org':
+            return byHeader('h1', '.categories a', 'en');
         case 'mlink.in':
+        case 'sqlite.in':
             if(!_t('h1 a')) return;
             badImgs = true;
             return bySel('a[rel="nofollow"][target="_blank"]') || byHeader([_t('.qa-main-heading h1').innerText.replace(/^(\s+)?([a-z])+\s-/, '').trim()], '.qa-q-view-main .qa-tag-link', 'en', '');
-        case 'codersatellite.com':
-            return byNumber(_ps[1].split('-')[3]);
-        case 'codegrepper.com':
-            return _go(bySel('.answer_source>a'));
-        case 'npmmirror.com':
-            return _go('https://www.npmjs.com'+_p);
-        case 'snyk.io':
-            return _go('https://www.npmjs.com/'+_ps[3]);
+        case 'mlog.club':
+            addJS('var redir = window.__NUXT__.data[0].article.sourceUrl; redir && window.location.replace(redir);');
+            return lng('zh') && byHeader('h1', [await transTags('.article-tag')], 'zh');
+        case 'newbedev.com':
+            return _t('article') && byHeader('h1', 'h4.tags a.item-tag', 'en', ['superuser.com', 'serverfault.com', 'stackoverflow.com', 'stackexchange.com']);
+        case 'poweruser.guru':
+            return _t('div.post-menu a.suggest-edit-post[href*="superuser.com/questions/"]');
+        case 'progi.pro': //.question-type .author a
+            return clr('#4e82c2') && byHeader('h1[itemprop="name"]', '.tag-list a', 'ru');
+        case 'proubuntu.ru':
+            return byHeader('h1>a>span[itemprop="name"]', [await transTags('a[rel="tag"]')],'ru', ['askubuntu.com']);
+        case 'recalll.co':
+            return _t('div.label-wrap a[href*="stackoverflow.com/"][target="_blank"]')?.href || byHeader('h2#mainTitle', 'a[href*="/tags/"]', 'en');
+        case 'ruphp.com':
+            return byHeader('h1', '.breadcrumb-item .badge a', 'ru');
+        case 'sobrelinux.info':
+            return byHeader('h1', '.tags .tag a', 'pt', ['superuser.com', 'serverfault.com', 'stackoverflow.com', 'stackexchange.com']);
+        case 'soinside.com':
+            return clr('#333') && byHeader('h1', '.q-tag', 'zh');
+        case 'stackanswers.net':
+            clr('#999') && lng('en');
+        case 'codeday.me': // ads or deleted (03.10.21)
+            return location.hostname.startsWith('publish.') && all('.panel-body a')[1].href;
+        case 'stackoom.com':
+            return byNumber(document.getElementById('question').dataset.questionid);
+        case 'stackoverflood.com':
+            return (tt = _h.match(/^https?:\/\/stackoverflood\.com\/([a-zA-Z]{2})\/q\/(.+)/)) && byNumber(tt[2]);
+        case 'stormcrow.dev':
+            return byNumber(_ps[3]);
+        case 'techfeed.net':
+            return byHeader('main h1', '.tag', 'ru');
+        case 'tencent.com':
+            return byHeader('.ask-title h2', _, 'zh');
+        case 'utyatnishna.ru':
+            return byHeader('h1.entry-title', '.tag', 'ru');
+        case 'v-resheno.ru':
+            return textContent('.linkurl > b');
+        case 'wikiroot.ru':
+            tt = _t('section section div.footer-post div.d-inline-block button');
+            tt = tt && (getAttr(tt, 'data-url', /https?:\/\/wikiroot\.ru\/comment\/new\/([0-9]+)/) || getAttr(tt, 'data-target', /#buttoncollapse-([0-9]+)/));
+            return tt ? 'https://superuser.com/questions/' + tt : byHeader('h1', 'ul.tags-list li a', 'ru');
+        case 'xiu2.net':
+            addJS('var redir = window.__NUXT__.data[0].info.sourceUrl; redir && window.location.replace(redir);');
+            return lng('zh') && byHeader('h1', '.contents .tag-time a[href*="/it/tag/"]', 'zh');
+        case 'xszz.org':
+            return clr('#ff6f06') && byHeader('.post-h1title h1', 0, 'en');
+        case 'ylhow.com': //Cert expired 03.09.21 (02.10.21)
+            return (tt = _t('.entry-content > p > a[href*="stackoverflow.com/"]')) && tt.innerText.includes('原文') && tt.href;
+        case 'yuanmacha.com':
+            return (ll = _t('h1')?.innerHTML.match(/\((.+)\)/)) && byHeader([ll[1]], '.tag a', 'en', ['stackoverflow.com']);
+        /* Wikipedia */
+        case '360wiki.ru':
+        case 'buildwiki.ru':
+        case 'datewiki.ru':
+        case 'hmong.ru':
+        case 'hmong.wiki':
+        case 'livepcwiki.ru':
+        case 'vvikipedla.com':
+        case 'wiki2.wiki':
+        case 'wikichi.ru':
+        case 'wikivisually.com':
+            return wiki('en', 2);
+        case 'abcdef.wiki':
+            return wiki('en', _p, false);
+        case 'encyclopaedia.bid':
+            return wiki('ru', _p.replace(/^\/%D0%B2%D0%B8%D0%BA%D0%B8%D0%BF%D0%B5%D0%B4%D0%B8%D1%8F/, '/wiki'), false);
+        case 'encyclopedia.kz':
+            return _hst('ru.encyclopedia.kz') && wiki('ru', 2);
+        case 'gaz.wiki':
+            return wiki('en', 3);
+        case 'jejakjabar.com':
+            return (tt = _h.match(/https?:\/\/([a-zA-z]+\.)?jejakjabar\.com\/wiki\/(.+)/)) && wiki('en', tt[2]);
+        case 'mihalicdictionary.org':
+            return (tt = _h.match(/https?:\/\/([a-zA-Z]{2})?\.?mihalicdictionary\.org(.+)/)) && wiki(tt[1], tt[2], false);
+        case 'nina.az':
+            return (tt = _h.match(/https?:\/\/wikipedia\.(([a-z]{2})\.)?nina\.az\/wiki\/(.+)/)) && wiki(mulreplace(tt[2], [ ['ua', 'uk'], ['us', 'en'] ]), tt[3]);
+        case 'rudata.ru':
+            return bySel('a.external[href*="ru.wikipedia.org"]');
+        case 'sbup.com':
+        case 'wiki-org.ru':
+        case 'wikiredia.ru':
+            return wiki('ru', _p, false);
+        case 'territorioscuola.it':
+            return (tt = _h.match(/https?:\/\/enhancedwiki\.territorioscuola\.it\/\?title=(.+)/)) && wiki('it', tt[1]);
+        case 'wiki-wiki.ru':
+            return wiki('ru', 3);
+        case 'wiki.cologne':
+        case 'wiki2.info':
+        case 'wiki2.online':
+        case 'wikipedia24.ru':
+            return _t('.mw-parser-output') && wiki('ru', 1);
+        case 'wiki2.net':
+        case 'wikipedia.tel':
+            return 'https://ru.wikipedia.org/wiki' + _p;
+        case 'wiki2.org':
+            if (/\?search=/.test(location.search)) return;
+            return (tt = _h.match(/https?:\/\/(([a-z]{2})\.)?wiki2\.org\/([a-zA-z]{2})\/(.+)/)) && wiki(tt[3], '/wiki/' + tt[4], false);
+        case 'wikidark.ru':
+            return _go('https://ru.wikipedia.org' + _p + location.search);
+        case 'wikies.wiki':
+        case 'wikipe.wiki':
+            return wiki(2, 3);
+        case 'wikipedia-on-ipfs.org':
+            return wiki(_hp(3), 2);
+        case 'wikiwand.com':
+            return !(/(\?|&)fullSearch=(true|false)/.test(location.search)) && wiki(1, 2);
+        case 'wikizero.com':
+            return wiki(1, 2);
+        case 'xcv.wiki':
+            return (tt = _h.match(/https?:\/\/([a-zA-z]{2,4})\.xcv\.wiki\/wiki\/(.+)/)) && wiki('de', tt[2]);
+        /* GitHub */
+        case 'codefactor.io':
+            document.addEventListener("DOMContentLoaded", (e)=>{
+                if (_ps[2]=='github' && _ps[5]=='source') return _go(bySel('a[title^="View on"]') + '/blob/' + _ps.splice(6).join('/'));
+                return _go(bySel('a.page-title-link') || bySel('a[analytics-event^="View file on"]') || bySel('a[title^="View on"]'));
+            });
+            break;
         case 'giters.com':
             return _go('https://github.com' + _p);
         case 'githubhot.com':
@@ -699,12 +695,19 @@ a{
             return _go(bySel('article.markdown-body>a[rel="nofollow"]:last-child'));
         case 'lifesaver.codes':
             return byInner('a[role="link"]','Original');
-        case 'codefactor.io':
-            document.addEventListener("DOMContentLoaded", (e)=>{
-                if (_ps[2]=='github' && _ps[5]=='source') return _go(bySel('a[title^="View on"]') + '/blob/' + _ps.splice(6).join('/'));
-                return _go(bySel('a.page-title-link') || bySel('a[analytics-event^="View file on"]') || bySel('a[title^="View on"]'));
-            });
-            break;
+        /* Other */
+        case 'dir.md':
+            return (tt = _h.match(/^https?:\/\/dir.md\/(.+)(&|\?)host=([a-zA-Z\.-]+)$/)) && _go('https://' + tt[3] + '/' + tt[1]);
+        case 'it-brain.online':
+            return 'https://tutorialspoint.com/' + _ps[2];
+        case 'itnan.ru':
+            return _h.match(/https?:\/\/([a-zA-Z]{2})?\.?itnan\.ru\/post\.php\?(.+)?p=([0-9]+)/) && bySel('article.entry .entry-meta a[title="Оригинальная публикация"]');    
+        case 'npmmirror.com':
+            return _go('https://www.npmjs.com'+_p);
+        case 'savepearlharbor.com':
+            return bySel('article.post > div.entry-content > p > a[href*="://habr.com/"]');
+        case 'snyk.io':
+            return _go('https://www.npmjs.com/'+_ps[3]);
         default:
             if (_hst('it-swarm') || _hst('it-roy') || _hst('webdevqa.jp.net')) {
                 return bySel('.gat[data-cat="q-source"]');
@@ -715,37 +718,37 @@ a{
             } else {
                 console.log('check by selectors');
                 const cssSelectors = {
-                    'codegear.dev': 'p.text-right>a',
-                    'fooobar.com': '.question-text > .aa-link',
-                    'askdev.info': '.question-text > .a-link',
-                    'ubuntugeeks.com': '.question-text > .a-link',
-                    'prog-help.ru': '.eclip > a',
-                    'generacodice.com': '#fontePrincipale > a.link',
-                    'programmerz.ru': '.source-share-link',
                     '4answered.com': '.view_body span a',
-                    'qna.one': '.page-container-question .source-share-block a',
-                    'web-answers.ru': '.source > a',
-                    'sprosi.pro': '#qsource > a',
+                    'answer-id.com': 'a.link',
+                    'answeright.com': 'a.link',
+                    'ask-ubuntu.ru': '.q-source',
+                    'askdev.info': '.question-text > .a-link',
+                    'codegear.dev': 'p.text-right>a',
+                    'e-learn.cn': '.zhuanzai + div a',
+                    'fooobar.com': '.question-text > .aa-link',
+                    'generacodice.com': '#fontePrincipale > a.link',
+                    'howtosolves.com': '#question .question .source a',
+                    'husl.ru': '.source-link',
+                    'itranslater.com': '.body > div:last-child > a',
                     'overcoder.net': '.info_outlink',
                     'overcoder.ru': '.info_outlink',
-                    'qacode.ru': '.question-info .cc-link',
-                    'rstopup.com': '.td-post-content .origlink > a',
-                    'itranslater.com': '.body > div:last-child > a',
-                    'voidcc.com': '.source > a',
-                    'qarus.ru': 'em > a',
-                    'uwenku.com': '.post-info a',
-                    'e-learn.cn': '.zhuanzai + div a',
-                    'husl.ru': '.source-link',
-                    'qarchive.ru': 'cite > a',
-                    'answeright.com': 'a.link',
-                    'answer-id.com': 'a.link',
-                    'stackru.com': '.q-source',
-                    'ask-ubuntu.ru': '.q-source',
+                    'prog-help.ru': '.eclip > a',
+                    'programmerz.ru': '.source-share-link',
                     'py4u.net': '.question .author .src a',
-                    'try2explore.com': 'div.tagsandsource span.source a[target="_blank"]',
-                    'howtosolves.com': '#question .question .source a',
                     'pythonq.com':'a[style="color:red"]',
+                    'qacode.ru': '.question-info .cc-link',
+                    'qarchive.ru': 'cite > a',
+                    'qarus.ru': 'em > a',
+                    'qna.one': '.page-container-question .source-share-block a',
+                    'rstopup.com': '.td-post-content .origlink > a',
                     'serveanswer.com':'a[title="Source"]',
+                    'sprosi.pro': '#qsource > a',
+                    'stackru.com': '.q-source',
+                    'try2explore.com': 'div.tagsandsource span.source a[target="_blank"]',
+                    'ubuntugeeks.com': '.question-text > .a-link',
+                    'uwenku.com': '.post-info a',
+                    'voidcc.com': '.source > a',
+                    'web-answers.ru': '.source > a',
                 };
                 link = cssSelectors[host] && _tc(cssSelectors[host]);
                 console.log(link);

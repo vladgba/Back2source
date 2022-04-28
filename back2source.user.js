@@ -242,7 +242,7 @@
     var prepareSearch = (h, t, s) => promtRedirect(sitecolor, toSearch(h + ' ' + getTags(t).join(' ').replace(/\s+/g, ' '), s), !badCode && allTexts('pre code'), !badImgs && [...new Set([...allAttr('img[src*="://i.stack.imgur.com/"]', 'src'), ...allAttr('a[href*="://i.stack.imgur.com/"]', 'href')])]);
     var transTags = async (t) => (await yaTranslate(allTexts(t).join(' '), lang)).split(' ');
     var toSearch = (s, site) => (s = dropMarks(s) && s ? `https://google.com/search?q=` + ((site && Array.isArray(site)) ? (site.length < 1 ? '' : `site%3A` + site.join('+OR+site%3A') + `+`) : `site%3Astackexchange.com+OR+site%3Astackoverflow.com+`) + encodeURIComponent(s) : null);
-    var textContent = (selector) => _t(selector)?.textContent.trim();
+    var textContent = (s) => Array.isArray(s) ? s[0] : _t(s)?.textContent.trim();
     var byNumber = (s, radix) => (s = parseInt(s, radix)) && s > 0 ? _go('https://stackoverflow.com/questions/' + s) : null;
     var normalize = (s) => s && ' ' + s.toLowerCase() + ' ';
     var pipe = (...fns) => x => fns.reduce((v, f) => f(v), x);
@@ -418,8 +418,8 @@ a{
      * @param {string} [s] - target site(s) (def: ['stackoverflow.com'])
      */
     async function byHeader(h, t, l, s) {
-        var sbh = filterText((l == 'en') ? getHeader(h) : await yaTranslate(getHeader(h), l), 1);
-        return sbh && ((await findByApi(sbh, _, _, getTags(t))) || prepareSearch(sbh, t, s));
+        var sbh = filterText((l == 'en') ? textContent(h) : await yaTranslate(getHeader(h), l), 1);
+        return sbh && (await findByApi(sbh, _, _, getTags(t)) || prepareSearch(sbh, t, s));
     }
 
     async function byPath(pos, s) {

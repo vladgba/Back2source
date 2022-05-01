@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name         Back2source
-// @version      0.1.90
+// @version      0.1.91
 // @description  Redirecting to source sites from sites with machine translation, etc.
 // @namespace    vladgba
 // @author       vladgba@gmail.com
@@ -74,7 +74,6 @@
 // @match        *://*.howtosolves.com/q/*
 // @match        *://*.husl.ru/questions/*
 // @match        *://*.icode9.com/*
-// @match        *://*.intellipaat.com/community/*/*
 // @match        *://*.issue.life/questions/*
 // @match        *://*.issueexplorer.com/repo/*/*
 // @match        *://*.issueantenna.com/*/*
@@ -434,7 +433,7 @@ a{
             if (f == 0) return (href ? e[i].querySelector(href)?.href : t.substr(text.length).trim());
         }
     }
-    
+
     function byInner(selector, text) {
         const e = document.querySelectorAll(selector);
         for (var i = 0; i < e.length; i++) {
@@ -463,7 +462,7 @@ a{
         case 'programqa.com':
         case 'qaru.tech':
         case 'thinbug.com':
-        case 'xbuba.com':
+        case 'xbuba.com': // site offline / site not found / 2022-05-01
             return byNumber(_ps[2]);
         case 'antwortenhier.me':
             lng('de');
@@ -476,7 +475,7 @@ a{
             return byHeader('h1', [await transTags('ul.x-tags li a[href*="/t/"]')], lang);
         case 'askdev.ru':
             return clr('#970f1b') && urlByImg('https://superuser.com/questions/') || byHeader('h1', [await transTags('.block_taxonomies a')], 'ru');
-        case 'askubuntu.ru': //#Question div.question-text span[itemprop="author"] span[itemprop="name"]
+        case 'askubuntu.ru':
             return byHeader('h1', 'nav .col-tag', 'ru', ['askubuntu.com']);
         case 'askvoprosy.com':
             return byPath(2);
@@ -497,7 +496,7 @@ a{
             clr('#178acc');
         case 'techarks.ru':
             clr('#20a169');
-        case 'quares.ru':
+        case 'quares.ru': // site offline / site not found / 2022-05-01
             clr('#fcdb00');
         case 'question-it.com':
             clr('#2c3e50');
@@ -510,14 +509,14 @@ a{
             return byNumber(lastPathPart(), 16);
         case 'codegrepper.com':
             return _go(bySel('.answer_source>a'));
-        case 'codeindex.ru':
-        case 'qa-help.ru':
+        case 'codeindex.ru': // site offline / Cloudflare error / 2022-05-01
+        case 'qa-help.ru': // site offline / Cloudflare error / 2022-05-01
             return bySel('span.text-muted.fake_url', 'src') || _tc('.text-muted.small');
         case 'codengineering.ru':
             return toSearch(lastPathPart().replace(/(-closed|-duplicate)?(-\d+)?(\.html)?$/, ''), true);
         case 'codenong.com':
         case 'coderoad.ru':
-        case 'coderoad.wiki':
+        case 'coderoad.wiki': // site offline / Cloudflare error / 2022-05-01
         case 'quabr.com':
             return byNumber(_ps[1]);
         case 'coder.work':
@@ -526,9 +525,9 @@ a{
             return byHeader('h1', '.custom-head .post-tag', 'en');
         case 'coderoad.in':
             return byPath(3);
-        case 'codersatellite.com':
+        case 'codersatellite.com': // site offline / timeout / 2022-05-01
             return byNumber(_ps[1].split('-')[3]);
-        case 'developreference.com': // https://html.developreference.com/article/23259983/How+extension+get+the+text+selected+in+chrome+pdf+viewer%EF%BC%9F
+        case 'developreference.com':
             var parts = document.title.split(' - ');
             var devpref = _ps[3].replace(/[-+ ]/g, ' ').replace(/(%ef|%bc|%9f)+$/i, '');
             return (await findByApi(devpref)) || (await findByApi(parts.join(' - '), _, _, [parts.pop()])) || promtRedirect(sitecolor, toSearch(devpref));
@@ -536,7 +535,7 @@ a{
             return byHeader('h1', '.badge-info', 'fr');
         case 'e-learn.cn':
             return startsByText('div.content p:last-child', '来源：');
-        case 'exceptionshub.com':
+        case 'exceptionshub.com': // site offline / Cloudflare error / 2022-05-01
             return _c(/\.html$/) && byPath(1);
         case 'extutorial.com':
             return byHeader('h1', 'a[href*="/tags/"]', 'en');
@@ -546,8 +545,6 @@ a{
             return _c(/^\/([0-9]+)([a-z\-]+)$/) && clr('#2c3e50') && (badCode = true) && byHeader('h1', 0, 'nl');
         case 'icode9.com':
             return _go(textContent('#paragraph > p:last-child').split('来源：', 2)[1].trim());
-        case 'intellipaat.com': //Cloudflare Error 1020 (03.10.21)
-            return byHeader('h1', '.qa-q-view-main .qa-tag-link', 'en', '');
         case 'itdaan.com':
             return _go(bySel('input[name="url"]', 'value'));
         case 'javaer101.com':
@@ -572,7 +569,7 @@ a{
             return clr('#4e82c2') && byHeader('h1[itemprop="name"]', '.tag-list a', 'ru');
         case 'proubuntu.ru':
             return byHeader('h1>a>span[itemprop="name"]', [await transTags('a[rel="tag"]')],'ru', ['askubuntu.com']);
-        case 'recalll.co':
+        case 'recalll.co': // site offline / site not found / 2022-05-01
             return _t('div.label-wrap a[href*="stackoverflow.com/"][target="_blank"]')?.href || byHeader('h2#mainTitle', 'a[href*="/tags/"]', 'en');
         case 'ruphp.com':
             return byHeader('h1', '.breadcrumb-item .badge a', 'ru');
@@ -582,7 +579,6 @@ a{
             return clr('#333') && byHeader('h1', '.q-tag', 'zh');
         case 'stackanswers.net':
             clr('#999') && lng('en');
-        case 'codeday.me': // ads or deleted (03.10.21)
             return location.hostname.startsWith('publish.') && all('.panel-body a')[1].href;
         case 'stackoom.com':
             return byNumber(document.getElementById('question').dataset.questionid);
@@ -607,7 +603,7 @@ a{
             return lng('zh') && byHeader('h1', '.contents .tag-time a[href*="/it/tag/"]', 'zh');
         case 'xszz.org':
             return clr('#ff6f06') && byHeader('.post-h1title h1', 0, 'en');
-        case 'ylhow.com': //Cert expired 03.09.21 (02.10.21)
+        case 'ylhow.com':
             return (tt = _t('.entry-content > p > a[href*="stackoverflow.com/"]')) && tt.innerText.includes('原文') && tt.href;
         case 'yuanmacha.com':
             return (ll = _t('h1')?.innerHTML.match(/\((.+)\)/)) && byHeader([ll[1]], '.tag a', 'en', ['stackoverflow.com']);
@@ -631,9 +627,9 @@ a{
             return _hst('ru.encyclopedia.kz') && wiki('ru', 2);
         case 'gaz.wiki':
             return wiki('en', 3);
-        case 'jejakjabar.com':
+        case 'jejakjabar.com': // all pages 404 / 2022-05-01
             return (tt = _h.match(/https?:\/\/([a-zA-z]+\.)?jejakjabar\.com\/wiki\/(.+)/)) && wiki('en', tt[2]);
-        case 'mihalicdictionary.org':
+        case 'mihalicdictionary.org': // site offline / site not found / 2022-05-01
             return (tt = _h.match(/https?:\/\/([a-zA-Z]{2})?\.?mihalicdictionary\.org(.+)/)) && wiki(tt[1], tt[2], false);
         case 'nina.az':
             return (tt = _h.match(/https?:\/\/wikipedia\.(([a-z]{2})\.)?nina\.az\/wiki\/(.+)/)) && wiki(mulreplace(tt[2], [ ['ua', 'uk'], ['us', 'en'] ]), tt[3]);
@@ -649,7 +645,7 @@ a{
             return wiki('ru', 3);
         case 'wiki.cologne':
         case 'wiki2.info':
-        case 'wiki2.online':
+        case 'wiki2.online': // other content / 2022-05-01
         case 'wikipedia24.ru':
             return _t('.mw-parser-output') && wiki('ru', 1);
         case 'wiki2.net':
@@ -680,7 +676,7 @@ a{
             break;
         case 'giters.com':
             return _go('https://github.com' + _p);
-        case 'githubhot.com':
+        case 'githubhot.com': // site offline / site not found / 2022-05-01
         case 'githubmemory.com':
             return _c(/^\/(repo\/|@)/) && _go('https://github.com' + _p.replace(/^\/(repo\/|@)/,'/'));
         case 'githublab.com':
@@ -689,7 +685,7 @@ a{
             return _go('https://github.com' + _p.replace(/\/(repo\/|user$)/,'/').replace(/^(\/.*)(\/issue)(\/.*)(\/.*)/,"$1$3$2s$4").replace(/^(\/.*)\/repo_(issues)(\/.*)/,"$1$3/$2"));
         case 'issueantenna.com':
             return _go('https://github.com' + _p.replace(/^\/(repo|author)/,''));
-        case 'issueexplorer.com':
+        case 'issueexplorer.com': // other content / 2022-05-01
             return _go('https://github.com' + _p.replace(/^\/repo/,''));
         case 'jsrepos.com':
             return _go(bySel('article.markdown-body>a[rel="nofollow"]:last-child'));
@@ -701,7 +697,7 @@ a{
         case 'it-brain.online':
             return 'https://tutorialspoint.com/' + _ps[2];
         case 'itnan.ru':
-            return _h.match(/https?:\/\/([a-zA-Z]{2})?\.?itnan\.ru\/post\.php\?(.+)?p=([0-9]+)/) && bySel('article.entry .entry-meta a[title="Оригинальная публикация"]');    
+            return _h.match(/https?:\/\/([a-zA-Z]{2})?\.?itnan\.ru\/post\.php\?(.+)?p=([0-9]+)/) && bySel('article.entry .entry-meta a[title="Оригинальная публикация"]');
         case 'npmmirror.com':
             return _go('https://www.npmjs.com'+_p);
         case 'savepearlharbor.com':
@@ -719,13 +715,13 @@ a{
                 console.log('check by selectors');
                 const cssSelectors = {
                     '4answered.com': '.view_body span a',
-                    'answer-id.com': 'a.link',
+                    'answer-id.com': 'a.link', // all pages 404 / 2022-05-01
                     'answeright.com': 'a.link',
                     'ask-ubuntu.ru': '.q-source',
-                    'askdev.info': '.question-text > .a-link',
+                    'askdev.info': '.question-text > .a-link', // site offline / site not found / 2022-05-01
                     'codegear.dev': 'p.text-right>a',
                     'e-learn.cn': '.zhuanzai + div a',
-                    'fooobar.com': '.question-text > .aa-link',
+                    'fooobar.com': '.question-text > .aa-link', // all pages 404 / 2022-05-01
                     'generacodice.com': '#fontePrincipale > a.link',
                     'howtosolves.com': '#question .question .source a',
                     'husl.ru': '.source-link',
@@ -734,9 +730,9 @@ a{
                     'overcoder.ru': '.info_outlink',
                     'prog-help.ru': '.eclip > a',
                     'programmerz.ru': '.source-share-link',
-                    'py4u.net': '.question .author .src a',
-                    'pythonq.com':'a[style="color:red"]',
-                    'qacode.ru': '.question-info .cc-link',
+                    'py4u.net': '.question .author .src a', // site offline / site not found / 2022-05-01
+                    'pythonq.com':'a[style="color:red"]', // site offline / site not found / 2022-05-01
+                    'qacode.ru': '.question-info .cc-link', // all pages 404 / 2022-05-01
                     'qarchive.ru': 'cite > a',
                     'qarus.ru': 'em > a',
                     'qna.one': '.page-container-question .source-share-block a',
@@ -744,9 +740,9 @@ a{
                     'serveanswer.com':'a[title="Source"]',
                     'sprosi.pro': '#qsource > a',
                     'stackru.com': '.q-source',
-                    'try2explore.com': 'div.tagsandsource span.source a[target="_blank"]',
-                    'ubuntugeeks.com': '.question-text > .a-link',
-                    'uwenku.com': '.post-info a',
+                    'try2explore.com': 'div.tagsandsource span.source a[target="_blank"]', // site offline / site not found / 2022-05-01
+                    'ubuntugeeks.com': '.question-text > .a-link', // site offline / site not found / 2022-05-01
+                    'uwenku.com': '.post-info a', // site offline / site not found / 2022-05-01
                     'voidcc.com': '.source > a',
                     'web-answers.ru': '.source > a',
                 };

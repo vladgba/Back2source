@@ -80,9 +80,7 @@
 // @match        *://*.issueantenna.com/*/*
 // @match        *://*.it-brain.online/question/*
 // @match        *://*.it-roy-ru.com/*/*
-// @include      *://*.it-swarm*.tld/*/*
-// @match        *://*.it-swarm.com.de/*/*
-// @match        *://*.it-swarm.com.ru/*/*
+// @include      *://*it-swarm*/*/*
 // @match        *://*.itnan.ru/post.php*
 // @match        *://*.itdaan.com/*
 // @match        *://*.itranslater.com/qa/details/*
@@ -111,14 +109,7 @@
 // @match        *://*.qaru.tech/questions/*
 // @match        *://*.qarus.ru/*
 // @match        *://*.qa-stack.pl/*
-// @match        *://*.qastack.co.in/*
-// @match        *://*.qastack.com.br/*
-// @match        *://*.qastack.com.de/*
-// @match        *://*.qastack.com.ua/*
-// @match        *://*.qastack.in.th/*
-// @match        *://*.qastack.info.tr/*
-// @match        *://*.qastack.net.bd/*
-// @include      *://*.qastack.tld/*
+// @include      *://*qastack*/*
 // @match        *://*.quabr.com/*
 // @match        *://*.quares.ru/?id=*
 // @match        *://*.question-it.com/questions/*

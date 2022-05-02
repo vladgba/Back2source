@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name         Back2source
-// @version      0.1.91
+// @version      0.1.92
 // @description  Redirecting to source sites from sites with machine translation, etc.
 // @namespace    vladgba
 // @author       vladgba@gmail.com
@@ -32,6 +32,7 @@
 // @match        *://*.bildiredi.com/*
 // @match        *://*.bilee.com/*.html
 // @match        *://*.buildwiki.ru/wiki/*
+// @match        *://*.catwolf.org/qs*
 // @match        *://*.ciupacabra.com/*
 // @match        *://*.code-examples.net/*/q/*
 // @match        *://*.codefactor.io/repository/*
@@ -79,19 +80,7 @@
 // @match        *://*.issueantenna.com/*/*
 // @match        *://*.it-brain.online/question/*
 // @match        *://*.it-roy-ru.com/*/*
-// @match        *://*.it-swarm.it/*/*
-// @match        *://*.it-swarm-id.com/*/*
-// @match        *://*.it-swarm-vi.com/*/*
-// @match        *://*.it-swarm.asia/*/*
-// @match        *://*.it-swarm.com.de/*/*
-// @match        *://*.it-swarm.com.ru/*/*
-// @match        *://*.it-swarm.cn/*/*
-// @match        *://*.it-swarm.dev/*/*
-// @match        *://*.it-swarm-es.com/*/*
-// @match        *://*.it-swarm-fr.com/*/*
-// @match        *://*.it-swarm-ja.com/*/*
-// @match        *://*.it-swarm.net/*/*
-// @match        *://*.it-swarm.xyz/*/*
+// @include      *://*.it-swarm*.tld/*/*
 // @match        *://*.itnan.ru/post.php*
 // @match        *://*.itdaan.com/*
 // @match        *://*.itranslater.com/qa/details/*
@@ -119,25 +108,8 @@
 // @match        *://*.qarchive.ru/*
 // @match        *://*.qaru.tech/questions/*
 // @match        *://*.qarus.ru/*
-// @match        *://*.qastack.cn/*
-// @match        *://*.qastack.co.in/*
-// @match        *://*.qastack.com.br/*
-// @match        *://*.qastack.com.de/*
-// @match        *://*.qastack.com.ua/*
-// @match        *://*.qastack.fr/*
-// @match        *://*.qastack.id/*
-// @match        *://*.qastack.in.th/*
-// @match        *://*.qastack.info.tr/*
-// @match        *://*.qastack.it/*
-// @match        *://*.qastack.jp/*
-// @match        *://*.qastack.kr/*
-// @match        *://*.qastack.lk/*
-// @match        *://*.qastack.mx/*
-// @match        *://*.qastack.net.bd/*
-// @match        *://*.qastack.pl/*
 // @match        *://*.qa-stack.pl/*
-// @match        *://*.qastack.ru/*
-// @match        *://*.qastack.vn/*
+// @include      *://*.qastack.tld/*
 // @match        *://*.quabr.com/*
 // @match        *://*.quares.ru/?id=*
 // @match        *://*.question-it.com/questions/*
@@ -169,7 +141,9 @@
 // @match        *://*.voidcc.com/question/*
 // @match        *://*.vvikipedla.com/wiki/*
 // @match        *://*.web-answers.ru/*/*
+// @match        *://*.web-gaebal-jilmun-dabbyeon-db.com/*/*
 // @match        *://*.webdevqa.jp.net/*/*
+// @match        *://*.webpuroguramingu-zhi-wen-ying-dashisutemu.com/*/*
 // @match        *://*.while-do.com/*
 // @match        *://*.wiki-org.ru/*
 // @match        *://*.wiki-wiki.ru/wp/*
@@ -705,7 +679,7 @@ a{
         case 'snyk.io':
             return _go('https://www.npmjs.com/'+_ps[3]);
         default:
-            if (_hst('it-swarm') || _hst('it-roy') || _hst('webdevqa.jp.net')) {
+            if (_hst('it-swarm') || _hst('it-roy') || _hst('webdevqa.jp.net') || _hst('web-gaebal-jilmun-dabbyeon-db.com') || _hst('webpuroguramingu-zhi-wen-ying-dashisutemu.com')) {
                 return bySel('.gat[data-cat="q-source"]');
             } else if (_hst('qastack') || _hst('qa-stack')) {
                 return bySel('span.text-muted.fake_url a, span.text-muted.fake_url', 'src') ||
@@ -719,6 +693,7 @@ a{
                     'answeright.com': 'a.link',
                     'ask-ubuntu.ru': '.q-source',
                     'askdev.info': '.question-text > .a-link', // site offline / site not found / 2022-05-01
+                    'catwolf.org': '.text-left.small>a',
                     'codegear.dev': 'p.text-right>a',
                     'e-learn.cn': '.zhuanzai + div a',
                     'fooobar.com': '.question-text > .aa-link', // all pages 404 / 2022-05-01

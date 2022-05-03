@@ -221,7 +221,7 @@
     var getTags = (t) => t ? (Array.isArray(t) ? t[0] : allTexts(t)) : allTexts('.tag');
     var mulreplace = (str, a) => a.forEach((v) => (str = str.replace(v[0], v[1]))) || str;
     var wiki = (l = 0, p = 2, w = true) => 'https://' + (_$s(l) ? l : _ps[l]) + '.wikipedia.org' + (w ? '/wiki/' : '') + (_$s(p) ? p : _ps[p]);
-    var prepareSearch = (h, t, s) => promtRedirect(sitecolor, toSearch(h + ' ' + getTags(t).join(' ').replace(/\s+/g, ' '), s), !badCode && allTexts('pre code'), !badImgs && [...new Set([...allAttr('img[src*="://i.stack.imgur.com/"]', 'src'), ...allAttr('a[href*="://i.stack.imgur.com/"]', 'href')])]);
+    var prepareSearch = (h, t, s) => promtRedirect(sitecolor, toSearch(h + ' ' + getTags(t).join(' ').replace(/\s+/g, ' '), s), !badCode && allTexts('pre code'), !badImgs && [...new Set([...allAttr('img[src*="://i.stack.imgur.com/"]', 'src'), ...allAttr('a[href*="://i.stack.imgur.com/"]', 'href')])], s);
     var transTags = async (t) => (await yaTranslate(allTexts(t).join(' '), lang)).split(' ');
     var toSearch = (s, site) => (s = dropMarks(s) && s ? `https://google.com/search?q=` + ((site && Array.isArray(site)) ? (site.length < 1 ? '' : `site%3A` + site.join('+OR+site%3A') + `+`) : `site%3Astackexchange.com+OR+site%3Astackoverflow.com+`) + encodeURIComponent(s) : null);
     var textContent = (s) => Array.isArray(s) ? s[0] : _t(s)?.textContent.trim();
@@ -274,7 +274,7 @@
         return (rmquotes ? out.replace(/(\'|")+/g, ' ') : out).replace(/ /g, ' ').replace(/(\r|\n)+/g, ' ').replace(/\s\s+/g, ' ').trim().replace(/\.$/, '').trim();
     }
 
-    async function promtRedirect(bgcolor, link, codef, imgf) {
+    async function promtRedirect(bgcolor, link, codef, imgf, site) {
         const dialog = document.createElement('div');
         try {
             document.body.appendChild(dialog);
@@ -313,8 +313,8 @@ a{
 </style>
 <div class="m">[ Back2Source ]
 <a id="ok-btn" href="#">Try to find the original question? <span class="search-icon">&#8981;<span></a> ` +
-                (codef && codef.length > 0 ? `<a href="` + toSearch(codef.join(' ')) + `">[ByCode]</a>` : ``) +
-                (imgf && imgf.length > 0 ? `<a href="` + toSearch(imgf.join(' ')) + `">[ByImgs]</a>` : ``) +
+                (codef && codef.length > 0 ? `<a href="` + toSearch(codef.join(' '), site) + `">[ByCode]</a>` : ``) +
+                (imgf && imgf.length > 0 ? `<a href="` + toSearch(imgf.join(' '), site) + `">[ByImgs]</a>` : ``) +
                 `<span id="close-btn">&#10006;</span>
 </div>`;
             shadowRoot.querySelector('#ok-btn').href = link;

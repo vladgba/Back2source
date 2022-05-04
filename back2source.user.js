@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name         Back2source
-// @version      0.1.93
+// @version      0.1.94
 // @description  Redirecting to source sites from sites with machine translation, etc.
 // @namespace    vladgba
 // @author       vladgba@gmail.com
@@ -16,7 +16,9 @@
 // @grant        GM_getValue
 // @connect      api.browser.yandex.ru
 // @noframes
+// @match        *://*.*.nina.az/wiki/*
 // @match        *://*.360wiki.ru/wiki/*
+// @match        *://*.8101010108.cn/zh/*
 // @match        *://*.abcdef.wiki/*
 // @match        *://*.answacode.com/questions/*
 // @match        *://*.answer-id.com/*
@@ -51,6 +53,7 @@
 // @match        *://*.coredump.biz/questions/*
 // @match        *://*.datewiki.ru/wiki/*
 // @match        *://*.de-vraag.com/*
+// @match        *://*.desarrollo-web-br-bd.com/es/*
 // @match        *://*.developreference.com/*
 // @match        *://*.devfaq.fr/question/*
 // @match        *://*.dir.md/*
@@ -79,10 +82,6 @@
 // @match        *://*.issueexplorer.com/repo/*/*
 // @match        *://*.issueantenna.com/*/*
 // @match        *://*.it-brain.online/question/*
-// @match        *://*.it-roy-ru.com/*/*
-// @include      *://*.it-swarm*.tld/*/*
-// @match        *://*.it-swarm.com.de/*/*
-// @match        *://*.it-swarm.com.ru/*/*
 // @match        *://*.itnan.ru/post.php*
 // @match        *://*.itdaan.com/*
 // @match        *://*.itranslater.com/qa/details/*
@@ -98,9 +97,9 @@
 // @match        *://*.mlink.in/*
 // @match        *://*.mlog.club/article/*
 // @match        *://*.newbedev.com/*
-// @match        *://*.*.nina.az/wiki/*
 // @match        *://*.overcoder.net/q/*
 // @match        *://*.overcoder.ru/q/*
+// @match        *://*.pengembangan-web-mp-pd.com/id/*
 // @match        *://*.poweruser.guru/*
 // @match        *://*.prog-help.ru/*
 // @match        *://*.progi.pro/*
@@ -111,18 +110,12 @@
 // @match        *://*.qaru.tech/questions/*
 // @match        *://*.qarus.ru/*
 // @match        *://*.qa-stack.pl/*
-// @match        *://*.qastack.co.in/*
-// @match        *://*.qastack.com.br/*
-// @match        *://*.qastack.com.de/*
-// @match        *://*.qastack.com.ua/*
-// @match        *://*.qastack.in.th/*
-// @match        *://*.qastack.info.tr/*
-// @match        *://*.qastack.net.bd/*
-// @include      *://*.qastack.tld/*
 // @match        *://*.quabr.com/*
 // @match        *://*.quares.ru/?id=*
 // @match        *://*.question-it.com/questions/*
 // @match        *://*.recalll.co/*
+// @match        *://*.reponse-question-developpement-web-bd.com/fr/*
+// @match        *://*.risposta-alla-domanda-sullo-sviluppo-web-bd.com/it/*
 // @match        *://*.rudata.ru/wiki/*
 // @match        *://*.ruphp.com/*.html
 // @match        *://*.sbup.com/wiki/*
@@ -142,6 +135,7 @@
 // @match        *://*.techfeed.net/*
 // @match        *://*.territorioscuola.it/*
 // @match        *://*.thinbug.com/q/*
+// @match        *://*.tra-loi-cau-hoi-phat-trien-web.com/vi/*
 // @match        *://*.try2explore.com/*
 // @match        *://*.ubuntugeeks.com/questions/*
 // @match        *://*.utyatnishna.ru/info/*
@@ -150,9 +144,11 @@
 // @match        *://*.voidcc.com/question/*
 // @match        *://*.vvikipedla.com/wiki/*
 // @match        *://*.web-answers.ru/*/*
-// @match        *://*.web-gaebal-jilmun-dabbyeon-db.com/*/*
-// @match        *://*.webdevqa.jp.net/*/*
-// @match        *://*.webpuroguramingu-zhi-wen-ying-dashisutemu.com/*/*
+// @match        *://*.web-dev-qa-db-fr.com/fr/*
+// @match        *://*.web-dev-qa-db-ja.com/ja/*
+// @match        *://*.web-gaebal-jilmun-dabbyeon-db.com/ko/*
+// @match        *://*.web-gelistirme-sc.com/tr/*
+// @match        *://*.webentwicklung-frage-antwort-db.com.de/de/*
 // @match        *://*.while-do.com/*
 // @match        *://*.wiki-org.ru/*
 // @match        *://*.wiki-wiki.ru/wp/*
@@ -189,6 +185,8 @@
 // @match        *://localcoder.org/*
 // @match        *://npmmirror.com/package/*
 // @match        *://qa.1r1g.com/sf/ask/*
+// @match        *://qastack.net.bd/*
+// @include      *://qastack.tld/*
 // @match        *://respuestas.me/*
 // @match        *://ru.encyclopedia.kz/index.php/*
 // @match        *://snyk.io/advisor/npm-package/*
@@ -431,6 +429,17 @@ a{
     switch (host) {
         case '1r1g.com':
             return clr('#343a40') && byHeader();
+        case '8101010108.cn':
+        case 'desarrollo-web-br-bd.com':
+        case 'pengembangan-web-mp-pd.com':
+        case 'reponse-question-developpement-web-bd.com':
+        case 'risposta-alla-domanda-sullo-sviluppo-web-bd.com':
+        case 'tra-loi-cau-hoi-phat-trien-web.com':
+        case 'web-dev-qa-db-fr.com':
+        case 'web-dev-qa-db-ja.com':
+        case 'web-gaebal-jilmun-dabbyeon-db.com':
+        case 'web-gelistirme-sc.com':
+            return bySel('.q-source>a');
         case 'answacode.com':
         case 'bestecode.com':
         case 'bonprog.com':
@@ -688,8 +697,8 @@ a{
         case 'snyk.io':
             return _go('https://www.npmjs.com/'+_ps[3]);
         default:
-            if (_hst('it-swarm') || _hst('it-roy') || _hst('webdevqa.jp.net') || _hst('web-gaebal-jilmun-dabbyeon-db.com') || _hst('webpuroguramingu-zhi-wen-ying-dashisutemu.com')) {
-                return bySel('.gat[data-cat="q-source"]');
+            if (_hst('webentwicklung-frage-antwort-db.com.de')) {
+                return bySel('.q-source>a');
             } else if (_hst('qastack') || _hst('qa-stack')) {
                 return bySel('span.text-muted.fake_url a, span.text-muted.fake_url', 'src') ||
                     bySel('.text-muted a:last-child[href*="stackoverflow.com/"],.text-muted a:last-child[href*="stackexchange.com/"],.text-muted a:last-child[href*="serverfault.com/"],.text-muted a:last-child[href*="superuser.com/"],.text-muted a:last-child[href*="mathoverflow.net/"]') ||

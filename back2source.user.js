@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name         Back2source
-// @version      0.1.94
+// @version      0.1.95
 // @description  Redirecting to source sites from sites with machine translation, etc.
 // @namespace    vladgba
 // @author       vladgba@gmail.com
@@ -36,6 +36,7 @@
 // @match        *://*.bildiredi.com/*
 // @match        *://*.bilee.com/*.html
 // @match        *://*.buildwiki.ru/wiki/*
+// @match        *://*.bytemeta.vip/*
 // @match        *://*.catwolf.org/qs*
 // @match        *://*.ciupacabra.com/*
 // @match        *://*.cloud.tencent.com/developer/ask/*
@@ -671,8 +672,9 @@ a{
             break;
         case 'giters.com':
             return _go('https://github.com' + _p);
-        case 'githubhot.com': // site offline / site not found / 2022-05-01
-        case 'githubmemory.com':
+        case 'bytemeta.vip':
+        case 'githubhot.com':
+        case 'githubmemory.com': // site offline / site not found / 2022-05-01
             return _c(/^\/(repo\/|@)/) && _go('https://github.com' + _p.replace(/^\/(repo\/|@)/,'/'));
         case 'githublab.com':
             return _go('https://github.com' + _p.replace(/^\/(repository|profile)/,'').replace(/^(\/issues)(\/.*\/.*)(\/.*)/,"$2$1$3").replace(/^(\/issues)(\/.*\/.*)/,"$2$1"));

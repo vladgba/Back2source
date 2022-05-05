@@ -542,7 +542,8 @@ a{
         case 'itdaan.com':
             return _go(bySel('input[name="url"]', 'value'));
         case 'javaer101.com':
-            return byHeader('h1', 'nav .col-tag');
+            lng(_ps[1] == "article"?'ja':_ps[1]);
+            return byHeader('h1', 'nav .col-tag', lang);
         case 'kompsekret.ru':
             return clr('#292d2f') && (urlByImg('https://superuser.com/questions/') || byHeader([lastPathPart().replace(/(-closed|-duplicate)?(\d+)?(\.html)?$/, '').replace(/-/g, ' ')], '.tags a', 'en', ['superuser.com']));
         case 'localcoder.org':

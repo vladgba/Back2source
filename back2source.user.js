@@ -91,7 +91,7 @@
 // @match        *://*.itdaan.com/*
 // @match        *://*.itnan.ru/post.php*
 // @match        *://*.itranslater.com/qa/details/*
-// @match        *://*.javaer101.com/ja/article/*
+// @match        *://*.javaer101.com/*/*
 // @match        *://*.jejakjabar.com/wiki/*
 // @match        *://*.jsrepos.com/*/*
 // @match        *://*.kompsekret.ru/q/*

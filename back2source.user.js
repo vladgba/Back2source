@@ -348,7 +348,7 @@ a{
                     responseType: 'json',
                     anonymous: true,
                     onload: (xhr) => {
-                        xhr.status === 200 ? resolve(xhr.response.text.replace(/ *\[repeat\]/i, " [duplicate]")) : reject(xhr);
+                        xhr.status === 200 ? resolve(xhr.response.text) : reject(xhr);
                     },
                     onerror: reject
                 })
@@ -664,6 +664,10 @@ a{
         case 'xcv.wiki':
             return (tt = _h.match(/https?:\/\/([a-zA-z]{2,4})\.xcv\.wiki\/wiki\/(.+)/)) && wiki('de', tt[2]);
         /* GitHub */
+        case 'bytemeta.vip':
+        case 'githubhot.com':
+        case 'githubmemory.com':
+            return _c(/^\/(repo\/|@)/) && _go('https://github.com' + _p.replace(/^\/(repo\/|@)/,'/'));
         case 'codefactor.io':
             document.addEventListener("DOMContentLoaded", (e)=>{
                 if (_ps[2]=='github' && _ps[5]=='source') return _go(bySel('a[title^="View on"]') + '/blob/' + _ps.splice(6).join('/'));
@@ -672,10 +676,6 @@ a{
             break;
         case 'giters.com':
             return _go('https://github.com' + _p);
-        case 'bytemeta.vip':
-        case 'githubhot.com':
-        case 'githubmemory.com': // site offline / site not found / 2022-05-01
-            return _c(/^\/(repo\/|@)/) && _go('https://github.com' + _p.replace(/^\/(repo\/|@)/,'/'));
         case 'githublab.com':
             return _go('https://github.com' + _p.replace(/^\/(repository|profile)/,'').replace(/^(\/issues)(\/.*\/.*)(\/.*)/,"$2$1$3").replace(/^(\/issues)(\/.*\/.*)/,"$2$1"));
         case 'higithub.com':

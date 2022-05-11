@@ -208,39 +208,67 @@
     const _p = location.pathname;
     const _ps = _p.split('/');
     const _h = location.href;
-    var _$s = (s) => typeof s === 'string' || s instanceof String; //is_string
-    var _hp = (p=3) => (ll = location.hostname.split('.')) && ll[ll.length-p];//get_subdomain (host part)
+    /** Checks if a given object is a string */
+    var _$s = (s) => typeof s === 'string' || s instanceof String;
+    /** Gets the subdomain (host part) of the site */
+    var _hp = (p=3) => (ll = location.hostname.split('.')) && ll[ll.length-p];
+    /** Gets the element by a given selector */
     var _t = (s) => document.querySelector(s);
+    /** Tests if the path of the site matches the given regex */
     var _c = (r) => r.test(_p);
+    /** Redirects to link, if it exists */
     var _go = (s) => s && window.location.replace(s);
+    /** Checks if a string is part of the hostname */
     var _hst = (s) => location.hostname.includes(s);
+    /** Sets the color for the bottom bar, if it's not set */
     var clr = (c, f) => (sitecolor = (f || sitecolor == '#333') ? c : sitecolor);
+    /** Sets the language for translating and searching, if it's not set */
     var lng = (c, f) => (lang = (f || lang == 'ru') ? c : lang);
+    /** Gets the last part of a path */
     var lastPathPart = () => _ps.filter(Boolean).slice(-1)[0];
+    /** Gets the href attribute (or any other attribute) of a selected element, if it exists */
     var bySel = (s, a = 'href') => _t(s)?.getAttribute(a);
+    /** Removes the auxiliary words of the textcontent of: the header if no parameter is given; a element matching the given selector; the first element, if the parameter is an array*/
     var getHeader = (h) => removeAuxiliary(h ? (Array.isArray(h) ? h[0] : textContent(h)) : textContent('h1'));
+    /** Get an array of the textcontent of: elements with the tag-class if no parameter is given; elements matching the given selector; or the first element, if the parameter is an array*/
     var getTags = (t) => t ? (Array.isArray(t) ? t[0] : allTexts(t)) : allTexts('.tag');
+    /** Replaces in a string all occurrences of the first element of an arraygroup with the second */
     var mulreplace = (str, a) => a.forEach((v) => (str = str.replace(v[0], v[1]))) || str;
+    /** Creates a Wikipedia link with language and article text or the number of the part in the website url, optionally adding the /wiki/ part */
     var wiki = (l = 0, p = 2, w = true) => 'https://' + (_$s(l) ? l : _ps[l]) + '.wikipedia.org' + (w ? '/wiki/' : '') + (_$s(p) ? p : _ps[p]);
+    /** Creates the bottom bar with the text, the code parts and images to search for */
     var prepareSearch = (h, t, s) => promtRedirect(sitecolor, toSearch(h + ' ' + getTags(t).join(' ').replace(/\s+/g, ' '), s), !badCode && allTexts('pre code'), !badImgs && [...new Set([...allAttr('img[src*="://i.stack.imgur.com/"]', 'src'), ...allAttr('a[href*="://i.stack.imgur.com/"]', 'href')])], s);
+    /** Translates a given array of tags */
     var transTags = async (t) => (await yaTranslate(allTexts(t).join(' '), lang)).split(' ');
+    /** Creates the Google search link with the slightly aligned text to search for, the sites to search on, optionally searching for images */
     var toSearch = (s, site, i) => (s = dropMarks(s) && s ? `https://google.com/search?q=` + ((site && Array.isArray(site)) ? (site.length < 1 ? '' : `site%3A` + site.join('+OR+site%3A') + `+`) : `site%3Astackexchange.com+OR+site%3Astackoverflow.com+`) + encodeURIComponent(s) + (i ? '&tbm=isch' : '') : null);
+    /** Gets the textcontent of a selected element, if it exists */
     var textContent = (s) => _t(s)?.textContent.trim();
+    /** Creates StackOverflow link by article id, optionally mofifying it before */
     var byNumber = (s, radix) => (s = parseInt(s, radix)) && s > 0 ? _go('https://stackoverflow.com/questions/' + s) : null;
+    /** Adds surrounding spaces and make the string lowercase, if it exists */
     var normalize = (s) => s && ' ' + s.toLowerCase() + ' ';
+    /** Pipes multiple functions after each other */
     var pipe = (...fns) => x => fns.reduce((v, f) => f(v), x);
-    var all = (s) => Array.prototype.slice.call(document.querySelectorAll(s));
+    /** Creates an array of the elements matched by given selector */
+    var all = (s) => [...document.querySelectorAll(s)];
+    /** Creates an array of the textcontent of all elements matched by given selector */
     var allTexts = (s) => all(s).map(a => a.textContent.trim());
+    /** Creates an array of the attributes of all elements matched by given selector */
     var allAttr = (s, t) => all(s).map(a => a[t].trim());
+    /** Gets the attribute of a given element, if it exists, and get a specific text part by regex or replace it with anoter text */
     var getAttr = (t, a, r, s = '$1') => (t.hasAttribute(a)) && t.getAttribute(a).replace(r, s);
+    /** Removes marks of a string, if it exists */
     var dropMarks = (s) => s && s.replace(/\[(на удержании|on hold|duplikować|duplicado|duplicar|duplikat|dublicate|duplicate|дубликат|закрыто|закрытый|closed|geschlossen|zamknięte|cerrado|重复|repeat)\]\s*$/i, '').trim();
 
+    /** Gets the first link by a given selector, that links to an stack exchenge site */
     function _tc (s) {
         var allw = ['stackoverflow.com/q','superuser.com/q','mathoverflow.net/q','askubuntu.com/q','stackexchange.com/q'];
         var nods = all(s);
         for (var nod in nods) for (var pt in allw) if(nods[nod]?.href?.indexOf(allw[pt])>=0) return nods[nod].href;
     }
 
+    /** Gets the image url with the site where the image is from, optionally with by selector and cutting the path */
     function urlByImg(v, s = 'img[src*="/images/content/"]', n = 3) {
         var p = _t(s)?.src;
         if (!p) return;
@@ -251,10 +279,12 @@
     var db = JSON.parse(GM_getValue('b2s') || '{}');
     for (var y in db) if (location.href == db[y][0]) return _go(db[y][1]);
 
+    /** Gets a redirect for the opened site from an online database */
     var dfgdr = fetch(`https://api.zcxv.icu/b2s.php?q=get&url=${encodeURIComponent(_h)}`, { credentials: 'omit' })
         .then(r => r.json())
         .then(r => r.res && r.response && _go(r.response));
 
+    /** Allows the user to specify a url to which the opened site should be redirected */
     GM_registerMenuCommand('Redirect', () => {
         var re = prompt('Enter source url:');
         var dfgdr = re && fetch(
@@ -263,18 +293,20 @@
             });
     });
 
+    /** Adds the given JavaScript code as inline code to the opened site */
     function addJS(code){
         var scriptElm = document.createElement('script');
         var inlineCode = document.createTextNode(code);
         scriptElm.appendChild(inlineCode);
         document.body.appendChild(scriptElm);
     }
-
+    /** Replaces different quote variants, optionally removes them, replaces various control characters */
     function filterText(text, rmquotes) {
         var out = text.replace(/(\u02B9|\u0374|\u2018|\u201A|\u2039|\u203A|\u201B|\u2019)+/g, '\'').replace(/(\u00AB|\u00BB|\u201E|\u201C|\u201F|\u201D|\u2E42)+/g, '"');
         return (rmquotes ? out.replace(/(\'|")+/g, ' ') : out).replace(/ /g, ' ').replace(/(\r|\n)+/g, ' ').replace(/\s\s+/g, ' ').trim().replace(/\.$/, '').trim();
     }
 
+    /** Creates the bottom bar to search for a question */
     async function promtRedirect(bgcolor, link, codef, imgf, site) {
         const dialog = document.createElement('div');
         try {
@@ -328,6 +360,7 @@ a{
     }
 
     //https://yandex.com/dev/translate/doc/dg/concepts/api-overview.html
+    /** Translates a slightly aligned text with Yandex from one language to english or any other given language */
     async function yaTranslate(q, sourceLang, targetLang) {
         q = dropMarks(q);
         if (!q) return null;
@@ -358,6 +391,7 @@ a{
     }
 
     var auxiliaryRe = null;
+    /** Removes auxiliary words of a given string */
     function removeAuxiliary(s) {
         return s && s.replace(auxiliaryRe || (auxiliaryRe = new RegExp([
             'a', 'an', 'the',
@@ -375,6 +409,7 @@ a{
     }
 
     /**
+     * Searches a text with the Stack Exchange API, optionally with a timeframe and the tags
      * @param {string} q
      * @param {Date} [before]
      * @param {Date} [after]
@@ -394,6 +429,7 @@ a{
     }
 
     /**
+     * Takes the slightly aligned text of the header or a given selector, optionally translates it, tries to find it per API and otherwise creates the bottom bar to search for
      * @param {string|array} [h] - header selector (def: 'h1')
      * @param {string|array} [t] - tags selector (def: '.tag')
      * @param {string} [l] - lang (def: none)
@@ -404,11 +440,13 @@ a{
         return sbh && (await findByApi(sbh, _, _, getTags(t)) || prepareSearch(sbh, t, s));
     }
 
+    /** Gets the text to search for from a part of the path, tries to find it per API and otherwise creates the bottom bar to search for */
     async function byPath(pos, s) {
         var fbp = _ps[pos].replace(/(-closed|-duplicate)?(\.html)?$/, '').replace(/^\d+-/, '').replace(/[-+]/g, ' ');
         return (await findByApi(fbp)) || prepareSearch(fbp, '', s);
     }
 
+    /** Matches elements by a given selector, searches for elements whose inner text starts with a given search text and returns the link of an element matched by a second given selector or the inner text that follows the search text */
     function startsByText(selector, text, href = false) {
         const e = document.querySelectorAll(selector);
         for (var i = 0; i < e.length; i++) {
@@ -418,6 +456,7 @@ a{
         }
     }
 
+    /** Matches elements by a given selector, searches for elements whose inner text includes a given search text and returns their link */
     function byInner(selector, text) {
         const e = document.querySelectorAll(selector);
         for (var i = 0; i < e.length; i++) {
@@ -753,8 +792,10 @@ a{
     }
     return link;
 })().then(link => {
+    /** Saves the redirect to an online database */
     var sredir = (r) => r && fetch(`https://api.zcxv.icu/b2s.php?q=set&url=${encodeURIComponent(location.href)}&redir=${encodeURIComponent(r)}`, { method: 'GET', credentials: 'omit' });
 
+    /** Saves the url and the source url in a local db */
     function cbufw(u, s) {
         var count = 10;
         var pos = GM_getValue('b2s-pos') || 0;
@@ -765,11 +806,13 @@ a{
         GM_setValue('b2s', JSON.stringify(db));
     }
 
+    /** Saves the redirect online and local, redirects to source */
     function run(u, s) {
         console.log('Redirect link: ' + u) || sredir(u);
         cbufw(location.href, u) || window.location.replace(u);
     }
 
+    /** Fixes incorrect link parts */
     var fix = (a, b, s = 0) => (link.match(a)) ? (run(link.replace(a, b), s) || true) : false;
 
     link = link?.href ?? link;

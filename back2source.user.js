@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name         Back2source
-// @version      0.1.95
+// @version      0.1.96
 // @description  Redirecting to source sites from sites with machine translation, etc.
 // @namespace    vladgba
 // @author       vladgba@gmail.com
@@ -28,6 +28,7 @@
 // @match        *://*.askdev.info/questions/*
 // @match        *://*.askdev.ru/q-*
 // @match        *://*.askdev.ru/q/*
+// @match        *://*.askdevz.com/question/*
 // @match        *://*.askentire.net/q/*-*
 // @match        *://*.askfrance.me/*
 // @match        *://*.askubuntu.ru/questions/*
@@ -404,7 +405,7 @@ a{
     }
 
     async function byPath(pos, s) {
-        var fbp = _ps[pos].replace(/[-+ ]/g, ' ').replace(/(-closed|-duplicate)?(\.html)?$/, '');
+        var fbp = _ps[pos].replace(/(-closed|-duplicate)?(\.html)?$/, '').replace(/^\d+-/, '').replace(/[-+]/g, ' ');
         return (await findByApi(fbp)) || prepareSearch(fbp, '', s);
     }
 
@@ -469,6 +470,8 @@ a{
             return byHeader('h1', [await transTags('ul.x-tags li a[href*="/t/"]')], lang);
         case 'askdev.ru':
             return clr('#970f1b') && urlByImg('https://superuser.com/questions/') || byHeader('h1', [await transTags('.block_taxonomies a')], 'ru');
+        case 'askdevz.com':
+            return byPath(2);
         case 'askubuntu.ru':
             return byHeader('h1', 'nav .col-tag', 'ru', ['askubuntu.com']);
         case 'askvoprosy.com':

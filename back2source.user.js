@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name         Back2source
-// @version      0.1.96
+// @version      0.1.97
 // @description  Redirecting to source sites from sites with machine translation, etc.
 // @namespace    vladgba
 // @author       vladgba@gmail.com
@@ -65,6 +65,7 @@
 // @match        *://*.dir.md/*
 // @match        *://*.donolik.com/*
 // @match        *://*.e-learn.cn/topic/*
+// @match        *://*.edupro.id/questions/*
 // @match        *://*.encyclopaedia.bid/*
 // @match        *://*.exceptionshub.com/*
 // @match        *://*.extutorial.com/ask/*
@@ -95,6 +96,7 @@
 // @match        *://*.itranslater.com/qa/details/*
 // @match        *://*.javaer101.com/*/*
 // @match        *://*.jejakjabar.com/wiki/*
+// @match        *://*.jscodetips.com/examples/*
 // @match        *://*.jsrepos.com/*/*
 // @match        *://*.kompsekret.ru/q/*
 // @match        *://*.kotaeta.com/*
@@ -102,6 +104,7 @@
 // @match        *://*.lifesaver.codes/answer/*
 // @match        *://*.livepcwiki.ru/wiki/*
 // @match        *://*.localcoder.org/*
+// @match        *://*.microeducate.tech/*
 // @match        *://*.mihalicdictionary.org/*
 // @match        *://*.mlink.in/*
 // @match        *://*.mlog.club/article/*
@@ -113,6 +116,7 @@
 // @match        *://*.poweruser.guru/*
 // @match        *://*.prog-help.ru/*
 // @match        *://*.progi.pro/*
+// @match        *://*.programmierfrage.com/items/*
 // @match        *://*.proubuntu.ru/*/*
 // @match        *://*.py4u.net/discuss/*
 // @match        *://*.pythonq.com/*/*/*
@@ -123,6 +127,8 @@
 // @match        *://*.qarchive.ru/*
 // @match        *://*.qaru.tech/questions/*
 // @match        *://*.qarus.ru/*
+// @match        *://*.qastack.in.th/*
+// @match        *://*.qastack.info.tr/*
 // @match        *://*.qastack.net.bd/*
 // @match        *://*.quabr.com/*
 // @match        *://*.quares.ru/?id=*
@@ -136,6 +142,7 @@
 // @match        *://*.ruphp.com/*.html
 // @match        *://*.savepearlharbor.com/?p=*
 // @match        *://*.sbup.com/wiki/*
+// @match        *://*.semicolonworld.com/question/*
 // @match        *://*.serveanswer.com/questions/*
 // @match        *://*.snyk.io/advisor/npm-package/*
 // @match        *://*.sobrelinux.info/questions/*
@@ -143,7 +150,8 @@
 // @match        *://*.sprosi.pro/questions/*
 // @match        *://*.sqlite.in/*
 // @match        *://*.stackanswers.net/questions/*
-// @match        *://*.stackoom.com/question/*
+// @match        *://*.stackguides.com/questions/*
+// @match        *://*.stackoom.com/*question/*
 // @match        *://*.stackoverflood.com/*
 // @match        *://*.stackru.com/questions/*
 // @match        *://*.stormcrow.dev/*/questions/*
@@ -152,6 +160,7 @@
 // @match        *://*.techfeed.net/*
 // @match        *://*.territorioscuola.it/*
 // @match        *://*.thinbug.com/q/*
+// @match        *://*.tipsfordev.com/*
 // @match        *://*.tra-loi-cau-hoi-phat-trien-web.com/vi/*
 // @match        *://*.try2explore.com/*
 // @match        *://*.ubuntugeeks.com/questions/*
@@ -190,6 +199,7 @@
 // @match        *://*.xbuba.com/*
 // @match        *://*.xcv.wiki/*
 // @match        *://*.xiu2.net/it/details/*
+// @match        *://*.xsprogram.com/content/*
 // @match        *://*.xszz.org/*/question-*
 // @match        *://*.ylhow.com/*
 // @match        *://*.yuanmacha.com/*.html
@@ -262,7 +272,7 @@
     var dropMarks = (s) => s && s.replace(/\[(на удержании|on hold|duplikować|duplicado|duplicar|duplikat|dublicate|duplicate|дубликат|закрыто|закрытый|closed|geschlossen|zamknięte|cerrado|重复|repeat)\]\s*$/i, '').trim();
 
     /** Gets the first link by a given selector, that links to an stack exchenge site */
-    function _tc (s) {
+    function _tc(s) {
         var allw = ['stackoverflow.com/q','superuser.com/q','mathoverflow.net/q','askubuntu.com/q','stackexchange.com/q'];
         var nods = all(s);
         for (var nod in nods) for (var pt in allw) if(nods[nod]?.href?.indexOf(allw[pt])>=0) return nods[nod].href;
@@ -572,6 +582,8 @@ a{
             return byHeader('h1', '.badge-info', 'fr');
         case 'e-learn.cn':
             return startsByText('div.content p:last-child', '来源：');
+        case 'edupro.id':
+            return byHeader('h1', '.tag', 'id');
         case 'exceptionshub.com': // site offline / Cloudflare error / 2022-05-01
             return _c(/\.html$/) && byPath(1);
         case 'extutorial.com':
@@ -587,6 +599,8 @@ a{
         case 'javaer101.com':
             lng(_ps[1] == "article"?'ja':_ps[1]);
             return byHeader('h1', 'nav .col-tag', lang);
+        case 'jscodetips.com':
+            return byHeader('h1', '.contentBox > div:nth-child(3) > a', 'en');
         case 'kompsekret.ru':
             return clr('#292d2f') && (urlByImg('https://superuser.com/questions/') || byHeader([lastPathPart().replace(/(-closed|-duplicate)?(\d+)?(\.html)?$/, '').replace(/-/g, ' ')], '.tags a', 'en', ['superuser.com']));
         case 'localcoder.org':
@@ -596,6 +610,9 @@ a{
             if(!_t('h1 a')) return;
             badImgs = true;
             return bySel('a[rel="nofollow"][target="_blank"]') || byHeader([_t('.qa-main-heading h1').innerText.replace(/^(\s+)?([a-z])+\s-/, '').trim()], '.qa-q-view-main .qa-tag-link', 'en', '');
+        case 'microeducate.tech':
+        case 'programmierfrage.com':
+            return _tc('a');
         case 'mlog.club':
             addJS('var redir = window.__NUXT__.data[0].article.sourceUrl; redir && window.location.replace(redir);');
             return lng('zh') && byHeader('h1', [await transTags('.article-tag')], 'zh');
@@ -603,7 +620,7 @@ a{
             return _t('article') && byHeader('h1', 'h4.tags a.item-tag', 'en', ['superuser.com', 'serverfault.com', 'stackoverflow.com', 'stackexchange.com']);
         case 'poweruser.guru':
             return _t('div.post-menu a.suggest-edit-post[href*="superuser.com/questions/"]');
-        case 'progi.pro': //.question-type .author a
+        case 'progi.pro':
             return clr('#4e82c2') && byHeader('h1[itemprop="name"]', '.tag-list a', 'ru');
         case 'proubuntu.ru':
             return byHeader('h1>a>span[itemprop="name"]', [await transTags('a[rel="tag"]')],'ru', ['askubuntu.com']);
@@ -611,6 +628,8 @@ a{
             return _t('div.label-wrap a[href*="stackoverflow.com/"][target="_blank"]')?.href || byHeader('h2#mainTitle', 'a[href*="/tags/"]', 'en');
         case 'ruphp.com':
             return byHeader('h1', '.breadcrumb-item .badge a', 'ru');
+        case 'semicolonworld.com':
+            return byHeader('h1', '.post__category', 'en');
         case 'sobrelinux.info':
             return byHeader('h1', '.tags .tag a', 'pt', ['superuser.com', 'serverfault.com', 'stackoverflow.com', 'stackexchange.com']);
         case 'soinside.com':
@@ -619,7 +638,7 @@ a{
             clr('#999') && lng('en');
             return location.hostname.startsWith('publish.') && all('.panel-body a')[1].href;
         case 'stackoom.com':
-            return byNumber(document.getElementById('question').dataset.questionid);
+            return byNumber(document.querySelector("[id^=question_content_]").id.split("_")[2]);
         case 'stackoverflood.com':
             return (tt = _h.match(/^https?:\/\/stackoverflood\.com\/([a-zA-Z]{2})\/q\/(.+)/)) && byNumber(tt[2]);
         case 'stormcrow.dev':
@@ -628,6 +647,8 @@ a{
             return byHeader('main h1', '.tag', 'ru');
         case 'tencent.com':
             return byHeader('.ask-title h2', _, 'zh');
+        case 'tipsfordev.com':
+            return byHeader('h1', '.blog-pagination > a', 'en');
         case 'utyatnishna.ru':
             return byHeader('h1.entry-title', '.tag', 'ru');
         case 'v-resheno.ru':
@@ -639,6 +660,8 @@ a{
         case 'xiu2.net':
             addJS('var redir = window.__NUXT__.data[0].info.sourceUrl; redir && window.location.replace(redir);');
             return lng('zh') && byHeader('h1', '.contents .tag-time a[href*="/it/tag/"]', 'zh');
+        case 'xsprogram.com':
+            return byHeader('h1', _, 'en');
         case 'xszz.org':
             return clr('#ff6f06') && byHeader('.post-h1title h1', 0, 'en');
         case 'ylhow.com':
@@ -779,6 +802,7 @@ a{
                     'rstopup.com': '.td-post-content .origlink > a',
                     'serveanswer.com':'a[title="Source"]',
                     'sprosi.pro': '#qsource > a',
+                    'stackguides.com': 'a[title="Go to Source post"]',
                     'stackru.com': '.q-source',
                     'try2explore.com': 'div.tagsandsource span.source a[target="_blank"]', // site offline / site not found / 2022-05-01
                     'ubuntugeeks.com': '.question-text > .a-link', // site offline / site not found / 2022-05-01

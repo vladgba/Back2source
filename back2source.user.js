@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name         Back2source
-// @version      0.1.97
+// @version      0.1.98
 // @description  Redirecting to source sites from sites with machine translation, etc.
 // @namespace    vladgba
 // @author       vladgba@gmail.com
@@ -38,14 +38,18 @@
 // @match        *://*.bilee.com/*.html
 // @match        *://*.buildwiki.ru/wiki/*
 // @match        *://*.bytemeta.vip/*
+// @match        *://*.cainiaojiaocheng.com/questions/*
 // @match        *://*.catwolf.org/qs*
 // @match        *://*.ciupacabra.com/*
 // @match        *://*.cloud.tencent.com/developer/ask/*
+// @match        *://*.cndgn.com/question/*
 // @match        *://*.code-examples.net/*/q/*
 // @match        *://*.code.i-harness.com/*/q/*
 // @match        *://*.codefactor.io/repository/*
 // @match        *://*.codegear.dev/*/questions/*
 // @match        *://*.codegrepper.com/*
+// @match        *://*.codeguides.site/questions/*
+// @match        *://*.codehero.jp/*
 // @match        *://*.codeindex.ru/q/*
 // @match        *://*.codengineering.ru/q/*
 // @match        *://*.codenong.com/*
@@ -94,6 +98,7 @@
 // @match        *://*.itdaan.com/*
 // @match        *://*.itnan.ru/post.php*
 // @match        *://*.itranslater.com/qa/details/*
+// @match        *://*.ja.softwareuser.asklobster.com/posts/*
 // @match        *://*.javaer101.com/*/*
 // @match        *://*.jejakjabar.com/wiki/*
 // @match        *://*.jscodetips.com/examples/*
@@ -112,6 +117,7 @@
 // @match        *://*.npmmirror.com/package/*
 // @match        *://*.overcoder.net/q/*
 // @match        *://*.overcoder.ru/q/*
+// @match        *://*.overstack.in/qa/*
 // @match        *://*.pengembangan-web-mp-pd.com/id/*
 // @match        *://*.poweruser.guru/*
 // @match        *://*.prog-help.ru/*
@@ -124,6 +130,7 @@
 // @match        *://*.qa-stack.pl/*
 // @match        *://*.qa.1r1g.com/sf/ask/*
 // @match        *://*.qacode.ru/questions/*
+// @match        *://*.qapicks.com/question/*
 // @match        *://*.qarchive.ru/*
 // @match        *://*.qaru.tech/questions/*
 // @match        *://*.qarus.ru/*
@@ -150,12 +157,15 @@
 // @match        *://*.sprosi.pro/questions/*
 // @match        *://*.sqlite.in/*
 // @match        *://*.stackanswers.net/questions/*
+// @match        *://*.stackfinder.jp.net/questions/*
+// @match        *://*.stackfinder.ru/questions/*
 // @match        *://*.stackguides.com/questions/*
 // @match        *://*.stackoom.com/*question/*
 // @match        *://*.stackoverflood.com/*
 // @match        *://*.stackru.com/questions/*
 // @match        *://*.stormcrow.dev/*/questions/*
 // @match        *://*.switch-case.com/*
+// @match        *://*.sysadminde.com/questions/*
 // @match        *://*.techarks.ru/qa/*
 // @match        *://*.techfeed.net/*
 // @match        *://*.territorioscuola.it/*
@@ -221,7 +231,7 @@
     /** Checks if a given object is a string */
     var _$s = (s) => typeof s === 'string' || s instanceof String;
     /** Gets the subdomain (host part) of the site */
-    var _hp = (p=3) => (ll = location.hostname.split('.')) && ll[ll.length-p];
+    var _hp = (p = 3) => (ll = location.hostname.split('.')) && ll[ll.length-p];
     /** Gets the element by a given selector */
     var _t = (s) => document.querySelector(s);
     /** Tests if the path of the site matches the given regex */
@@ -248,7 +258,7 @@
     var wiki = (l = 0, p = 2, w = true) => 'https://' + (_$s(l) ? l : _ps[l]) + '.wikipedia.org' + (w ? '/wiki/' : '') + (_$s(p) ? p : _ps[p]);
     /** Creates the bottom bar with the text, the code parts and images to search for */
     var prepareSearch = (h, t, s) => promtRedirect(sitecolor, toSearch(h + ' ' + getTags(t).join(' ').replace(/\s+/g, ' '), s), !badCode && allTexts('pre code'), !badImgs && [...new Set([...allAttr('img[src*="://i.stack.imgur.com/"]', 'src'), ...allAttr('a[href*="://i.stack.imgur.com/"]', 'href')])], s);
-    /** Translates a given array of tags */
+    /** Translates all tags given as an array */
     var transTags = async (t) => (await yaTranslate(allTexts(t).join(' '), lang)).split(' ');
     /** Creates the Google search link with the slightly aligned text to search for, the sites to search on, optionally searching for images */
     var toSearch = (s, site, i) => (s = dropMarks(s) && s ? `https://google.com/search?q=` + ((site && Array.isArray(site)) ? (site.length < 1 ? '' : `site%3A` + site.join('+OR+site%3A') + `+`) : `site%3Astackexchange.com+OR+site%3Astackoverflow.com+`) + encodeURIComponent(s) + (i ? '&tbm=isch' : '') : null);
@@ -271,8 +281,8 @@
     /** Removes marks of a string, if it exists */
     var dropMarks = (s) => s && s.replace(/\[(на удержании|on hold|duplikować|duplicado|duplicar|duplikat|dublicate|duplicate|дубликат|закрыто|закрытый|closed|geschlossen|zamknięte|cerrado|重复|repeat)\]\s*$/i, '').trim();
 
-    /** Gets the first link by a given selector, that links to an stack exchenge site */
-    function _tc(s) {
+    /** Gets the first link by a given selector, that links to an stack exchange site */
+    function _tc (s) {
         var allw = ['stackoverflow.com/q','superuser.com/q','mathoverflow.net/q','askubuntu.com/q','stackexchange.com/q'];
         var nods = all(s);
         for (var nod in nods) for (var pt in allw) if(nods[nod]?.href?.indexOf(allw[pt])>=0) return nods[nod].href;
@@ -310,6 +320,7 @@
         scriptElm.appendChild(inlineCode);
         document.body.appendChild(scriptElm);
     }
+
     /** Replaces different quote variants, optionally removes them, replaces various control characters */
     function filterText(text, rmquotes) {
         var out = text.replace(/(\u02B9|\u0374|\u2018|\u201A|\u2039|\u203A|\u201B|\u2019)+/g, '\'').replace(/(\u00AB|\u00BB|\u201E|\u201C|\u201F|\u201D|\u2E42)+/g, '"');
@@ -376,7 +387,7 @@ a{
         if (!q) return null;
         q = 'https://api.browser.yandex.ru/dictionary/translate?statLang=en&targetLang=' + (targetLang ? targetLang : 'en') + '&text=' + encodeURIComponent(q) + (sourceLang ? '&fromLang=' + sourceLang : '')
         try {
-            //dosn't work in chrome
+            //doesn't work in chrome
             return await fetch(q, {
                     mode: 'no-cors',
                     credentials: 'omit'
@@ -492,21 +503,25 @@ a{
         case 'web-gaebal-jilmun-dabbyeon-db.com':
         case 'web-gelistirme-sc.com':
             return bySel('.q-source>a');
-        case 'answacode.com':
-        case 'bestecode.com':
-        case 'bonprog.com':
-        case 'coderquestion.ru':
-        case 'coredump.biz':
-        case 'gitrush.ru':
-        case 'html-agility-pack.net':
-        case 'issue.life':
-        case 'profikoder.com':
-        case 'progaide.com':
-        case 'progexact.com':
-        case 'programqa.com':
-        case 'qaru.tech':
-        case 'thinbug.com':
-        case 'xbuba.com': // site offline / site not found / 2022-05-01
+		case 'answacode.com':
+		case 'asklobster.com':
+		case 'bestecode.com':
+		case 'bonprog.com':
+		case 'cainiaojiaocheng.com':
+		case 'codehero.jp':
+		case 'coderquestion.ru':
+		case 'coredump.biz':
+		case 'gitrush.ru':
+		case 'html-agility-pack.net':
+		case 'issue.life':
+		case 'profikoder.com':
+		case 'progaide.com':
+		case 'progexact.com':
+		case 'programqa.com':
+		case 'qaru.tech':
+		case 'stackfinder.ru':
+		case 'thinbug.com':
+		case 'xbuba.com': // site offline / site not found / 2022-05-01
             return byNumber(_ps[2]);
         case 'antwortenhier.me':
             lng('de');
@@ -520,11 +535,10 @@ a{
         case 'askdev.ru':
             return clr('#970f1b') && urlByImg('https://superuser.com/questions/') || byHeader('h1', [await transTags('.block_taxonomies a')], 'ru');
         case 'askdevz.com':
+        case 'askvoprosy.com':
             return byPath(2);
         case 'askubuntu.ru':
             return byHeader('h1', 'nav .col-tag', 'ru', ['askubuntu.com']);
-        case 'askvoprosy.com':
-            return byPath(2);
         case 'bcqaw.com':
             return byHeader('h1.article-title', _, 'zh');
         case 'bildiredi.com':
@@ -548,6 +562,11 @@ a{
             clr('#2c3e50');
         case 'legkovopros.ru':
             return clr('#55b252') && byHeader('h1', '.tag', 'ru');
+        case 'cndgn.com':
+            return _go("https://" + _ps[2].replace(/(.+)stack/,"$1.stackexchange").replace(/^(stack)$/,"$1overflow") + ".com/questions/" + _ps[3]);
+        case 'codeguides.site':
+        case 'stormcrow.dev':
+            return byNumber(_ps[3]);
         case 'code-examples.net':
         case 'ffff65535.com':
         case 'i-harness.com':
@@ -597,8 +616,7 @@ a{
         case 'itdaan.com':
             return _go(bySel('input[name="url"]', 'value'));
         case 'javaer101.com':
-            lng(_ps[1] == "article"?'ja':_ps[1]);
-            return byHeader('h1', 'nav .col-tag', lang);
+            return byHeader('h1', 'nav .col-tag', _ps[1] == "article" ? 'ja' : _ps[1]);
         case 'jscodetips.com':
             return byHeader('h1', '.contentBox > div:nth-child(3) > a', 'en');
         case 'kompsekret.ru':
@@ -618,12 +636,17 @@ a{
             return lng('zh') && byHeader('h1', [await transTags('.article-tag')], 'zh');
         case 'newbedev.com':
             return _t('article') && byHeader('h1', 'h4.tags a.item-tag', 'en', ['superuser.com', 'serverfault.com', 'stackoverflow.com', 'stackexchange.com']);
+        case 'overstack.in':
+            var title = textContent("h1").split(/ - (.*)/).filter(i => i).pop();
+            return byHeader([title], _, 'en');
         case 'poweruser.guru':
             return _t('div.post-menu a.suggest-edit-post[href*="superuser.com/questions/"]');
         case 'progi.pro':
             return clr('#4e82c2') && byHeader('h1[itemprop="name"]', '.tag-list a', 'ru');
         case 'proubuntu.ru':
             return byHeader('h1>a>span[itemprop="name"]', [await transTags('a[rel="tag"]')],'ru', ['askubuntu.com']);
+        case 'qapicks.com':
+            return byNumber(_ps[2].split('-')[0]);
         case 'recalll.co': // site offline / site not found / 2022-05-01
             return _t('div.label-wrap a[href*="stackoverflow.com/"][target="_blank"]')?.href || byHeader('h2#mainTitle', 'a[href*="/tags/"]', 'en');
         case 'ruphp.com':
@@ -641,8 +664,8 @@ a{
             return byNumber(document.querySelector("[id^=question_content_]").id.split("_")[2]);
         case 'stackoverflood.com':
             return (tt = _h.match(/^https?:\/\/stackoverflood\.com\/([a-zA-Z]{2})\/q\/(.+)/)) && byNumber(tt[2]);
-        case 'stormcrow.dev':
-            return byNumber(_ps[3]);
+        case 'sysadminde.com':
+            return _go('https://serverfault.com/questions/' + _ps[2]);
         case 'techfeed.net':
             return byHeader('main h1', '.tag', 'ru');
         case 'tencent.com':
@@ -767,12 +790,14 @@ a{
         case 'snyk.io':
             return _go('https://www.npmjs.com/'+_ps[3]);
         default:
-            if (_hst('webentwicklung-frage-antwort-db.com.de')) {
-                return bySel('.q-source>a');
-            } else if (_hst('qastack') || _hst('qa-stack')) {
+            if (_hst('qastack') || _hst('qa-stack')) {
                 return bySel('span.text-muted.fake_url a, span.text-muted.fake_url', 'src') ||
                     bySel('.text-muted a:last-child[href*="stackoverflow.com/"],.text-muted a:last-child[href*="stackexchange.com/"],.text-muted a:last-child[href*="serverfault.com/"],.text-muted a:last-child[href*="superuser.com/"],.text-muted a:last-child[href*="mathoverflow.net/"]') ||
                     ((tt = _h.match(/https?:\/\/qa-?stack\.([a-z\.]+)\/([a-z]+)\/([0-9]+)\/(.+)/)) && 'https://' + tt[2] + '.stackexchange.com/questions/' + tt[3] + '/' + tt[4]);
+            } else if (_hst('stackfinder.jp.net')) {
+                return byNumber(_ps[2]);
+            } else if (_hst('webentwicklung-frage-antwort-db.com.de')) {
+                return bySel('.q-source>a');
             } else {
                 console.log('check by selectors');
                 const cssSelectors = {

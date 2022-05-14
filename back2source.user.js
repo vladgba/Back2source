@@ -98,7 +98,7 @@
 // @match        *://*.itdaan.com/*
 // @match        *://*.itnan.ru/post.php*
 // @match        *://*.itranslater.com/qa/details/*
-// @match        *://*.ja.softwareuser.asklobster.com/posts/*
+// @match        *://*.softwareuser.asklobster.com/posts/*
 // @match        *://*.javaer101.com/*/*
 // @match        *://*.jejakjabar.com/wiki/*
 // @match        *://*.jscodetips.com/examples/*
@@ -503,25 +503,25 @@ a{
         case 'web-gaebal-jilmun-dabbyeon-db.com':
         case 'web-gelistirme-sc.com':
             return bySel('.q-source>a');
-		case 'answacode.com':
-		case 'asklobster.com':
-		case 'bestecode.com':
-		case 'bonprog.com':
-		case 'cainiaojiaocheng.com':
-		case 'codehero.jp':
-		case 'coderquestion.ru':
-		case 'coredump.biz':
-		case 'gitrush.ru':
-		case 'html-agility-pack.net':
-		case 'issue.life':
-		case 'profikoder.com':
-		case 'progaide.com':
-		case 'progexact.com':
-		case 'programqa.com':
-		case 'qaru.tech':
-		case 'stackfinder.ru':
-		case 'thinbug.com':
-		case 'xbuba.com': // site offline / site not found / 2022-05-01
+	case 'answacode.com':
+	case 'asklobster.com':
+	case 'bestecode.com':
+	case 'bonprog.com':
+	case 'cainiaojiaocheng.com':
+	case 'codehero.jp':
+	case 'coderquestion.ru':
+	case 'coredump.biz':
+	case 'gitrush.ru':
+	case 'html-agility-pack.net':
+	case 'issue.life':
+	case 'profikoder.com':
+	case 'progaide.com':
+	case 'progexact.com':
+	case 'programqa.com':
+	case 'qaru.tech':
+	case 'stackfinder.ru':
+	case 'thinbug.com':
+	case 'xbuba.com': // site offline / site not found / 2022-05-01
             return byNumber(_ps[2]);
         case 'antwortenhier.me':
             lng('de');

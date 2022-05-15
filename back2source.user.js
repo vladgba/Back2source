@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name         Back2source
-// @version      0.1.98
+// @version      0.1.99
 // @description  Redirecting to source sites from sites with machine translation, etc.
 // @namespace    vladgba
 // @author       vladgba@gmail.com
@@ -25,6 +25,7 @@
 // @match        *://*.answeright.com/*
 // @match        *://*.antwortenhier.me/*
 // @match        *://*.ask-ubuntu.ru/questions/*
+// @match        *://*.askcodez.com/*
 // @match        *://*.askdev.info/questions/*
 // @match        *://*.askdev.ru/q-*
 // @match        *://*.askdev.ru/q/*
@@ -46,6 +47,8 @@
 // @match        *://*.code-examples.net/*/q/*
 // @match        *://*.code.i-harness.com/*/q/*
 // @match        *://*.codefactor.io/repository/*
+// @match        *://*.codefaq.info/*
+// @match        *://*.codefaq.ru/*
 // @match        *://*.codegear.dev/*/questions/*
 // @match        *://*.codegrepper.com/*
 // @match        *://*.codeguides.site/questions/*
@@ -64,7 +67,7 @@
 // @match        *://*.datewiki.ru/wiki/*
 // @match        *://*.de-vraag.com/*
 // @match        *://*.desarrollo-web-br-bd.com/es/*
-// @match        *://*.developreference.com/*
+// @match        *://*.developreference.com/article/*
 // @match        *://*.devfaq.fr/question/*
 // @match        *://*.dir.md/*
 // @match        *://*.donolik.com/*
@@ -79,6 +82,7 @@
 // @match        *://*.fullstackuser.com/questions/*
 // @match        *://*.gaz.wiki/wiki/*
 // @match        *://*.generacodice.com/*
+// @match        *://*.ghcc.net/*
 // @match        *://*.giters.com/*
 // @match        *://*.githubhot.com/*
 // @match        *://*.githublab.com/*/*
@@ -91,6 +95,7 @@
 // @match        *://*.html-agility-pack.net/knowledge-base/*
 // @match        *://*.husl.ru/questions/*
 // @match        *://*.icode9.com/*
+// @match        *://*.iquestion.pro/q/*
 // @match        *://*.issue.life/questions/*
 // @match        *://*.issueantenna.com/*/*
 // @match        *://*.issueexplorer.com/repo/*/*
@@ -171,6 +176,7 @@
 // @match        *://*.territorioscuola.it/*
 // @match        *://*.thinbug.com/q/*
 // @match        *://*.tipsfordev.com/*
+// @match        *://*.tousu.in/qa/*
 // @match        *://*.tra-loi-cau-hoi-phat-trien-web.com/vi/*
 // @match        *://*.try2explore.com/*
 // @match        *://*.ubuntugeeks.com/questions/*
@@ -280,6 +286,8 @@
     var getAttr = (t, a, r, s = '$1') => (t.hasAttribute(a)) && t.getAttribute(a).replace(r, s);
     /** Removes marks of a string, if it exists */
     var dropMarks = (s) => s && s.replace(/\[(на удержании|on hold|duplikować|duplicado|duplicar|duplikat|dublicate|duplicate|дубликат|закрыто|закрытый|closed|geschlossen|zamknięte|cerrado|重复|repeat)\]\s*$/i, '').trim();
+    /** Removes the beginning of a text that precedes a given part */
+    var removePartBefore = (t, p) => t.split(new RegExp('.*?'+ p + '(.*)')).filter(i => i)[0];
 
     /** Gets the first link by a given selector, that links to an stack exchange site */
     function _tc (s) {
@@ -503,25 +511,25 @@ a{
         case 'web-gaebal-jilmun-dabbyeon-db.com':
         case 'web-gelistirme-sc.com':
             return bySel('.q-source>a');
-	case 'answacode.com':
-	case 'asklobster.com':
-	case 'bestecode.com':
-	case 'bonprog.com':
-	case 'cainiaojiaocheng.com':
-	case 'codehero.jp':
-	case 'coderquestion.ru':
-	case 'coredump.biz':
-	case 'gitrush.ru':
-	case 'html-agility-pack.net':
-	case 'issue.life':
-	case 'profikoder.com':
-	case 'progaide.com':
-	case 'progexact.com':
-	case 'programqa.com':
-	case 'qaru.tech':
-	case 'stackfinder.ru':
-	case 'thinbug.com':
-	case 'xbuba.com': // site offline / site not found / 2022-05-01
+        case 'answacode.com':
+        case 'asklobster.com':
+        case 'bestecode.com':
+        case 'bonprog.com':
+        case 'cainiaojiaocheng.com':
+        case 'codehero.jp':
+        case 'coderquestion.ru':
+        case 'coredump.biz':
+        case 'gitrush.ru':
+        case 'html-agility-pack.net':
+        case 'issue.life':
+        case 'profikoder.com':
+        case 'progaide.com':
+        case 'progexact.com':
+        case 'programqa.com':
+        case 'qaru.tech':
+        case 'stackfinder.ru':
+        case 'thinbug.com':
+        case 'xbuba.com': // site offline / site not found / 2022-05-01
             return byNumber(_ps[2]);
         case 'antwortenhier.me':
             lng('de');
@@ -595,8 +603,8 @@ a{
             return byNumber(_ps[1].split('-')[3]);
         case 'developreference.com':
             var parts = document.title.split(' - ');
-            var devpref = _ps[3].replace(/[-+ ]/g, ' ').replace(/(%ef|%bc|%9f)+$/i, '');
-            return (await findByApi(devpref)) || (await findByApi(parts.join(' - '), _, _, [parts.pop()])) || promtRedirect(sitecolor, toSearch(devpref));
+            var devpref = _ps[3].replace(/[-+]/g, ' ').replace(/(%ef|%bc|%9f)+$/i, '');
+            return (await findByApi(devpref)) || (await findByApi(parts[0], _, _, [parts.pop()])) || promtRedirect(sitecolor, toSearch(devpref));
         case 'devfaq.fr':
             return byHeader('h1', '.badge-info', 'fr');
         case 'e-learn.cn':
@@ -611,6 +619,8 @@ a{
             return byHeader('h1', 'aside li a[href*="fixes.pub/topics"]', 'ja');
         case 'fluffyfables.com':
             return _c(/^\/([0-9]+)([a-z\-]+)$/) && clr('#2c3e50') && (badCode = true) && byHeader('h1', 0, 'nl');
+        case 'ghcc.net':
+            return _go([...document.querySelectorAll(".clearfix code")].pop().innerHTML);
         case 'icode9.com':
             return _go(textContent('#paragraph > p:last-child').split('来源：', 2)[1].trim());
         case 'itdaan.com':
@@ -637,8 +647,7 @@ a{
         case 'newbedev.com':
             return _t('article') && byHeader('h1', 'h4.tags a.item-tag', 'en', ['superuser.com', 'serverfault.com', 'stackoverflow.com', 'stackexchange.com']);
         case 'overstack.in':
-            var title = textContent("h1").split(/ - (.*)/).filter(i => i).pop();
-            return byHeader([title], _, 'en');
+            return byHeader([removePartBefore(textContent('h1'),' - ')], _, 'en');
         case 'poweruser.guru':
             return _t('div.post-menu a.suggest-edit-post[href*="superuser.com/questions/"]');
         case 'progi.pro':
@@ -672,6 +681,8 @@ a{
             return byHeader('.ask-title h2', _, 'zh');
         case 'tipsfordev.com':
             return byHeader('h1', '.blog-pagination > a', 'en');
+        case 'tousu.in':
+            return byHeader([removePartBefore(textContent('h1'),' - ')], _, 'en');
         case 'utyatnishna.ru':
             return byHeader('h1.entry-title', '.tag', 'ru');
         case 'v-resheno.ru':
@@ -805,15 +816,19 @@ a{
                     'answer-id.com': 'a.link', // all pages 404 / 2022-05-01
                     'answeright.com': 'a.link',
                     'ask-ubuntu.ru': '.q-source',
+                    'askcodez.com': '.orli a',
                     'askdev.info': '.question-text > .a-link', // site offline / site not found / 2022-05-01
-                    'catwolf.org': '.text-left.small>a',
-                    'codegear.dev': 'p.text-right>a',
+                    'catwolf.org': '.text-left.small > a',
+                    'codefaq.info': '.aa-link',
+                    'codefaq.ru': '.aa-link',
+                    'codegear.dev': 'p.text-right > a',
                     'e-learn.cn': '.zhuanzai + div a',
                     'fooobar.com': '.question-text > .aa-link', // all pages 404 / 2022-05-01
                     'generacodice.com': '#fontePrincipale > a.link',
                     'howtosolves.com': '#question .question .source a',
                     'husl.ru': '.source-link',
                     'itranslater.com': '.body > div:last-child > a',
+                    'iquestion.pro': '.box-body div:nth-child(3) .pull-right',
                     'overcoder.net': '.info_outlink',
                     'overcoder.ru': '.info_outlink',
                     'prog-help.ru': '.eclip > a',

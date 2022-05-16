@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name         Back2source
-// @version      0.1.100
+// @version      0.1.101
 // @description  Redirecting to source sites from sites with machine translation, etc.
 // @namespace    vladgba
 // @author       vladgba@gmail.com
@@ -20,10 +20,12 @@
 // @match        *://*.360wiki.ru/wiki/*
 // @match        *://*.8101010108.cn/zh/*
 // @match        *://*.abcdef.wiki/*
+// @match        *://*.amuddycup.com/*
 // @match        *://*.answacode.com/questions/*
 // @match        *://*.answer-id.com/*
 // @match        *://*.answeright.com/*
 // @match        *://*.antwortenhier.me/*
+// @match        *://*.arip-photo.org/*
 // @match        *://*.ask-ubuntu.ru/questions/*
 // @match        *://*.askcodez.com/*
 // @match        *://*.askdev.info/questions/*
@@ -34,6 +36,7 @@
 // @match        *://*.askfrance.me/*
 // @match        *://*.askubuntu.ru/questions/*
 // @match        *://*.askvoprosy.com/voprosy/*
+// @match        *://*.athabasca-foto.com/*
 // @match        *://*.bcqaw.com/*.html
 // @match        *://*.bildiredi.com/*
 // @match        *://*.bilee.com/*.html
@@ -41,6 +44,7 @@
 // @match        *://*.bytemeta.vip/*
 // @match        *://*.cainiaojiaocheng.com/questions/*
 // @match        *://*.catwolf.org/qs*
+// @match        *://*.cfadnc.org/*
 // @match        *://*.ciupacabra.com/*
 // @match        *://*.cloud.tencent.com/developer/ask/*
 // @match        *://*.cndgn.com/question/*
@@ -64,18 +68,24 @@
 // @match        *://*.coderquestion.ru/q/*
 // @match        *://*.codersatellite.com/question-with-identifier-*
 // @match        *://*.coredump.biz/questions/*
+// @match        *://*.culinarydegree.info/*
 // @match        *://*.datewiki.ru/wiki/*
 // @match        *://*.de-vraag.com/*
 // @match        *://*.desarrollo-web-br-bd.com/es/*
 // @match        *://*.developreference.com/article/*
 // @match        *://*.devfaq.fr/question/*
 // @match        *://*.dir.md/*
+// @match        *://*.domainelespailles.net/*
 // @match        *://*.donolik.com/*
 // @match        *://*.e-learn.cn/topic/*
+// @match        *://*.ec-europe.org/*
+// @match        *://*.ecnf2016.org/*
 // @match        *://*.edupro.id/questions/*
 // @match        *://*.encyclopaedia.bid/*
 // @match        *://*.exceptionshub.com/*
 // @match        *://*.extutorial.com/ask/*
+// @match        *://*.faithcov.org/*
+// @match        *://*.fitforlearning.org/*
 // @match        *://*.fixes.pub/*/*.html
 // @match        *://*.fluffyfables.com/*
 // @match        *://*.fooobar.com/questions/*
@@ -88,6 +98,7 @@
 // @match        *://*.githublab.com/*/*
 // @match        *://*.githubmemory.com/*
 // @match        *://*.gitrush.ru/*/*/*
+// @match        *://*.gupgallery.com/*
 // @match        *://*.higithub.com/*/*
 // @match        *://*.hmong.ru/wiki/*
 // @match        *://*.hmong.wiki/wiki/*
@@ -103,7 +114,6 @@
 // @match        *://*.itdaan.com/*
 // @match        *://*.itnan.ru/post.php*
 // @match        *://*.itranslater.com/qa/details/*
-// @match        *://*.softwareuser.asklobster.com/posts/*
 // @match        *://*.javaer101.com/*/*
 // @match        *://*.jejakjabar.com/wiki/*
 // @match        *://*.jscodetips.com/examples/*
@@ -119,15 +129,23 @@
 // @match        *://*.mlink.in/*
 // @match        *://*.mlog.club/article/*
 // @match        *://*.newbedev.com/*
+// @match        *://*.noblenaz.org/*
 // @match        *://*.npmmirror.com/package/*
+// @match        *://*.ntcdoon.org/*
+// @match        *://*.ourladylakes.org/*
 // @match        *://*.overcoder.net/q/*
 // @match        *://*.overcoder.ru/q/*
 // @match        *://*.overstack.in/qa/*
+// @match        *://*.pakostnici.com/*
+// @match        *://*.panaindustrial.com/*
+// @match        *://*.pcbconline.org/*
 // @match        *://*.pengembangan-web-mp-pd.com/id/*
 // @match        *://*.poweruser.guru/*
 // @match        *://*.prog-help.ru/*
 // @match        *://*.progi.pro/*
 // @match        *://*.programmierfrage.com/items/*
+// @match        *://*.projectbackpack.org/*
+// @match        *://*.projectbackpack.org/*
 // @match        *://*.proubuntu.ru/*/*
 // @match        *://*.py4u.net/discuss/*
 // @match        *://*.pythonq.com/*/*/*
@@ -153,12 +171,17 @@
 // @match        *://*.ru.encyclopedia.kz/index.php/*
 // @match        *://*.rudata.ru/wiki/*
 // @match        *://*.ruphp.com/*.html
+// @match        *://*.safehavenpetrescue.org/*
 // @match        *://*.savepearlharbor.com/?p=*
 // @match        *://*.sbup.com/wiki/*
+// @match        *://*.sch22.org/*
 // @match        *://*.semicolonworld.com/question/*
 // @match        *://*.serveanswer.com/questions/*
+// @match        *://*.sierrasummit2005.org/*
+// @match        *://*.siwib.org/*
 // @match        *://*.snyk.io/advisor/npm-package/*
 // @match        *://*.sobrelinux.info/questions/*
+// @match        *://*.softwareuser.asklobster.com/posts/*
 // @match        *://*.soinside.com/question/*
 // @match        *://*.sprosi.pro/questions/*
 // @match        *://*.sqlite.in/*
@@ -171,27 +194,30 @@
 // @match        *://*.stackovergo.com/*q/*
 // @match        *://*.stackru.com/questions/*
 // @match        *://*.stormcrow.dev/*/questions/*
+// @match        *://*.sunflowercreations.org/*
 // @match        *://*.switch-case.com/*
 // @match        *://*.sysadminde.com/questions/*
 // @match        *://*.techarks.ru/qa/*
 // @match        *://*.techfeed.net/*
 // @match        *://*.territorioscuola.it/*
+// @match        *://*.theshuggahpies.com/*
 // @match        *://*.thinbug.com/q/*
 // @match        *://*.tipsfordev.com/*
 // @match        *://*.tousu.in/qa/*
 // @match        *://*.tra-loi-cau-hoi-phat-trien-web.com/vi/*
 // @match        *://*.try2explore.com/*
-// @match        *://*.ubuntugeeks.com/questions/*
 // @match        *://*.ubuntuaa.com/*q/*
+// @match        *://*.ubuntugeeks.com/questions/*
 // @match        *://*.utyatnishna.ru/info/*
 // @match        *://*.uwenku.com/question/*
 // @match        *://*.v-resheno.ru/*
 // @match        *://*.voidcc.com/question/*
 // @match        *://*.vvikipedla.com/wiki/*
+// @match        *://*.waymanamechurch.org/*
 // @match        *://*.web-answers.ru/*/*
-// @match        *://*.web-dev-qa-db-pt.com/pt/*
 // @match        *://*.web-dev-qa-db-fr.com/fr/*
 // @match        *://*.web-dev-qa-db-ja.com/ja/*
+// @match        *://*.web-dev-qa-db-pt.com/pt/*
 // @match        *://*.web-gaebal-jilmun-dabbyeon-db.com/ko/*
 // @match        *://*.web-gelistirme-sc.com/tr/*
 // @match        *://*.webentwicklung-frage-antwort-db.com.de/de/*
@@ -225,6 +251,7 @@
 // @match        *://*.younggeeks.in/questions/*
 // @match        *://*.yuanmacha.com/*.html
 // @match        *://*.zapytay.com/*
+// @match        *://*.zsharp.org/*
 // @include      *://qastack.tld/*
 // ==/UserScript==
 (async () => {
@@ -517,6 +544,35 @@ a{
         case 'web-gelistirme-sc.com':
         case 'web-dev-qa-db-pt.com':
             return bySel('.q-source > a');
+		case 'amuddycup.com':
+		case 'arip-photo.org':
+		case 'athabasca-foto.com':
+		case 'cfadnc.org':
+		case 'culinarydegree.info':
+		case 'domainelespailles.net':
+		case 'ec-europe.org':
+		case 'ecnf2016.org':
+		case 'faithcov.org':
+		case 'fitforlearning.org':
+		case 'fluffyfables.com':
+		case 'gupgallery.com':
+		case 'noblenaz.org':
+		case 'ntcdoon.org':
+		case 'ourladylakes.org':
+		case 'pakostnici.com':
+		case 'panaindustrial.com':
+		case 'pcbconline.org':
+		case 'projectbackpack.org':
+		case 'safehavenpetrescue.org':
+		case 'sch22.org':
+		case 'sierrasummit2005.org':
+		case 'siwib.org':
+		case 'sunflowercreations.org':
+		case 'theshuggahpies.com':
+		case 'waymanamechurch.org':
+		case 'zsharp.org':
+            var fbip = document.querySelector('meta[property="og:image"]').content.split('/').pop().split('.')[0].replace(/-/g,' ');
+            return fbip && (await findByApi(fbip) || prepareSearch(fbip, '', ['stackoverflow.com','superuser.com','askubuntu.com','stackexchange.com']));
         case 'answacode.com':
         case 'asklobster.com':
         case 'bestecode.com':
@@ -626,8 +682,6 @@ a{
             return byHeader('h1', 'a[href*="/tags/"]', 'en');
         case 'fixes.pub':
             return byHeader('h1', 'aside li a[href*="fixes.pub/topics"]', 'ja');
-        case 'fluffyfables.com':
-            return _c(/^\/([0-9]+)([a-z\-]+)$/) && clr('#2c3e50') && (badCode = true) && byHeader('h1', 0, 'nl');
         case 'ghcc.net':
             return _go([...document.querySelectorAll(".clearfix code")].pop().innerHTML);
         case 'icode9.com':

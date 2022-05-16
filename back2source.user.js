@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name         Back2source
-// @version      0.1.101
+// @version      0.1.102
 // @description  Redirecting to source sites from sites with machine translation, etc.
 // @namespace    vladgba
 // @author       vladgba@gmail.com
@@ -18,6 +18,7 @@
 // @noframes
 // @match        *://*.*.nina.az/wiki/*
 // @match        *://*.360wiki.ru/wiki/*
+// @match        *://*.5axxw.com/*/*/*
 // @match        *://*.8101010108.cn/zh/*
 // @match        *://*.abcdef.wiki/*
 // @match        *://*.amuddycup.com/*
@@ -26,6 +27,7 @@
 // @match        *://*.answeright.com/*
 // @match        *://*.antwortenhier.me/*
 // @match        *://*.arip-photo.org/*
+// @match        *://*.ask-dev.ru/info/*
 // @match        *://*.ask-ubuntu.ru/questions/*
 // @match        *://*.askcodez.com/*
 // @match        *://*.askdev.info/questions/*
@@ -71,6 +73,7 @@
 // @match        *://*.culinarydegree.info/*
 // @match        *://*.datewiki.ru/wiki/*
 // @match        *://*.de-vraag.com/*
+// @match        *://*.debugko.com/article/*
 // @match        *://*.desarrollo-web-br-bd.com/es/*
 // @match        *://*.developreference.com/article/*
 // @match        *://*.devfaq.fr/question/*
@@ -114,8 +117,10 @@
 // @match        *://*.itdaan.com/*
 // @match        *://*.itnan.ru/post.php*
 // @match        *://*.itranslater.com/qa/details/*
+// @match        *://*.jablogs.com/detail/*
 // @match        *://*.javaer101.com/*/*
 // @match        *://*.jejakjabar.com/wiki/*
+// @match        *://*.jpdebug.com/p/*
 // @match        *://*.jscodetips.com/examples/*
 // @match        *://*.jsrepos.com/*/*
 // @match        *://*.kompsekret.ru/q/*
@@ -532,6 +537,8 @@ a{
     switch (host) {
         case '1r1g.com':
             return clr('#343a40') && byHeader();
+        case '5axxw.com':
+            return byHeader('h1','.badge-tag','zh') && byHeader('h2',_,'zh');
         case '8101010108.cn':
         case 'desarrollo-web-br-bd.com':
         case 'pengembangan-web-mp-pd.com':
@@ -602,6 +609,9 @@ a{
         case 'askentire.net':
             clr('#2c3e50') && lng('ru');
             return byHeader('h1', [await transTags('ul.x-tags li a[href*="/t/"]')], lang);
+        case 'ask-dev.ru':
+        case 'coderoad.in':
+            return byPath(3);
         case 'askdev.ru':
             return clr('#970f1b') && urlByImg('https://superuser.com/questions/') || byHeader('h1', [await transTags('.block_taxonomies a')], 'ru');
         case 'askdevz.com':
@@ -659,10 +669,11 @@ a{
         case 'coderedirect.com': // site offline / timeout / 2022-05-04
         case 'fullstackuser.com':
             return byHeader('h1', '.custom-head .post-tag', 'en');
-        case 'coderoad.in':
-            return byPath(3);
         case 'codersatellite.com': // site offline / timeout / 2022-05-01
             return byNumber(_ps[1].split('-')[3]);
+        case 'debugko.com':
+        case 'jablogs.com':
+            return byHeader('h1', _, 'ja');
         case 'developreference.com':
             var parts = document.title.split(' - ');
             var devpref = _ps[3].replace(/[-+]/g, ' ').replace(/(%ef|%bc|%9f)+$/i, '');
@@ -893,6 +904,7 @@ a{
                     'husl.ru': '.source-link',
                     'itranslater.com': '.body > div:last-child > a',
                     'iquestion.pro': '.box-body div:nth-child(3) .pull-right',
+                    'jpdebug.com': '.text-warning',
                     'nuomiphp.com': '.alert-warning a',
                     'overcoder.net': '.info_outlink',
                     'overcoder.ru': '.info_outlink',

@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name         Back2source
-// @version      0.1.99
+// @version      0.1.100
 // @description  Redirecting to source sites from sites with machine translation, etc.
 // @namespace    vladgba
 // @author       vladgba@gmail.com
@@ -149,6 +149,7 @@
 // @match        *://*.reponse-question-developpement-web-bd.com/fr/*
 // @match        *://*.respuestas.me/*
 // @match        *://*.risposta-alla-domanda-sullo-sviluppo-web-bd.com/it/*
+// @match        *://*.routinepanic.com/questions/*
 // @match        *://*.ru.encyclopedia.kz/index.php/*
 // @match        *://*.rudata.ru/wiki/*
 // @match        *://*.ruphp.com/*.html
@@ -167,6 +168,7 @@
 // @match        *://*.stackguides.com/questions/*
 // @match        *://*.stackoom.com/*question/*
 // @match        *://*.stackoverflood.com/*
+// @match        *://*.stackovergo.com/*q/*
 // @match        *://*.stackru.com/questions/*
 // @match        *://*.stormcrow.dev/*/questions/*
 // @match        *://*.switch-case.com/*
@@ -180,12 +182,14 @@
 // @match        *://*.tra-loi-cau-hoi-phat-trien-web.com/vi/*
 // @match        *://*.try2explore.com/*
 // @match        *://*.ubuntugeeks.com/questions/*
+// @match        *://*.ubuntuaa.com/*q/*
 // @match        *://*.utyatnishna.ru/info/*
 // @match        *://*.uwenku.com/question/*
 // @match        *://*.v-resheno.ru/*
 // @match        *://*.voidcc.com/question/*
 // @match        *://*.vvikipedla.com/wiki/*
 // @match        *://*.web-answers.ru/*/*
+// @match        *://*.web-dev-qa-db-pt.com/pt/*
 // @match        *://*.web-dev-qa-db-fr.com/fr/*
 // @match        *://*.web-dev-qa-db-ja.com/ja/*
 // @match        *://*.web-gaebal-jilmun-dabbyeon-db.com/ko/*
@@ -218,6 +222,7 @@
 // @match        *://*.xsprogram.com/content/*
 // @match        *://*.xszz.org/*/question-*
 // @match        *://*.ylhow.com/*
+// @match        *://*.younggeeks.in/questions/*
 // @match        *://*.yuanmacha.com/*.html
 // @match        *://*.zapytay.com/*
 // @include      *://qastack.tld/*
@@ -510,7 +515,8 @@ a{
         case 'web-dev-qa-db-ja.com':
         case 'web-gaebal-jilmun-dabbyeon-db.com':
         case 'web-gelistirme-sc.com':
-            return bySel('.q-source>a');
+        case 'web-dev-qa-db-pt.com':
+            return bySel('.q-source > a');
         case 'answacode.com':
         case 'asklobster.com':
         case 'bestecode.com':
@@ -610,7 +616,10 @@ a{
         case 'e-learn.cn':
             return startsByText('div.content p:last-child', '来源：');
         case 'edupro.id':
-            return byHeader('h1', '.tag', 'id');
+            lng('id');
+        case 'younggeeks.in':
+            lng('hi');
+            return clr("#2c3e50") && byHeader('h1', '.tag', lang);
         case 'exceptionshub.com': // site offline / Cloudflare error / 2022-05-01
             return _c(/\.html$/) && byPath(1);
         case 'extutorial.com':
@@ -640,6 +649,7 @@ a{
             return bySel('a[rel="nofollow"][target="_blank"]') || byHeader([_t('.qa-main-heading h1').innerText.replace(/^(\s+)?([a-z])+\s-/, '').trim()], '.qa-q-view-main .qa-tag-link', 'en', '');
         case 'microeducate.tech':
         case 'programmierfrage.com':
+        case 'routinepanic.com':
             return _tc('a');
         case 'mlog.club':
             addJS('var redir = window.__NUXT__.data[0].article.sourceUrl; redir && window.location.replace(redir);');
@@ -808,7 +818,7 @@ a{
             } else if (_hst('stackfinder.jp.net')) {
                 return byNumber(_ps[2]);
             } else if (_hst('webentwicklung-frage-antwort-db.com.de')) {
-                return bySel('.q-source>a');
+                return bySel('.q-source > a');
             } else {
                 console.log('check by selectors');
                 const cssSelectors = {
@@ -829,6 +839,7 @@ a{
                     'husl.ru': '.source-link',
                     'itranslater.com': '.body > div:last-child > a',
                     'iquestion.pro': '.box-body div:nth-child(3) .pull-right',
+                    'nuomiphp.com': '.alert-warning a',
                     'overcoder.net': '.info_outlink',
                     'overcoder.ru': '.info_outlink',
                     'prog-help.ru': '.eclip > a',
@@ -843,9 +854,11 @@ a{
                     'serveanswer.com':'a[title="Source"]',
                     'sprosi.pro': '#qsource > a',
                     'stackguides.com': 'a[title="Go to Source post"]',
+                    'stackovergo.com': '.qeditacti a:nth-child(2)',
                     'stackru.com': '.q-source',
                     'try2explore.com': 'div.tagsandsource span.source a[target="_blank"]', // site offline / site not found / 2022-05-01
                     'ubuntugeeks.com': '.question-text > .a-link', // site offline / site not found / 2022-05-01
+                    'ubuntuaa.com': '.post-info a',
                     'uwenku.com': '.post-info a', // site offline / site not found / 2022-05-01
                     'voidcc.com': '.source > a',
                     'web-answers.ru': '.source > a',

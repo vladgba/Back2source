@@ -264,6 +264,10 @@
 // @match        *://*.zsharp.org/*
 // @include      *://qastack.tld/*
 // ==/UserScript==
+/* jshint esversion: 10 */
+/* eslint quotes: ['warn', 'single'] */
+/* eslint userscripts/better-use-match: 'off' */
+/* eslint no-fallthrough: 'off' */
 (async () => {
     'use strict';
 
@@ -309,7 +313,7 @@
     /** Translates all tags given as an array */
     var transTags = async (t) => (await yaTranslate(allTexts(t).join(' '), lang)).split(' ');
     /** Creates the Google search link with the slightly aligned text to search for, the sites to search on, optionally searching for images */
-    var toSearch = (s, site, i) => (s = dropMarks(s) && s ? `https://google.com/search?q=` + ((site && Array.isArray(site)) ? (site.length < 1 ? '' : `site%3A` + site.join('+OR+site%3A') + `+`) : `site%3Astackexchange.com+OR+site%3Astackoverflow.com+`) + encodeURIComponent(s) + (i ? '&tbm=isch' : '') : null);
+    var toSearch = (s, site, i) => (s = dropMarks(s) && s ? 'https://google.com/search?q=' + ((site && Array.isArray(site)) ? (site.length < 1 ? '' : 'site%3A' + site.join('+OR+site%3A') + '+') : 'site%3Astackexchange.com+OR+site%3Astackoverflow.com+') + encodeURIComponent(s) + (i ? '&tbm=isch' : '') : null);
     /** Gets the textcontent of a selected element, if it exists */
     var textContent = (s) => _t(s)?.textContent.trim();
     /** Creates StackOverflow link by article id, optionally mofifying it before */
@@ -336,8 +340,8 @@
         var allw = ['stackoverflow.com/q','superuser.com/q','mathoverflow.net/q','askubuntu.com/q','stackexchange.com/q'];
         var nods = all(s);
         for (var nod in nods) for (var pt in allw) if(nods[nod]?.href?.indexOf(allw[pt])>=0) return nods[nod].href;
-        allw = allw.map(i => i.replace("/q","/a/"));
-        for (nod in nods) for (pt in allw) if(nods[nod]?.href?.indexOf(allw[pt])>=0) return nods[nod].href.replace("/a/","/q/");
+        allw = allw.map(i => i.replace('/q','/a/'));
+        for (nod in nods) for (pt in allw) if(nods[nod]?.href?.indexOf(allw[pt])>=0) return nods[nod].href.replace('/a/','/q/');
     }
 
     /** Gets the image url with the site where the image is from, optionally with by selector and cutting the path */
@@ -419,8 +423,8 @@ a{
 </style>
 <div class="m">[ Back2Source ]
 <a id="ok-btn" href="#">Try to find the original question? <span class="search-icon">&#8981;<span></a> ` +
-                (codef && codef.length > 0 ? `<a href="` + toSearch(codef.join(' '), site) + `">[ByCode]</a>` : ``) +
-                (imgf && imgf.length > 0 ? `<a href="` + toSearch(imgf.join(' '), site, true) + `">[ByImgs]</a>` : ``) +
+                (codef && codef.length > 0 ? '<a href="' + toSearch(codef.join(' '), site) + '">[ByCode]</a>' : '') +
+                (imgf && imgf.length > 0 ? '<a href="' + toSearch(imgf.join(' '), site, true) + '">[ByImgs]</a>' : '') +
                 `<span id="close-btn">&#10006;</span>
 </div>`;
             shadowRoot.querySelector('#ok-btn').href = link;
@@ -651,7 +655,7 @@ a{
         case 'legkovopros.ru':
             return clr('#55b252') && byHeader('h1', '.tag', 'ru');
         case 'cndgn.com':
-            return _go("https://" + _ps[2].replace(/(.+)stack/,"$1.stackexchange").replace(/^(stack)$/,"$1overflow") + ".com/questions/" + _ps[3]);
+            return _go('https://' + _ps[2].replace(/(.+)stack/,'$1.stackexchange').replace(/^(stack)$/,'$1overflow') + '.com/questions/' + _ps[3]);
         case 'codeguides.site':
         case 'stormcrow.dev':
             return byNumber(_ps[3]);
@@ -694,7 +698,7 @@ a{
             lng('id');
         case 'younggeeks.in':
             lng('hi');
-            return clr("#2c3e50") && byHeader('h1', '.tag', lang);
+            return clr('#2c3e50') && byHeader('h1', '.tag', lang);
         case 'exceptionshub.com': // site offline / Cloudflare error / 2022-05-01
             return _c(/\.html$/) && byPath(1);
         case 'extutorial.com':
@@ -702,13 +706,13 @@ a{
         case 'fixes.pub':
             return byHeader('h1', 'aside li a[href*="fixes.pub/topics"]', 'ja');
         case 'ghcc.net':
-            return _go([...document.querySelectorAll(".clearfix code")].pop().innerHTML);
+            return _go([...document.querySelectorAll('.clearfix code')].pop().innerHTML);
         case 'icode9.com':
             return _go(textContent('#paragraph > p:last-child').split('来源：', 2)[1].trim());
         case 'itdaan.com':
             return _go(bySel('input[name="url"]', 'value'));
         case 'javaer101.com':
-            return byHeader('h1', 'nav .col-tag', _ps[1] == "article" ? 'ja' : _ps[1]);
+            return byHeader('h1', 'nav .col-tag', _ps[1] == 'article' ? 'ja' : _ps[1]);
         case 'jscodetips.com':
             return byHeader('h1', '.contentBox > div:nth-child(3) > a', 'en');
         case 'kompsekret.ru':
@@ -753,7 +757,7 @@ a{
             clr('#999') && lng('en');
             return location.hostname.startsWith('publish.') && all('.panel-body a')[1].href;
         case 'stackoom.com':
-            return byNumber(document.querySelector("[id^=question_content_]").id.split("_")[2]);
+            return byNumber(document.querySelector('[id^=question_content_]').id.split('_')[2]);
         case 'stackoverflood.com':
             return (tt = _h.match(/^https?:\/\/stackoverflood\.com\/([a-zA-Z]{2})\/q\/(.+)/)) && byNumber(tt[2]);
         case 'sysadminde.com':
@@ -854,7 +858,7 @@ a{
         case 'githubmemory.com':
             return _c(/^\/(repo\/|@)/) && _go('https://github.com' + _p.replace(/^\/(repo\/|@)/,'/'));
         case 'codefactor.io':
-            document.addEventListener("DOMContentLoaded", (e)=>{
+            document.addEventListener('DOMContentLoaded', (e)=>{
                 if (_ps[2]=='github' && _ps[5]=='source') return _go(bySel('a[title^="View on"]') + '/blob/' + _ps.splice(6).join('/'));
                 return _go(bySel('a.page-title-link') || bySel('a[analytics-event^="View file on"]') || bySel('a[title^="View on"]'));
             });
@@ -862,9 +866,9 @@ a{
         case 'giters.com':
             return _go('https://github.com' + _p);
         case 'githublab.com':
-            return _go('https://github.com' + _p.replace(/^\/(repository|profile)/,'').replace(/^(\/issues)(\/.*\/.*)(\/.*)/,"$2$1$3").replace(/^(\/issues)(\/.*\/.*)/,"$2$1"));
+            return _go('https://github.com' + _p.replace(/^\/(repository|profile)/,'').replace(/^(\/issues)(\/.*\/.*)(\/.*)/,'$2$1$3').replace(/^(\/issues)(\/.*\/.*)/,'$2$1'));
         case 'higithub.com':
-            return _go('https://github.com' + _p.replace(/\/(repo\/|user$)/,'/').replace(/^(\/.*)(\/issue)(\/.*)(\/.*)/,"$1$3$2s$4").replace(/^(\/.*)\/repo_(issues)(\/.*)/,"$1$3/$2"));
+            return _go('https://github.com' + _p.replace(/\/(repo\/|user$)/,'/').replace(/^(\/.*)(\/issue)(\/.*)(\/.*)/,'$1$3$2s$4').replace(/^(\/.*)\/repo_(issues)(\/.*)/,'$1$3/$2'));
         case 'issueantenna.com':
             return _go('https://github.com' + _p.replace(/^\/(repo|author)/,''));
         case 'issueexplorer.com': // other content / 2022-05-01

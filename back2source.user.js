@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name         Back2source
-// @version      0.1.102
+// @version      0.1.103
 // @description  Redirecting to source sites from sites with machine translation, etc.
 // @namespace    vladgba
 // @author       vladgba@gmail.com
@@ -110,6 +110,7 @@
 // @match        *://*.husl.ru/questions/*
 // @match        *://*.icode9.com/*
 // @match        *://*.iquestion.pro/q/*
+// @match        *://*.isolution.pro/q/*
 // @match        *://*.issue.life/questions/*
 // @match        *://*.issueantenna.com/*/*
 // @match        *://*.issueexplorer.com/repo/*/*
@@ -123,16 +124,19 @@
 // @match        *://*.jpdebug.com/p/*
 // @match        *://*.jscodetips.com/examples/*
 // @match        *://*.jsrepos.com/*/*
+// @match        *://*.knews.vip/q/*
 // @match        *://*.kompsekret.ru/q/*
 // @match        *://*.kotaeta.com/*
 // @match        *://*.legkovopros.ru/questions/*
 // @match        *://*.lifesaver.codes/answer/*
 // @match        *://*.livepcwiki.ru/wiki/*
+// @match        *://*.living-sun.com/*/*
 // @match        *://*.localcoder.org/*
 // @match        *://*.microeducate.tech/*
 // @match        *://*.mihalicdictionary.org/*
 // @match        *://*.mlink.in/*
 // @match        *://*.mlog.club/article/*
+// @match        *://*.narkive.jp/*
 // @match        *://*.newbedev.com/*
 // @match        *://*.noblenaz.org/*
 // @match        *://*.npmmirror.com/package/*
@@ -225,6 +229,7 @@
 // @match        *://*.web-dev-qa-db-pt.com/pt/*
 // @match        *://*.web-gaebal-jilmun-dabbyeon-db.com/ko/*
 // @match        *://*.web-gelistirme-sc.com/tr/*
+// @match        *://*.webdevdesigner.com/q-*
 // @match        *://*.webentwicklung-frage-antwort-db.com.de/de/*
 // @match        *://*.while-do.com/*
 // @match        *://*.wiki-org.ru/*
@@ -327,10 +332,12 @@
     var removePartBefore = (t, p) => t.split(new RegExp('.*?'+ p + '(.*)')).filter(i => i)[0];
 
     /** Gets the first link by a given selector, that links to an stack exchange site */
-    function _tc (s) {
+    function _tc(s) {
         var allw = ['stackoverflow.com/q','superuser.com/q','mathoverflow.net/q','askubuntu.com/q','stackexchange.com/q'];
         var nods = all(s);
         for (var nod in nods) for (var pt in allw) if(nods[nod]?.href?.indexOf(allw[pt])>=0) return nods[nod].href;
+        allw = allw.map(i => i.replace("/q","/a/"));
+        for (nod in nods) for (pt in allw) if(nods[nod]?.href?.indexOf(allw[pt])>=0) return nods[nod].href.replace("/a/","/q/");
     }
 
     /** Gets the image url with the site where the image is from, optionally with by selector and cutting the path */
@@ -616,6 +623,7 @@ a{
             return clr('#970f1b') && urlByImg('https://superuser.com/questions/') || byHeader('h1', [await transTags('.block_taxonomies a')], 'ru');
         case 'askdevz.com':
         case 'askvoprosy.com':
+        case 'living-sun.com':
             return byPath(2);
         case 'askubuntu.ru':
             return byHeader('h1', 'nav .col-tag', 'ru', ['askubuntu.com']);
@@ -762,6 +770,9 @@ a{
             return byHeader('h1.entry-title', '.tag', 'ru');
         case 'v-resheno.ru':
             return textContent('.linkurl > b');
+        case 'webdevdesigner.com':
+            var wdd = _ps[1].replace(/^q-/, '').replace(/-\d+$/, '').replace(/-/g, ' ');
+            return (await findByApi(wdd)) || prepareSearch(wdd, '.tags a', ['superuser.com', 'stackoverflow.com', 'stackexchange.com']);
         case 'wikiroot.ru':
             tt = _t('section section div.footer-post div.d-inline-block button');
             tt = tt && (getAttr(tt, 'data-url', /https?:\/\/wikiroot\.ru\/comment\/new\/([0-9]+)/) || getAttr(tt, 'data-target', /#buttoncollapse-([0-9]+)/));
@@ -902,9 +913,12 @@ a{
                     'generacodice.com': '#fontePrincipale > a.link',
                     'howtosolves.com': '#question .question .source a',
                     'husl.ru': '.source-link',
+                    'isolution.pro': '.box-body div:nth-child(3) .pull-right',
                     'itranslater.com': '.body > div:last-child > a',
                     'iquestion.pro': '.box-body div:nth-child(3) .pull-right',
                     'jpdebug.com': '.text-warning',
+                    'knews.vip': '.box-body div:nth-child(3) .pull-right',
+                    'narkive.jp': '#postq > div > div > a',
                     'nuomiphp.com': '.alert-warning a',
                     'overcoder.net': '.info_outlink',
                     'overcoder.ru': '.info_outlink',

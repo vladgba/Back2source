@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name         Back2source
-// @version      0.1.103
+// @version      0.1.104
 // @description  Redirecting to source sites from sites with machine translation, etc.
 // @namespace    vladgba
 // @author       vladgba@gmail.com
@@ -141,6 +141,7 @@
 // @match        *://*.noblenaz.org/*
 // @match        *://*.npmmirror.com/package/*
 // @match        *://*.ntcdoon.org/*
+// @match        *://*.nuomiphp.com/*/*
 // @match        *://*.ourladylakes.org/*
 // @match        *://*.overcoder.net/q/*
 // @match        *://*.overcoder.ru/q/*

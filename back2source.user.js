@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name         Back2source
-// @version      0.1.105
+// @version      0.1.106
 // @description  Redirecting to source sites from sites with machine translation, etc.
 // @namespace    vladgba
 // @author       vladgba@gmail.com
@@ -76,6 +76,7 @@
 // @match        *://*.debugcn.com/*article/*
 // @match        *://*.debugko.com/article/*
 // @match        *://*.desarrollo-web-br-bd.com/es/*
+// @match        *://*.devdreamz.com/question/*
 // @match        *://*.developreference.com/article/*
 // @match        *://*.devfaq.fr/question/*
 // @match        *://*.dir.md/*
@@ -113,6 +114,7 @@
 // @match        *://*.intellipaat.com/community/*
 // @match        *://*.iquestion.pro/q/*
 // @match        *://*.isolution.pro/q/*
+// @match        *://*.itectec.com/*/*
 // @match        *://*.issue.life/questions/*
 // @match        *://*.issueantenna.com/*/*
 // @match        *://*.issueexplorer.com/repo/*/*
@@ -210,6 +212,7 @@
 // @match        *://*.stackovergo.com/*q/*
 // @match        *://*.stackru.com/questions/*
 // @match        *://*.stormcrow.dev/*/questions/*
+// @match        *://*.string.quest/read/*
 // @match        *://*.sunflowercreations.org/*
 // @match        *://*.switch-case.com/*
 // @match        *://*.sysadminde.com/questions/*
@@ -321,7 +324,7 @@
     /** Translates all tags given as an array */
     var transTags = async (t) => (await yaTranslate(allTexts(t).join(' '), lang)).split(' ');
     /** Creates the Google search link with the slightly aligned text to search for, the sites to search on, optionally searching for images */
-    var toSearch = (s, site, i) => (s = dropMarks(s) && s ? 'https://google.com/search?q=' + ((site && Array.isArray(site)) ? (site.length < 1 ? '' : 'site%3A' + site.join('+OR+site%3A') + '+') : 'site%3Astackexchange.com+OR+site%3Astackoverflow.com+') + encodeURIComponent(s) + (i ? '&tbm=isch' : '') : null);
+    var toSearch = (s, site, i) => (s = dropMarks(s) && s ? 'https://google.com/search?q=' + encodeURIComponent(s) + ((site && Array.isArray(site)) ? (site.length < 1 ? '' : '+site%3A' + site.join('+OR+site%3A') + '+') : 'site%3Astackexchange.com+OR+site%3Astackoverflow.com+') + (i ? '&tbm=isch' : '') : null);
     /** Gets the textcontent of a selected element, if it exists */
     var textContent = (s) => _t(s)?.textContent.trim();
     /** Creates StackOverflow link by article id, optionally mofifying it before */
@@ -409,7 +412,7 @@
     z-index: 16777271;
     width: 100%;
     color: white;
-    background-color: ${bgcolor};
+    background-color: ${bgcolor}!important;
 }
 .m{
     padding: 14px;
@@ -663,7 +666,7 @@ a{
         case 'legkovopros.ru':
             return clr('#55b252') && byHeader('h1', '.tag', 'ru');
         case 'cndgn.com':
-            return _go('https://' + _ps[2].replace(/(.+)stack/,'$1.stackexchange').replace(/^(stack)$/,'$1overflow') + '.com/questions/' + _ps[3]);
+            return 'https://' + _ps[2].replace(/(.+)stack/,'$1.stackexchange').replace(/^(stack)$/,'$1overflow') + '.com/questions/' + _ps[3];
         case 'codeguides.site':
         case 'stormcrow.dev':
             return byNumber(_ps[3]);
@@ -673,7 +676,7 @@ a{
         case 'src-bin.com':
             return byNumber(lastPathPart(), 16);
         case 'codegrepper.com':
-            return _go(bySel('.answer_source>a'));
+            return bySel('.answer_source > a');
         case 'codeindex.ru': // site offline / Cloudflare error / 2022-05-01
         case 'qa-help.ru': // site offline / Cloudflare error / 2022-05-01
             return bySel('span.text-muted.fake_url', 'src') || _tc('.text-muted.small');
@@ -699,6 +702,8 @@ a{
         case 'xsprogram.com':
             lng('en');
             return byHeader('h1', _, lang);
+        case 'devdreamz.com':
+            return byHeader('h1','[class^="ButtonTags_tags_container"] a', 'en');
         case 'developreference.com':
             var parts = document.title.split(' - ');
             var devpref = _ps[3].replace(/[-+]/g, ' ').replace(/(%ef|%bc|%9f)+$/i, '');
@@ -720,12 +725,10 @@ a{
             return byHeader('h1', 'aside li a[href*="fixes.pub/topics"]', 'ja');
         case 'ghcc.net':
             return _go([...document.querySelectorAll('.clearfix code')].pop().innerHTML);
-        case 'icode9.com':
-            return _go(textContent('#paragraph > p:last-child').split('来源：', 2)[1].trim());
         case 'intellipaat.com':
             return byHeader('h1', '.qa-q-view-tag-item', 'en');
-        case 'itdaan.com':
-            return _go(bySel('input[name="url"]', 'value'));
+        case 'itectec.com':
+            return byHeader([removePartBefore('h1', ' – ')], '.badge','en', ['askubuntu.com','mathoverflow.net','serverfault.com','stackexchange.com','stackoverflow.com','superuser.com']);
         case 'javaer101.com':
             return byHeader('h1', 'nav .col-tag', _ps[1] == 'article' ? 'ja' : _ps[1]);
         case 'jike.in':
@@ -749,8 +752,8 @@ a{
         case 'routinepanic.com':
             return _tc('a');
         case 'mediatagtw.com':
-            if (_ps[1] == 'article') _go(bySel('#social_only>h3>a'));
-            if (_ps[1] == 'exit') _go(bySel('.h5>a'));
+            if (_ps[1] == 'article') _go(bySel('#social_only > h3 > a'));
+            if (_ps[1] == 'exit') _go(bySel('.h5 > a'));
             break;
         case 'mlog.club':
             addJS('var redir = window.__NUXT__.data[0].article.sourceUrl; redir && window.location.replace(redir);');
@@ -784,8 +787,10 @@ a{
             return byNumber(document.querySelector('[id^=question_content_]').id.split('_')[2]);
         case 'stackoverflood.com':
             return (tt = _h.match(/^https?:\/\/stackoverflood\.com\/([a-zA-Z]{2})\/q\/(.+)/)) && byNumber(tt[2]);
+        case 'string.quest':
+            return byHeader([removePartBefore('h1', ' - ')], '.tag-links a', 'zh');
         case 'sysadminde.com':
-            return _go('https://serverfault.com/questions/' + _ps[2]);
+            return 'https://serverfault.com/questions/' + _ps[2];
         case 'techfeed.net':
             return byHeader('main h1', '.tag', 'ru');
         case 'tencent.com':
@@ -904,8 +909,12 @@ a{
         /* Other */
         case 'dir.md':
             return (tt = _h.match(/^https?:\/\/dir.md\/(.+)(&|\?)host=([a-zA-Z\.-]+)$/)) && _go('https://' + tt[3] + '/' + tt[1]);
+        case 'icode9.com':
+            return _go(textContent('#paragraph > p:last-child').split('来源：', 2)[1].trim());
         case 'it-brain.online':
             return 'https://tutorialspoint.com/' + _ps[2];
+        case 'itdaan.com':
+            return _go(bySel('input[name="url"]', 'value'));
         case 'itnan.ru':
             return _h.match(/https?:\/\/([a-zA-Z]{2})?\.?itnan\.ru\/post\.php\?(.+)?p=([0-9]+)/) && bySel('article.entry .entry-meta a[title="Оригинальная публикация"]');
         case 'npmmirror.com':

@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name         Back2source
-// @version      0.1.104
+// @version      0.1.105
 // @description  Redirecting to source sites from sites with machine translation, etc.
 // @namespace    vladgba
 // @author       vladgba@gmail.com
@@ -123,6 +123,7 @@
 // @match        *://*.jablogs.com/detail/*
 // @match        *://*.javaer101.com/*/*
 // @match        *://*.jejakjabar.com/wiki/*
+// @match        *://*.jike.in/forum.php?mod=viewthread&tid=*
 // @match        *://*.jpdebug.com/p/*
 // @match        *://*.jscodetips.com/examples/*
 // @match        *://*.jsrepos.com/*/*
@@ -135,6 +136,7 @@
 // @match        *://*.living-sun.com/*/*
 // @match        *://*.localcoder.org/*
 // @match        *://*.microeducate.tech/*
+// @match        *://*.mediatagtw.com/*/*
 // @match        *://*.mihalicdictionary.org/*
 // @match        *://*.mlink.in/*
 // @match        *://*.mlog.club/article/*
@@ -144,6 +146,7 @@
 // @match        *://*.npmmirror.com/package/*
 // @match        *://*.ntcdoon.org/*
 // @match        *://*.nuomiphp.com/*/*
+// @match        *://*.ostack.cn/forum.php?mod=viewthread&tid=*
 // @match        *://*.ourladylakes.org/*
 // @match        *://*.overcoder.net/q/*
 // @match        *://*.overcoder.ru/q/*
@@ -172,6 +175,7 @@
 // @match        *://*.qastack.in.th/*
 // @match        *://*.qastack.info.tr/*
 // @match        *://*.qastack.net.bd/*
+// @match        *://*.qi-u.com/forum.php?mod=viewthread&tid=*
 // @match        *://*.quabr.com/*
 // @match        *://*.quares.ru/?id=*
 // @match        *://*.question-it.com/questions/*
@@ -337,7 +341,7 @@
     /** Removes marks of a string, if it exists */
     var dropMarks = (s) => s && s.replace(/\[(на удержании|on hold|duplikować|duplicado|duplicar|duplikat|dublicate|duplicate|дубликат|закрыто|закрытый|closed|geschlossen|zamknięte|cerrado|重复|repeat)\]\s*$/i, '').trim();
     /** Removes the beginning of a text that precedes a given part */
-    var removePartBefore = (t, p) => t.split(new RegExp('.*?'+ p + '(.*)')).filter(i => i)[0];
+    var removePartBefore = (t, p) => textContent(t).replace(new RegExp('.*?'+ p), '');
 
     /** Gets the first link by a given selector, that links to an stack exchange site */
     function _tc(s) {
@@ -724,6 +728,11 @@ a{
             return _go(bySel('input[name="url"]', 'value'));
         case 'javaer101.com':
             return byHeader('h1', 'nav .col-tag', _ps[1] == 'article' ? 'ja' : _ps[1]);
+        case 'jike.in':
+        case 'ostack.cn':
+        case 'qi-u.com':
+            var jt = textContent('h1').split(' - ');
+            return byHeader([removePartBefore('h1',' - ')], (jt.length > 1 ? jt[0] : _), 'en');
         case 'jscodetips.com':
             return byHeader('h1', '.contentBox > div:nth-child(3) > a', 'en');
         case 'kompsekret.ru':
@@ -739,13 +748,17 @@ a{
         case 'programmierfrage.com':
         case 'routinepanic.com':
             return _tc('a');
+        case 'mediatagtw.com':
+            if (_ps[1] == 'article') _go(bySel('#social_only>h3>a'));
+            if (_ps[1] == 'exit') _go(bySel('.h5>a'));
+            break;
         case 'mlog.club':
             addJS('var redir = window.__NUXT__.data[0].article.sourceUrl; redir && window.location.replace(redir);');
             return lng('zh') && byHeader('h1', [await transTags('.article-tag')], 'zh');
         case 'newbedev.com':
             return _t('article') && byHeader('h1', 'h4.tags a.item-tag', 'en', ['superuser.com', 'serverfault.com', 'stackoverflow.com', 'stackexchange.com']);
         case 'overstack.in':
-            return byHeader([removePartBefore(textContent('h1'),' - ')], _, 'en');
+            return byHeader([removePartBefore('h1',' - ')], _, 'en');
         case 'poweruser.guru':
             return _t('div.post-menu a.suggest-edit-post[href*="superuser.com/questions/"]');
         case 'progi.pro':
@@ -780,9 +793,9 @@ a{
         case 'tipsfordev.com':
             return byHeader('h1', '.blog-pagination > a', 'en');
         case 'tousu.in':
-            return byHeader([removePartBefore(textContent('h1'),' - ')], _, 'en');
+            return byHeader([removePartBefore('h1',' - ')], _, 'en');
         case 'tutorialmore.com':
-            return byHeader([removePartBefore(textContent('h1'),' - ')], '.tags a', 'ja', ['superuser.com', 'stackoverflow.com', 'stackexchange.com']);
+            return byHeader([removePartBefore('h1',' - ')], '.tags a', 'ja', ['superuser.com', 'stackoverflow.com', 'stackexchange.com']);
         case 'utyatnishna.ru':
             return byHeader('h1.entry-title', '.tag', 'ru');
         case 'v-resheno.ru':

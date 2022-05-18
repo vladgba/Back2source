@@ -73,6 +73,7 @@
 // @match        *://*.culinarydegree.info/*
 // @match        *://*.datewiki.ru/wiki/*
 // @match        *://*.de-vraag.com/*
+// @match        *://*.debugcn.com/*article/*
 // @match        *://*.debugko.com/article/*
 // @match        *://*.desarrollo-web-br-bd.com/es/*
 // @match        *://*.developreference.com/article/*
@@ -109,6 +110,7 @@
 // @match        *://*.html-agility-pack.net/knowledge-base/*
 // @match        *://*.husl.ru/questions/*
 // @match        *://*.icode9.com/*
+// @match        *://*.intellipaat.com/community/*
 // @match        *://*.iquestion.pro/q/*
 // @match        *://*.isolution.pro/q/*
 // @match        *://*.issue.life/questions/*
@@ -216,6 +218,7 @@
 // @match        *://*.tousu.in/qa/*
 // @match        *://*.tra-loi-cau-hoi-phat-trien-web.com/vi/*
 // @match        *://*.try2explore.com/*
+// @match        *://*.tutorialmore.com/questions-*
 // @match        *://*.ubuntuaa.com/*q/*
 // @match        *://*.ubuntugeeks.com/questions/*
 // @match        *://*.utyatnishna.ru/info/*
@@ -684,9 +687,14 @@ a{
             return byHeader('h1', '.custom-head .post-tag', 'en');
         case 'codersatellite.com': // site offline / timeout / 2022-05-01
             return byNumber(_ps[1].split('-')[3]);
+        case 'debugcn.com':
+            lng(_ps[1] == 'article' ? 'zh' : _ps[1]);
         case 'debugko.com':
         case 'jablogs.com':
-            return byHeader('h1', _, 'ja');
+            lng('ja');
+        case 'xsprogram.com':
+            lng('en');
+            return byHeader('h1', _, lang);
         case 'developreference.com':
             var parts = document.title.split(' - ');
             var devpref = _ps[3].replace(/[-+]/g, ' ').replace(/(%ef|%bc|%9f)+$/i, '');
@@ -710,6 +718,8 @@ a{
             return _go([...document.querySelectorAll('.clearfix code')].pop().innerHTML);
         case 'icode9.com':
             return _go(textContent('#paragraph > p:last-child').split('来源：', 2)[1].trim());
+        case 'intellipaat.com':
+            return byHeader('h1', '.qa-q-view-tag-item', 'en');
         case 'itdaan.com':
             return _go(bySel('input[name="url"]', 'value'));
         case 'javaer101.com':
@@ -771,6 +781,8 @@ a{
             return byHeader('h1', '.blog-pagination > a', 'en');
         case 'tousu.in':
             return byHeader([removePartBefore(textContent('h1'),' - ')], _, 'en');
+        case 'tutorialmore.com':
+            return byHeader([removePartBefore(textContent('h1'),' - ')], '.tags a', 'ja', ['superuser.com', 'stackoverflow.com', 'stackexchange.com']);
         case 'utyatnishna.ru':
             return byHeader('h1.entry-title', '.tag', 'ru');
         case 'v-resheno.ru':
@@ -785,8 +797,6 @@ a{
         case 'xiu2.net':
             addJS('var redir = window.__NUXT__.data[0].info.sourceUrl; redir && window.location.replace(redir);');
             return lng('zh') && byHeader('h1', '.contents .tag-time a[href*="/it/tag/"]', 'zh');
-        case 'xsprogram.com':
-            return byHeader('h1', _, 'en');
         case 'xszz.org':
             return clr('#ff6f06') && byHeader('.post-h1title h1', 0, 'en');
         case 'ylhow.com':

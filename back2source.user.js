@@ -324,7 +324,7 @@
     /** Translates all tags given as an array */
     var transTags = async (t) => (await yaTranslate(allTexts(t).join(' '), lang)).split(' ');
     /** Creates the Google search link with the slightly aligned text to search for, the sites to search on, optionally searching for images */
-    var toSearch = (s, site, i) => (s = dropMarks(s) && s ? 'https://google.com/search?q=' + encodeURIComponent(s) + ((site && Array.isArray(site)) ? (site.length < 1 ? '' : '+site%3A' + site.join('+OR+site%3A') + '+') : 'site%3Astackexchange.com+OR+site%3Astackoverflow.com+') + (i ? '&tbm=isch' : '') : null);
+    var toSearch = (s, site, i) => (s = dropMarks(s) && s ? 'https://google.com/search?q=' + ((site && Array.isArray(site)) ? (site.length < 1 ? '' : 'site%3A' + site.join('+OR+site%3A') + '+') : 'site%3Astackexchange.com+OR+site%3Astackoverflow.com+') + encodeURIComponent(s) + (i ? '&tbm=isch' : '') : null);
     /** Gets the textcontent of a selected element, if it exists */
     var textContent = (s) => _t(s)?.textContent.trim();
     /** Creates StackOverflow link by article id, optionally mofifying it before */
@@ -806,7 +806,7 @@ a{
         case 'v-resheno.ru':
             return textContent('.linkurl > b');
         case 'webdevdesigner.com':
-            var wdd = _ps[1].replace(/^q-/, '').replace(/-\d+$/, '').replace(/-/g, ' ');
+            var wdd = (_ps[1] == 'q' ? _ps[2] : _ps[1].replace(/^q-/, '')).replace(/-\d+$/, '').replace(/-/g, ' ');
             return (await findByApi(wdd)) || prepareSearch(wdd, '.tags a', ['superuser.com', 'stackoverflow.com', 'stackexchange.com']);
         case 'wikiroot.ru':
             tt = _t('section section div.footer-post div.d-inline-block button');

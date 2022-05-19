@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name         Back2source
-// @version      0.1.106
+// @version      0.1.107
 // @description  Redirecting to source sites from sites with machine translation, etc.
 // @namespace    vladgba
 // @author       vladgba@gmail.com
@@ -85,6 +85,7 @@
 // @match        *://*.e-learn.cn/topic/*
 // @match        *://*.ec-europe.org/*
 // @match        *://*.ecnf2016.org/*
+// @match        *://*.editcode.net/article-*
 // @match        *://*.edupro.id/questions/*
 // @match        *://*.encyclopaedia.bid/*
 // @match        *://*.exceptionshub.com/*
@@ -107,6 +108,7 @@
 // @match        *://*.higithub.com/*/*
 // @match        *://*.hmong.ru/wiki/*
 // @match        *://*.hmong.wiki/wiki/*
+// @match        *://*.howtobuildsoftware.com/index.php/how-do/*
 // @match        *://*.howtosolves.com/q/*
 // @match        *://*.html-agility-pack.net/knowledge-base/*
 // @match        *://*.husl.ru/questions/*
@@ -181,6 +183,7 @@
 // @match        *://*.quabr.com/*
 // @match        *://*.quares.ru/?id=*
 // @match        *://*.question-it.com/questions/*
+// @match        *://*.questu.ru/questions/*
 // @match        *://*.recalll.co/*
 // @match        *://*.reponse-question-developpement-web-bd.com/fr/*
 // @match        *://*.respuestas.me/*
@@ -712,6 +715,8 @@ a{
             return byHeader('h1', '.badge-info', 'fr');
         case 'e-learn.cn':
             return startsByText('div.content p:last-child', '来源：');
+        case 'editcode.net':
+            return byHeader([removePartBefore('h1', ':')], _,'en');
         case 'edupro.id':
             lng('id');
         case 'younggeeks.in':
@@ -725,6 +730,8 @@ a{
             return byHeader('h1', 'aside li a[href*="fixes.pub/topics"]', 'ja');
         case 'ghcc.net':
             return _go([...document.querySelectorAll('.clearfix code')].pop().innerHTML);
+        case 'howtobuildsoftware.com':
+            return byHeader([dropMarks(removePartBefore('title',' - '))], '#list .email-content-subtitle a', 'en');
         case 'intellipaat.com':
             return byHeader('h1', '.qa-q-view-tag-item', 'en');
         case 'itectec.com':
@@ -770,6 +777,8 @@ a{
             return byHeader('h1>a>span[itemprop="name"]', [await transTags('a[rel="tag"]')],'ru', ['askubuntu.com']);
         case 'qapicks.com':
             return byNumber(_ps[2].split('-')[0]);
+        case 'questu.ru':
+            return byInner('a', 'источник');
         case 'recalll.co': // site offline / site not found / 2022-05-01
             return _t('div.label-wrap a[href*="stackoverflow.com/"][target="_blank"]')?.href || byHeader('h2#mainTitle', 'a[href*="/tags/"]', 'en');
         case 'ruphp.com':

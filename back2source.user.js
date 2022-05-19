@@ -240,7 +240,7 @@
 // @match        *://*.web-dev-qa-db-pt.com/pt/*
 // @match        *://*.web-gaebal-jilmun-dabbyeon-db.com/ko/*
 // @match        *://*.web-gelistirme-sc.com/tr/*
-// @match        *://*.webdevdesigner.com/q-*
+// @match        *://*.webdevdesigner.com/q*
 // @match        *://*.webentwicklung-frage-antwort-db.com.de/de/*
 // @match        *://*.while-do.com/*
 // @match        *://*.wiki-org.ru/*

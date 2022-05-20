@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name         Back2source
-// @version      0.1.107
+// @version      0.1.108
 // @description  Redirecting to source sites from sites with machine translation, etc.
 // @namespace    vladgba
 // @author       vladgba@gmail.com
@@ -145,6 +145,7 @@
 // @match        *://*.mlink.in/*
 // @match        *://*.mlog.club/article/*
 // @match        *://*.narkive.jp/*
+// @match        *://*.nwikiit.cyou/wiki/*
 // @match        *://*.newbedev.com/*
 // @match        *://*.noblenaz.org/*
 // @match        *://*.npmmirror.com/package/*
@@ -237,6 +238,7 @@
 // @match        *://*.voidcc.com/question/*
 // @match        *://*.vvikipedla.com/wiki/*
 // @match        *://*.waymanamechurch.org/*
+// @match        *://*.wekeepcoding.com/article/*/*
 // @match        *://*.web-answers.ru/*/*
 // @match        *://*.web-dev-qa-db-fr.com/fr/*
 // @match        *://*.web-dev-qa-db-ja.com/ja/*
@@ -271,6 +273,7 @@
 // @match        *://*.xiu2.net/it/details/*
 // @match        *://*.xsprogram.com/content/*
 // @match        *://*.xszz.org/*/question-*
+// @match        *://*.yingqusp.com/so/*
 // @match        *://*.ylhow.com/*
 // @match        *://*.younggeeks.in/questions/*
 // @match        *://*.yuanmacha.com/*.html
@@ -814,6 +817,8 @@ a{
             return byHeader('h1.entry-title', '.tag', 'ru');
         case 'v-resheno.ru':
             return textContent('.linkurl > b');
+        case 'wekeepcoding.com':
+            return byHeader('h4', _, 'en');
         case 'webdevdesigner.com':
             var wdd = (_ps[1] == 'q' ? _ps[2] : _ps[1].replace(/^q-/, '')).replace(/-\d+$/, '').replace(/-/g, ' ');
             return (await findByApi(wdd)) || prepareSearch(wdd, '.tags a', ['superuser.com', 'stackoverflow.com', 'stackexchange.com']);
@@ -837,6 +842,7 @@ a{
         case 'hmong.ru':
         case 'hmong.wiki':
         case 'livepcwiki.ru':
+        case 'nwikiit.cyou':
         case 'vvikipedla.com':
         case 'wiki2.wiki':
         case 'wikichi.ru':
@@ -988,6 +994,7 @@ a{
                     'uwenku.com': '.post-info a', // site offline / site not found / 2022-05-01
                     'voidcc.com': '.source > a',
                     'web-answers.ru': '.source > a',
+                    'yingqusp.com': '.container>div>div>div>p>a'
                 };
                 link = cssSelectors[host] && _tc(cssSelectors[host]);
                 console.log(link);

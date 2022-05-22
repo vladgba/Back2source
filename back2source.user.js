@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name         Back2source
-// @version      0.1.108
+// @version      0.1.109
 // @description  Redirecting to source sites from sites with machine translation, etc.
 // @namespace    vladgba
 // @author       vladgba@gmail.com
@@ -113,6 +113,7 @@
 // @match        *://*.html-agility-pack.net/knowledge-base/*
 // @match        *://*.husl.ru/questions/*
 // @match        *://*.icode9.com/*
+// @match        *://*.icopy.site/questions/*
 // @match        *://*.intellipaat.com/community/*
 // @match        *://*.iquestion.pro/q/*
 // @match        *://*.isolution.pro/q/*
@@ -151,7 +152,7 @@
 // @match        *://*.npmmirror.com/package/*
 // @match        *://*.ntcdoon.org/*
 // @match        *://*.nuomiphp.com/*/*
-// @match        *://*.ostack.cn/forum.php?mod=viewthread&tid=*
+// @match        *://*.ostack.cn/*?*=*
 // @match        *://*.ourladylakes.org/*
 // @match        *://*.overcoder.net/q/*
 // @match        *://*.overcoder.ru/q/*
@@ -186,6 +187,7 @@
 // @match        *://*.question-it.com/questions/*
 // @match        *://*.questu.ru/questions/*
 // @match        *://*.recalll.co/*
+// @match        *://*.reddit.fun/*/*
 // @match        *://*.reponse-question-developpement-web-bd.com/fr/*
 // @match        *://*.respuestas.me/*
 // @match        *://*.risposta-alla-domanda-sullo-sviluppo-web-bd.com/it/*
@@ -510,7 +512,7 @@ a{
      * @param {string[]} [tags]
      */
     async function findByApi(q, before, after, tags) {
-        var dfgdr = q && fetch(
+        var dfgdr = (q = dropMarks(q)) && q && fetch(
             `https://api.stackexchange.com/2.2/search?page=1&pagesize=1&order=desc&sort=relevance&intitle=${encodeURIComponent(q)}&site=stackoverflow` +
             (after ? '&fromdate=' + (after.getTime() / 1000 - 120 | 0) : '') +
             (before ? '&todate=' + (before.getTime() / 1000 + 120 | 0) : '') +
@@ -530,7 +532,7 @@ a{
      * @param {string} [s] - target site(s) (def: ['stackoverflow.com'])
      */
     async function byHeader(h, t, l, s) {
-        var sbh = filterText((l == 'en') ? (Array.isArray(h) ? h[0] : textContent(h ? h : 'h1')) : await yaTranslate(getHeader(h), l), 1);
+        var sbh = (l == 'en') ? (Array.isArray(h) ? h[0] : textContent(h ? h : 'h1')) : filterText(await yaTranslate(getHeader(h), l), 1);
         return sbh && (await findByApi(sbh, _, _, getTags(t)) || prepareSearch(sbh, t, s));
     }
 
@@ -579,33 +581,33 @@ a{
         case 'web-gelistirme-sc.com':
         case 'web-dev-qa-db-pt.com':
             return bySel('.q-source > a');
-		case 'amuddycup.com':
-		case 'arip-photo.org':
-		case 'athabasca-foto.com':
-		case 'cfadnc.org':
-		case 'culinarydegree.info':
-		case 'domainelespailles.net':
-		case 'ec-europe.org':
-		case 'ecnf2016.org':
-		case 'faithcov.org':
-		case 'fitforlearning.org':
-		case 'fluffyfables.com':
-		case 'gupgallery.com':
-		case 'noblenaz.org':
-		case 'ntcdoon.org':
-		case 'ourladylakes.org':
-		case 'pakostnici.com':
-		case 'panaindustrial.com':
-		case 'pcbconline.org':
-		case 'projectbackpack.org':
-		case 'safehavenpetrescue.org':
-		case 'sch22.org':
-		case 'sierrasummit2005.org':
-		case 'siwib.org':
-		case 'sunflowercreations.org':
-		case 'theshuggahpies.com':
-		case 'waymanamechurch.org':
-		case 'zsharp.org':
+        case 'amuddycup.com':
+        case 'arip-photo.org':
+        case 'athabasca-foto.com':
+        case 'cfadnc.org':
+        case 'culinarydegree.info':
+        case 'domainelespailles.net':
+        case 'ec-europe.org':
+        case 'ecnf2016.org':
+        case 'faithcov.org':
+        case 'fitforlearning.org':
+        case 'fluffyfables.com':
+        case 'gupgallery.com':
+        case 'noblenaz.org':
+        case 'ntcdoon.org':
+        case 'ourladylakes.org':
+        case 'pakostnici.com':
+        case 'panaindustrial.com':
+        case 'pcbconline.org':
+        case 'projectbackpack.org':
+        case 'safehavenpetrescue.org':
+        case 'sch22.org':
+        case 'sierrasummit2005.org':
+        case 'siwib.org':
+        case 'sunflowercreations.org':
+        case 'theshuggahpies.com':
+        case 'waymanamechurch.org':
+        case 'zsharp.org':
             var fbip = document.querySelector('meta[property="og:image"]').content.split('/').pop().split('.')[0].replace(/-/g,' ');
             return fbip && (await findByApi(fbip) || prepareSearch(fbip, '', ['stackoverflow.com','superuser.com','askubuntu.com','stackexchange.com']));
         case 'answacode.com':
@@ -613,11 +615,12 @@ a{
         case 'bestecode.com':
         case 'bonprog.com':
         case 'cainiaojiaocheng.com':
-        case 'codehero.jp':
+        case 'codehero.jp': // site offline / empty site / 2022-05-22
         case 'coderquestion.ru':
         case 'coredump.biz':
         case 'gitrush.ru':
         case 'html-agility-pack.net':
+        case 'icopy.site':
         case 'issue.life':
         case 'profikoder.com':
         case 'progaide.com':
@@ -674,7 +677,7 @@ a{
         case 'cndgn.com':
             return 'https://' + _ps[2].replace(/(.+)stack/,'$1.stackexchange').replace(/^(stack)$/,'$1overflow') + '.com/questions/' + _ps[3];
         case 'codeguides.site':
-        case 'stormcrow.dev':
+        case 'stormcrow.dev': // site offline / other content /2022-05-22
             return byNumber(_ps[3]);
         case 'code-examples.net':
         case 'ffff65535.com':
@@ -695,7 +698,7 @@ a{
             return byNumber(_ps[1]);
         case 'coder.work':
             return bySel('div>p>a[rel="noreferrer noopener nofollow"]') || startsByText('p', 'stackoverflow链接', 'a[href*="stackoverflow.com"]') || startsByText('p', 'stackoverflow原址', 'a[href*="stackoverflow.com"]') || byHeader('h1', _/*'div[style="width: 100%;"] a[href*="/blog?tag="]'*/, 'zh');
-        case 'coderedirect.com': // site offline / timeout / 2022-05-04
+        case 'coderedirect.com': // site redirects to fullstackuser.com / 2022-05-22
         case 'fullstackuser.com':
             return byHeader('h1', '.custom-head .post-tag', 'en');
         case 'codersatellite.com': // site offline / timeout / 2022-05-01
@@ -734,7 +737,7 @@ a{
         case 'ghcc.net':
             return _go([...document.querySelectorAll('.clearfix code')].pop().innerHTML);
         case 'howtobuildsoftware.com':
-            return byHeader([dropMarks(removePartBefore('title',' - '))], '#list .email-content-subtitle a', 'en');
+            return byHeader([removePartBefore('title',' - ')], '#list .email-content-subtitle a', 'en');
         case 'intellipaat.com':
             return byHeader('h1', '.qa-q-view-tag-item', 'en');
         case 'itectec.com':
@@ -784,6 +787,8 @@ a{
             return byInner('a', 'источник');
         case 'recalll.co': // site offline / site not found / 2022-05-01
             return _t('div.label-wrap a[href*="stackoverflow.com/"][target="_blank"]')?.href || byHeader('h2#mainTitle', 'a[href*="/tags/"]', 'en');
+        case 'reddit.fun':
+            return byHeader('h1', '.qa-q-view-tags .qa-tag-link', 'en');
         case 'ruphp.com':
             return byHeader('h1', '.breadcrumb-item .badge a', 'ru');
         case 'semicolonworld.com':
@@ -951,7 +956,7 @@ a{
                 console.log('check by selectors');
                 const cssSelectors = {
                     '4answered.com': '.view_body span a',
-                    'answer-id.com': 'a.link', // all pages 404 / 2022-05-01
+                    'answer-id.com': 'a.link', // redirects to de-vraag.com / 2022-05-22
                     'answeright.com': 'a.link',
                     'ask-ubuntu.ru': '.q-source',
                     'askcodez.com': '.orli a',

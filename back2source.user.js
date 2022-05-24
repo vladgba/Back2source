@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name         Back2source
-// @version      0.1.109
+// @version      0.1.110
 // @description  Redirecting to source sites from sites with machine translation, etc.
 // @namespace    vladgba
 // @author       vladgba@gmail.com
@@ -284,7 +284,9 @@
 // @match        *://*.zsharp.org/*
 // @match        *://catchconsole.com/code-example/*
 // @match        *://geek-tips.imtqy.com/articles/*/*.html
+// @match        *://helpex.vn/question/*
 // @match        *://itecnote.com/tecnote/*
+// @match        *://phptime.ru/questions/*
 // @include      *://qastack.tld/*
 // ==/UserScript==
 /* jshint esversion: 10 */
@@ -744,6 +746,8 @@ a{
             return byHeader('h1', 'aside li a[href*="fixes.pub/topics"]', 'ja');
         case 'ghcc.net':
             return _go([...document.querySelectorAll('.clearfix code')].pop().innerHTML);
+        case 'helpex.vn':
+            return _t('#viewSource>span')?.innerText.replace(/^: /,'');
         case 'howtobuildsoftware.com':
             return byHeader([removePartBefore('title',' - ')], '#list .email-content-subtitle a', 'en');
         case 'imtqy.com':
@@ -790,6 +794,8 @@ a{
             return byHeader([removePartBefore('h1',' - ')], _, 'en');
         case 'itecnote.com':
             return byHeader([removePartBefore('h1',' – ').replace(/How to/, '')], _, 'en');
+        case 'phptime.ru':
+            return _go(bySel('.float-right>small>a.text-muted'));
         case 'poweruser.guru':
             return _t('div.post-menu a.suggest-edit-post[href*="superuser.com/questions/"]');
         case 'progi.pro':

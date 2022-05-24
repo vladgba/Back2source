@@ -270,6 +270,7 @@
 // @match        *://*.wikivisually.com/wiki/*
 // @match        *://*.wikiwand.com/*/*
 // @match        *://*.wikizero.com/*/*
+// @match        *://*.wujigu.com/*?*=*
 // @match        *://*.xbuba.com/*
 // @match        *://*.xcv.wiki/*
 // @match        *://*.xiu2.net/it/details/*
@@ -281,6 +282,9 @@
 // @match        *://*.yuanmacha.com/*.html
 // @match        *://*.zapytay.com/*
 // @match        *://*.zsharp.org/*
+// @match        *://catchconsole.com/code-example/*
+// @match        *://geek-tips.imtqy.com/articles/*/*.html
+// @match        *://itecnote.com/tecnote/*
 // @include      *://qastack.tld/*
 // ==/UserScript==
 /* jshint esversion: 10 */
@@ -322,7 +326,7 @@
     /** Removes the auxiliary words of the textcontent of: the header if no parameter is given; a element matching the given selector; the first element, if the parameter is an array*/
     var getHeader = (h) => removeAuxiliary(h ? (Array.isArray(h) ? h[0] : textContent(h)) : textContent('h1'));
     /** Get an array of the textcontent of: elements with the tag-class if no parameter is given; elements matching the given selector; or the first element, if the parameter is an array*/
-    var getTags = (t) => t ? (Array.isArray(t) ? t[0] : allTexts(t)) : allTexts('.tag');
+    var getTags = (t) => t ? (Array.isArray(t) ? [t[0]] : allTexts(t)) : allTexts('.tag');
     /** Replaces in a string all occurrences of the first element of an arraygroup with the second */
     var mulreplace = (str, a) => a.forEach((v) => (str = str.replace(v[0], v[1]))) || str;
     /** Creates a Wikipedia link with language and article text or the number of the part in the website url, optionally adding the /wiki/ part */
@@ -353,6 +357,8 @@
     var dropMarks = (s) => s && s.replace(/\[(на удержании|on hold|duplikować|duplicado|duplicar|duplikat|dublicate|duplicate|дубликат|закрыто|закрытый|closed|geschlossen|zamknięte|cerrado|重复|repeat)\]\s*$/i, '').trim();
     /** Removes the beginning of a text that precedes a given part */
     var removePartBefore = (t, p) => textContent(t).replace(new RegExp('.*?'+ p), '');
+    /** Returns text in parentheses **/
+    var fromParentheses = (t) => (ll = t.split("(")) && (ll.length == 1 ? ll[0] : (ll.length == 2 ? ll[1] : ll.slice((ll.length - 2) / 2 + 1).join("(")).slice(0, -1));
 
     /** Gets the first link by a given selector, that links to an stack exchange site */
     function _tc(s) {
@@ -674,6 +680,8 @@ a{
             clr('#2c3e50');
         case 'legkovopros.ru':
             return clr('#55b252') && byHeader('h1', '.tag', 'ru');
+        case 'catchconsole.com':
+            return byHeader([dropMarks(textContent('h1'))], _, 'en');
         case 'cndgn.com':
             return 'https://' + _ps[2].replace(/(.+)stack/,'$1.stackexchange').replace(/^(stack)$/,'$1overflow') + '.com/questions/' + _ps[3];
         case 'codeguides.site':
@@ -738,6 +746,8 @@ a{
             return _go([...document.querySelectorAll('.clearfix code')].pop().innerHTML);
         case 'howtobuildsoftware.com':
             return byHeader([removePartBefore('title',' - ')], '#list .email-content-subtitle a', 'en');
+        case 'imtqy.com':
+            return byHeader('.question-header>h1', _, 'en');
         case 'intellipaat.com':
             return byHeader('h1', '.qa-q-view-tag-item', 'en');
         case 'itectec.com':
@@ -747,8 +757,11 @@ a{
         case 'jike.in':
         case 'ostack.cn':
         case 'qi-u.com':
+        case 'wujigu.com':
             var jt = textContent('h1').split(' - ');
-            return byHeader([removePartBefore('h1',' - ')], (jt.length > 1 ? jt[0] : _), 'en');
+            tt = removePartBefore('h1',' - ');
+            if(tt.match(/[\u4e00-\u9fa5]{2,}/)) tt = fromParentheses(tt); //if detected chinese symbols, then we need to extract text from the parentheses
+            return byHeader([dropMarks(tt)], _, 'en');
         case 'jscodetips.com':
             return byHeader('h1', '.contentBox > div:nth-child(3) > a', 'en');
         case 'kompsekret.ru':
@@ -775,6 +788,8 @@ a{
             return _t('article') && byHeader('h1', 'h4.tags a.item-tag', 'en', ['superuser.com', 'serverfault.com', 'stackoverflow.com', 'stackexchange.com']);
         case 'overstack.in':
             return byHeader([removePartBefore('h1',' - ')], _, 'en');
+        case 'itecnote.com':
+            return byHeader([removePartBefore('h1',' – ').replace(/How to/, '')], _, 'en');
         case 'poweruser.guru':
             return _t('div.post-menu a.suggest-edit-post[href*="superuser.com/questions/"]');
         case 'progi.pro':

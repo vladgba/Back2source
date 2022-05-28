@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name         Back2source
-// @version      0.1.111
+// @version      0.1.112
 // @description  Redirecting to source sites from sites with machine translation, etc.
 // @namespace    vladgba
 // @author       vladgba@gmail.com
@@ -67,6 +67,8 @@
 // @match        *://*.codengineering.ru/q/*
 // @match        *://*.codenong.com/*
 // @match        *://*.coder.work/article/*
+// @match        *://*.coder-question-ko.com/cq-ko-blog/*
+// @match        *://*.coder-question.com/cq-blog/*
 // @match        *://*.coderedirect.com/*
 // @match        *://*.coderoad.in/questions/*
 // @match        *://*.coderoad.ru/*
@@ -156,6 +158,7 @@
 // @match        *://*.newbedev.com/*
 // @match        *://*.noblenaz.org/*
 // @match        *://*.npmmirror.com/package/*
+// @match        *://*.npm.io/package/*
 // @match        *://*.ntcdoon.org/*
 // @match        *://*.nuomiphp.com/*/*
 // @match        *://*.nwikiit.cyou/wiki/*
@@ -959,7 +962,17 @@ a{
             return _go(bySel('article.markdown-body>a[rel="nofollow"]:last-child'));
         case 'lifesaver.codes':
             return byInner('a[role="link"]','Original');
+        /* NPM */
+        case 'npm.io':
+            return 'https://www.npmjs.com'+_p;
+        case 'npmmirror.com':
+            return 'https://www.npmjs.com'+_p;
+        case 'snyk.io':
+            return 'https://www.npmjs.com/package/'+_ps[3];
         /* Other */
+        case 'coder-question-ko.com':
+        case 'coder-question.com':
+            return _go(bySel('article a.bg-success-soft'));
         case 'dir.md':
             return (tt = _h.match(/^https?:\/\/dir.md\/(.+)(&|\?)host=([a-zA-Z\.-]+)$/)) && _go('https://' + tt[3] + '/' + tt[1]);
         case 'icode9.com':
@@ -970,12 +983,8 @@ a{
             return _go(bySel('input[name="url"]', 'value'));
         case 'itnan.ru':
             return _h.match(/https?:\/\/([a-zA-Z]{2})?\.?itnan\.ru\/post\.php\?(.+)?p=([0-9]+)/) && bySel('article.entry .entry-meta a[title="Оригинальная публикация"]');
-        case 'npmmirror.com':
-            return _go('https://www.npmjs.com'+_p);
         case 'savepearlharbor.com':
             return bySel('article.post > div.entry-content > p > a[href*="://habr.com/"]');
-        case 'snyk.io':
-            return _go('https://www.npmjs.com/'+_ps[3]);
         default:
             if (_hst('qastack') || _hst('qa-stack')) {
                 return bySel('span.text-muted.fake_url a, span.text-muted.fake_url', 'src') ||

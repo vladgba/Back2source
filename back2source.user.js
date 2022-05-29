@@ -312,6 +312,7 @@
     const _p = location.pathname;
     const _ps = _p.split('/');
     const _h = location.href;
+    const _se = ['stackoverflow.com','superuser.com','serverfault.com','stackapps.com','mathoverflow.net','askubuntu.com','stackexchange.com'];
     /** Checks if a given object is a string */
     var _$s = (s) => typeof s === 'string' || s instanceof String;
     /** Gets the subdomain (host part) of the site */
@@ -320,7 +321,7 @@
     var _t = (s) => document.querySelector(s);
     /** Tests if the path of the site matches the given regex */
     var _c = (r) => r.test(_p);
-    /** Redirects to link, if it exists */
+    /** Redirects to a link, if it exists; checks for validity of the source site are bypassed */
     var _go = (s) => s && window.location.replace(s);
     /** Checks if a string is part of the hostname */
     var _hst = (s) => location.hostname.includes(s);
@@ -349,7 +350,7 @@
     /** Gets the textcontent of a selected element, if it exists */
     var textContent = (s) => _t(s)?.textContent.trim();
     /** Creates StackOverflow link by article id, optionally mofifying it before */
-    var byNumber = (s, radix) => (s = parseInt(s, radix)) && s > 0 ? _go('https://stackoverflow.com/questions/' + s) : null;
+    var byNumber = (s, radix) => (s = parseInt(s, radix)) && s > 0 ? 'https://stackoverflow.com/questions/' + s : null;
     /** Adds surrounding spaces and make the string lowercase, if it exists */
     var normalize = (s) => s && ' ' + s.toLowerCase() + ' ';
     /** Pipes multiple functions after each other */
@@ -369,13 +370,11 @@
     /** Returns text in parentheses **/
     var fromParentheses = (t) => (ll = t.split('(')) && (ll.length == 1 ? ll[0] : (ll.length == 2 ? ll[1] : ll.slice((ll.length - 2) / 2 + 1).join('(')).slice(0, -1));
 
-    /** Gets the first link by a given selector, that links to an stack exchange site */
+    /** Gets the first link by a given selector, that links to a stack exchange site */
     function _tc(s) {
-        var allw = ['stackoverflow.com/q','superuser.com/q','mathoverflow.net/q','askubuntu.com/q','stackexchange.com/q'];
+        var allw = _se.flatMap(i => [i+'/q', i+'/a/'])
         var nods = all(s);
         for (var nod in nods) for (var pt in allw) if(nods[nod]?.href?.indexOf(allw[pt])>=0) return nods[nod].href;
-        allw = allw.map(i => i.replace('/q','/a/'));
-        for (nod in nods) for (pt in allw) if(nods[nod]?.href?.indexOf(allw[pt])>=0) return nods[nod].href.replace('/a/','/q/');
     }
 
     /** Gets the image url with the site where the image is from, optionally with by selector and cutting the path */
@@ -623,8 +622,8 @@ a{
         case 'theshuggahpies.com':
         case 'waymanamechurch.org':
         case 'zsharp.org':
-            var fbip = document.querySelector('meta[property="og:image"]').content.split('/').pop().split('.')[0].replace(/-/g,' ');
-            return fbip && (await findByApi(fbip) || prepareSearch(fbip, '', ['stackoverflow.com','superuser.com','askubuntu.com','stackexchange.com']));
+            tt = _t('meta[property="og:image"]').content.split('/').pop().split('.')[0].replace(/-/g,' ');
+            return tt && (await findByApi(tt) || prepareSearch(tt, '', ['stackoverflow.com','superuser.com','askubuntu.com','stackexchange.com']));
         case 'answacode.com':
         case 'asklobster.com':
         case 'bestecode.com':
@@ -764,14 +763,13 @@ a{
         case 'itecnote.com':
             return byHeader([removePartBefore('h1',' – ').replace(/How to/, '')], _, 'en');
         case 'itectec.com':
-            return byHeader([removePartBefore('h1', ' – ')], '.badge','en', ['askubuntu.com','mathoverflow.net','serverfault.com','stackexchange.com','stackoverflow.com','superuser.com']);
+            return byHeader([removePartBefore('h1', ' – ')], '.badge','en', _se);
         case 'javaer101.com':
             return byHeader('h1', 'nav .col-tag', _ps[1] == 'article' ? 'ja' : _ps[1]);
         case 'jike.in':
         case 'ostack.cn':
         case 'qi-u.com':
         case 'wujigu.com':
-            var jt = textContent('h1').split(' - ');
             tt = removePartBefore('h1',' - ');
             if(tt.match(/[\u4e00-\u9fa5]{2,}/)) tt = fromParentheses(tt); //if detected chinese symbols, then we need to extract text from the parentheses
             return byHeader([dropMarks(tt)], _, 'en');
@@ -794,7 +792,7 @@ a{
             addJS('var redir = window.__NUXT__.data[0].article.sourceUrl; redir && window.location.replace(redir);');
             return lng('zh') && byHeader('h1', [await transTags('.article-tag')], 'zh');
         case 'newbedev.com':
-            return _t('article') && byHeader('h1', 'h4.tags a.item-tag', 'en', ['superuser.com', 'serverfault.com', 'stackoverflow.com', 'stackexchange.com']);
+            return _t('article') && byHeader('h1', 'h4.tags a.item-tag', 'en', _se);
         case 'overstack.in':
             return byHeader([removePartBefore('h1',' - ')], _, 'en');
         case 'poweruser.guru':
@@ -818,14 +816,14 @@ a{
         case 'semicolonworld.com':
             return byHeader('h1', '.post__category', 'en');
         case 'sobrelinux.info':
-            return byHeader('h1', '.tags .tag a', 'pt', ['superuser.com', 'serverfault.com', 'stackoverflow.com', 'stackexchange.com']);
+            return byHeader('h1', '.tags .tag a', 'pt', _se);
         case 'soinside.com':
             return clr('#333') && byHeader('h1', '.q-tag', 'zh');
         case 'stackanswers.net':
             clr('#999') && lng('en');
             return location.hostname.startsWith('publish.') && all('.panel-body a')[1].href;
         case 'stackoom.com':
-            return byNumber(document.querySelector('[id^=question_content_]').id.split('_')[2]);
+            return byNumber(_t('[id^=question_content_]').id.split('_')[2]);
         case 'stackoverflood.com':
             return (tt = _h.match(/^https?:\/\/stackoverflood\.com\/([a-zA-Z]{2})\/q\/(.+)/)) && byNumber(tt[2]);
         case 'string.quest':
@@ -839,7 +837,7 @@ a{
         case 'tipsfordev.com':
             return byHeader('h1', '.blog-pagination > a', 'en');
         case 'tistory.com':
-            return [...document.querySelectorAll('.article-view p > a')].pop().href;
+            return all('.article-view p > a').pop().href;
         case 'tousu.in':
             return byHeader([removePartBefore('h1',' - ')], _, 'en');
         case 'tutorialmore.com':
@@ -851,8 +849,8 @@ a{
         case 'wekeepcoding.com':
             return byHeader('h4', _, 'en');
         case 'webdevdesigner.com':
-            var wdd = (_ps[1] == 'q' ? _ps[2] : _ps[1].replace(/^q-/, '')).replace(/-\d+$/, '').replace(/-/g, ' ');
-            return (await findByApi(wdd)) || prepareSearch(wdd, '.tags a', ['superuser.com', 'stackoverflow.com', 'stackexchange.com']);
+            tt = (_ps[1] == 'q' ? _ps[2] : _ps[1].replace(/^q-/, '')).replace(/-\d+$/, '').replace(/-/g, ' ');
+            return (await findByApi(tt)) || prepareSearch(tt, '.tags a', ['superuser.com', 'stackoverflow.com', 'stackexchange.com']);
         case 'wikiroot.ru':
             tt = _t('section section div.footer-post div.d-inline-block button');
             tt = tt && (getAttr(tt, 'data-url', /https?:\/\/wikiroot\.ru\/comment\/new\/([0-9]+)/) || getAttr(tt, 'data-target', /#buttoncollapse-([0-9]+)/));
@@ -865,7 +863,7 @@ a{
         case 'ylhow.com':
             return (tt = _t('.entry-content > p > a[href*="stackoverflow.com/"]')) && tt.innerText.includes('原文') && tt.href;
         case 'yuanmacha.com':
-            return (ll = _t('h1')?.innerHTML.match(/\((.+)\)/)) && byHeader([ll[1]], '.tag a', 'en', ['stackoverflow.com']);
+            return (tt = _t('h1')?.innerHTML.match(/\((.+)\)/)) && byHeader([tt[1]], '.tag a', 'en', ['stackoverflow.com']);
         /* Wikipedia */
         case '360wiki.ru':
         case 'buildwiki.ru':
@@ -929,7 +927,7 @@ a{
             return (tt = _h.match(/https?:\/\/([a-zA-z]{2,4})\.xcv\.wiki\/wiki\/(.+)/)) && wiki('de', tt[2]);
         /* GitHub */
         case 'bleepcoder.com':
-            return _go(document.querySelectorAll('.float-right .text-muted')[0].href);
+            return bySel('.float-right .text-muted');
         case 'bytemeta.vip':
         case 'githubhot.com':
         case 'githubmemory.com':
@@ -941,17 +939,17 @@ a{
             });
             break;
         case 'giters.com':
-            return _go('https://github.com' + _p);
+            return 'https://github.com' + _p;
         case 'githublab.com':
-            return _go('https://github.com' + _p.replace(/^\/(repository|profile)/,'').replace(/^(\/issues)(\/.*\/.*)(\/.*)/,'$2$1$3').replace(/^(\/issues)(\/.*\/.*)/,'$2$1'));
+            return 'https://github.com' + _p.replace(/^\/(repository|profile)/,'').replace(/^(\/issues)(\/.*\/.*)(\/.*)/,'$2$1$3').replace(/^(\/issues)(\/.*\/.*)/,'$2$1');
         case 'higithub.com':
-            return _go('https://github.com' + _p.replace(/\/(repo\/|user$)/,'/').replace(/^(\/.*)(\/issue)(\/.*)(\/.*)/,'$1$3$2s$4').replace(/^(\/.*)\/repo_(issues)(\/.*)/,'$1$3/$2'));
+            return 'https://github.com' + _p.replace(/\/(repo\/|user$)/,'/').replace(/^(\/.*)(\/issue)(\/.*)(\/.*)/,'$1$3$2s$4').replace(/^(\/.*)\/repo_(issues)(\/.*)/,'$1$3/$2');
         case 'issueantenna.com':
-            return _go('https://github.com' + _p.replace(/^\/(repo|author)/,''));
+            return 'https://github.com' + _p.replace(/^\/(repo|author)/,'');
         case 'issueexplorer.com': // other content / 2022-05-01
-            return _go('https://github.com' + _p.replace(/^\/repo/,''));
+            return 'https://github.com' + _p.replace(/^\/repo/,'');
         case 'jsrepos.com':
-            return _go(bySel('article.markdown-body>a[rel="nofollow"]:last-child'));
+            return bySel('article.markdown-body>a[rel="nofollow"]:last-child');
         case 'lifesaver.codes':
             return byInner('a[role="link"]','Original');
         /* NPM */
@@ -970,7 +968,7 @@ a{
         case 'icode9.com':
             return _go(textContent('#paragraph > p:last-child').split('来源：', 2)[1].trim());
         case 'it-brain.online':
-            return 'https://tutorialspoint.com/' + _ps[2];
+            return _go('https://tutorialspoint.com/' + _ps[2]);
         case 'itdaan.com':
             return _go(bySel('input[name="url"]', 'value'));
         case 'itnan.ru':
@@ -1050,7 +1048,7 @@ a{
     /** Saves the redirect to an online database */
     var sredir = (r) => r && fetch(`https://api.zcxv.icu/b2s.php?q=set&url=${encodeURIComponent(location.href)}&redir=${encodeURIComponent(r)}`, { method: 'GET', credentials: 'omit' });
 
-    /** Saves the url and the source url in a local db */
+    /** Saves the clone url and the source url in a local db */
     function cbufw(u, s) {
         var count = 10;
         var pos = GM_getValue('b2s-pos') || 0;
@@ -1062,35 +1060,33 @@ a{
     }
 
     /** Saves the redirect online and local, redirects to source */
-    function run(u, s) {
+    function run(u) {
         console.log('Redirect link: ' + u) || sredir(u);
         cbufw(location.href, u) || window.location.replace(u);
     }
 
-    /** Fixes incorrect link parts */
-    var fix = (a, b, s = 0) => (link.match(a)) ? (run(link.replace(a, b), s) || true) : false;
+    /** Fixes incorrect link parts, redirects to source */
+    var fix = (a, b) => (link.match(a)) ? (run(link.replace(a, b)) || true) : false;
 
     link = link?.href ?? link;
     console.log('Result link: ' + link);
     if (!link || typeof link !== 'string') return;
-    if (link.includes('wikipedia.org/wiki/wiki')) link = link.replace(/wikipedia\.org\/wiki\/wiki/, 'wikipedia.org/wiki');
 
     //valid links
     if (/^https?:\/\/((pt|ja|ru|es)\.)?stackoverflow\.com\/questions\/([0-9]{1,12})/.test(link) ||
-        /^https?:\/\/(([a-zA-z\-]+\.)?)stackexchange\.com\/questions\/([0-9]{1,12})/.test(link) ||
-        /^https?:\/\/(superuser\.com|askubuntu\.com|mathoverflow\.net|serverfault.com)\/questions\/([0-9]{1,12})/.test(link) ||
-        /^https?:\/\/(([a-zA-z\-]+\.)?)(habr\.com|geektimes\.ru)\/(.+)/.test(link)) {
-        return run(link, 1);
-    }
-    if (/^https?:\/\/(([a-zA-z\-]+\.)?)wikipedia\.org\/wiki\/(.+)/.test(link) ||
-        /^https?:\/\/github\.com\/(.+)?/.test(link) ||
-        /^https?:\/\/tutorialspoint\.com\/(.+)/.test(link)) {
+        /^https?:\/\/([a-zA-z\-]+\.)?stackexchange\.com\/questions\/([0-9]{1,12})/.test(link) ||
+        /^https?:\/\/(superuser\.com|askubuntu\.com|mathoverflow\.net|serverfault\.com|stackapps\.com)\/questions\/([0-9]{1,12})/.test(link) ||
+        /^https?:\/\/([a-zA-z\-]+\.)?(habr\.com|geektimes\.ru)\/(.+)/.test(link) ||
+        /^https?:\/\/[a-zA-z\-]+\.wikipedia\.org\/wiki\/(?!wiki\/)(.+)/.test(link) ||
+        /^https?:\/\/(www\.)?github\.com\/(.+)/.test(link) ||
+        /^https?:\/\/www\.npmjs\.com\/package\/(.+)/.test(link)) {
         return run(link);
     }
-    fix(/^https?:\/\/((pt|ja|ru|es)\.)?stackoverflow\.com\/([a-z]+)\/([0-9]{1,12})/, 'https://$1stackoverflow.com/questions/$4', 1) ||
-        fix(/^https?:\/\/([a-z]+\.)?stackexchange\.com\/q\/([0-9]{1,12})/, 'https://$1stackexchange.com/questions/$2', 1) ||
-        fix(/^https?:\/\/([a-z]+\.)?stackexchange\.com\/([a-z]+)\/([0-9]{1,12})/, 'https://$2.stackexchange.com/questions/$3', 1) ||
-        fix(/^https?:\/\/([a-z]+\.)?(superuser\.com|askubuntu\.com|mathoverflow\.net|serverfault.com)\/([a-z]+)\/([0-9]{1,12})/, 'https://$1$2/questions/$4', 1) ||
-        fix(/^https?:\/\/([a-z]+\.)?wikipedia\.org\/w\/index\.php\?title=(.+)&oldid=([0-9]{1,12})/, 'https://$1wikipedia.org/wiki/$2');
+    fix(/^https?:\/\/((pt|ja|ru|es)\.)?stackoverflow\.com\/([a-z]+)\/([0-9]{1,12})/, 'https://$1stackoverflow.com/questions/$4') ||
+    fix(/^https?:\/\/([a-z]+\.)?stackexchange\.com\/[qa]\/([0-9]{1,12})/, 'https://$1stackexchange.com/questions/$2') ||
+    fix(/^https?:\/\/([a-z]+\.)?stackexchange\.com\/([a-z]+)\/([0-9]{1,12})/, 'https://$2.stackexchange.com/questions/$3') ||
+    fix(/^https?:\/\/([a-z]+\.)?(superuser\.com|askubuntu\.com|mathoverflow\.net|serverfault\.com|stackapps\.com)\/([a-z]+)\/([0-9]{1,12})/, 'https://$1$2/questions/$4') ||
+    fix(/^https?:\/\/([a-zA-z\-]+\.)wikipedia\.org\/w\/index\.php\?title=(.+)&oldid=([0-9]{1,12})/, 'https://$1wikipedia.org/wiki/$2') ||
+    fix(/^https?:\/\/([a-zA-z\-]+\.)wikipedia\.org\/wiki\/wiki\/(.+)/, 'https://$1wikipedia.org/wiki/$2');
 
 }).catch(console.error.bind(console));

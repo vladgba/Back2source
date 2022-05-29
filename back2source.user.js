@@ -552,13 +552,14 @@ a{
 
     /** Gets the text to search for from a part of the path, tries to find it per API and otherwise creates the bottom bar to search for */
     async function byPath(pos, s) {
-        var fbp = _ps[pos].replace(/(-closed|-duplicate)?(\.html)?$/, '').replace(/^\d+-/, '').replace(/[-+]/g, ' ');
-        return (await findByApi(fbp)) || prepareSearch(fbp, '', s);
+        ll = _ps[pos].replace(/(-closed|-duplicate)?(\.html)?$/, '').replace(/^\d+-/, '').replace(/[-+]/g, ' ');
+        ll = ll.replace(/\b(are|ca|could|did|does|do|has|have|is|must|were|wo)nt\b/g,'$1n\'t').replace(/\b(they|you)(re|ve)\b/g,'$1\'$2').replace(/\bi(m|ve)\b/g,'i\'$1');
+        return (await findByApi(ll)) || prepareSearch(ll, '', s);
     }
 
     /** Matches elements by a given selector, searches for elements whose inner text starts with a given search text and returns the link of an element matched by a second given selector or the inner text that follows the search text */
     function startsByText(selector, text, href = false) {
-        const e = document.querySelectorAll(selector);
+        const e = all(selector);
         for (var i = 0; i < e.length; i++) {
             var t = e[i].innerText.trim();
             var f = t.indexOf(text);
@@ -568,7 +569,7 @@ a{
 
     /** Matches elements by a given selector, searches for elements whose inner text includes a given search text and returns their link */
     function byInner(selector, text) {
-        const e = document.querySelectorAll(selector);
+        const e = all(selector);
         for (var i = 0; i < e.length; i++) {
             if (e[i].innerText.trim().indexOf(text) >= 0) return e[i].href;
         }
@@ -735,7 +736,7 @@ a{
             return (await findByApi(devpref)) || (await findByApi(parts[0], _, _, [parts.pop()])) || promtRedirect(sitecolor, toSearch(devpref));
         case 'devfaq.fr':
             return byHeader('h1', '.badge-info', 'fr');
-        case 'e-learn.cn':
+        case 'e-learn.cn': // other content / 2022-05-29
             return startsByText('div.content p:last-child', '来源：');
         case 'editcode.net':
             return byHeader([removePartBefore('h1', ':')], _,'en');
@@ -1002,7 +1003,7 @@ a{
                     'codefaq.ru': '.aa-link',
                     'codegear.dev': 'p.text-right > a',
                     'codegrepper.com': '.answer_source > a',
-                    'e-learn.cn': '.zhuanzai + div a',
+                    'e-learn.cn': '.zhuanzai + div a', // other content / 2022-05-29
                     'fooobar.com': '.question-text > .aa-link', // all pages 404 / 2022-05-01
                     'generacodice.com': '#fontePrincipale > a.link',
                     'howtosolves.com': '#question .question .source a',

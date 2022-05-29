@@ -271,7 +271,7 @@
 // @match        *://*.wiki2.org/*
 // @match        *://*.wiki2.wiki/wiki/*
 // @match        *://*.wikichi.ru/wiki/*
-// @match        *://*.wikidark.ru/*
+// @match        *://*.wikidark.ru/wiki/*
 // @match        *://*.wikies.wiki/wiki/*
 // @match        *://*.wikipe.wiki/wiki/*
 // @match        *://*.wikipedia-on-ipfs.org/wiki/*
@@ -701,8 +701,6 @@ a{
         case 'i-harness.com':
         case 'src-bin.com':
             return byNumber(lastPathPart(), 16);
-        case 'codegrepper.com':
-            return bySel('.answer_source > a');
         case 'codehunter.cc':
             return byHeader('h1', '.badge', 'en');
         case 'codeindex.ru': // site offline / Cloudflare error / 2022-05-01
@@ -792,10 +790,6 @@ a{
         case 'programmierfrage.com':
         case 'routinepanic.com':
             return _tc('a');
-        case 'mediatagtw.com':
-            if (_ps[1] == 'article') _go(bySel('#social_only > h3 > a'));
-            if (_ps[1] == 'exit') _go(bySel('.h5 > a'));
-            break;
         case 'mlog.club':
             addJS('var redir = window.__NUXT__.data[0].article.sourceUrl; redir && window.location.replace(redir);');
             return lng('zh') && byHeader('h1', [await transTags('.article-tag')], 'zh');
@@ -803,8 +797,6 @@ a{
             return _t('article') && byHeader('h1', 'h4.tags a.item-tag', 'en', ['superuser.com', 'serverfault.com', 'stackoverflow.com', 'stackexchange.com']);
         case 'overstack.in':
             return byHeader([removePartBefore('h1',' - ')], _, 'en');
-        case 'phptime.ru':
-            return _go(bySel('.float-right>small>a.text-muted'));
         case 'poweruser.guru':
             return _t('div.post-menu a.suggest-edit-post[href*="superuser.com/questions/"]');
         case 'progi.pro':
@@ -918,12 +910,12 @@ a{
             return _t('.mw-parser-output') && wiki('ru', 1);
         case 'wiki2.net':
         case 'wikipedia.tel':
-            return 'https://ru.wikipedia.org/wiki' + _p;
+            return wiki('ru', _p, false);
         case 'wiki2.org':
             if (/\?search=/.test(location.search)) return;
-            return (tt = _h.match(/https?:\/\/(([a-z]{2})\.)?wiki2\.org\/([a-zA-z]{2})\/(.+)/)) && wiki(tt[3], '/wiki/' + tt[4], false);
+            return ((tt = _h.match(/https?:\/\/wiki2\.org\/([a-zA-z]{2})\/(.+)/)) || (tt = _h.match(/https?:\/\/([a-z]{2})\.wiki2\.org\/wiki\/(.+)/))) && wiki(tt[1], tt[2]);
         case 'wikidark.ru':
-            return _go('https://ru.wikipedia.org' + _p + location.search);
+            return wiki('ru', _p, false);
         case 'wikies.wiki':
         case 'wikipe.wiki':
             return wiki(2, 3);
@@ -983,6 +975,10 @@ a{
             return _go(bySel('input[name="url"]', 'value'));
         case 'itnan.ru':
             return _h.match(/https?:\/\/([a-zA-Z]{2})?\.?itnan\.ru\/post\.php\?(.+)?p=([0-9]+)/) && bySel('article.entry .entry-meta a[title="Оригинальная публикация"]');
+        case 'mediatagtw.com':
+            if (_ps[1] == 'article') _go(bySel('#social_only > h3 > a'));
+            if (_ps[1] == 'exit') _go(bySel('.h5 > a'));
+            break;
         case 'savepearlharbor.com':
             return bySel('article.post > div.entry-content > p > a[href*="://habr.com/"]');
         default:
@@ -1007,6 +1003,7 @@ a{
                     'codefaq.info': '.aa-link',
                     'codefaq.ru': '.aa-link',
                     'codegear.dev': 'p.text-right > a',
+                    'codegrepper.com': '.answer_source > a',
                     'e-learn.cn': '.zhuanzai + div a',
                     'fooobar.com': '.question-text > .aa-link', // all pages 404 / 2022-05-01
                     'generacodice.com': '#fontePrincipale > a.link',
@@ -1021,6 +1018,7 @@ a{
                     'nuomiphp.com': '.alert-warning a',
                     'overcoder.net': '.info_outlink',
                     'overcoder.ru': '.info_outlink',
+                    'phptime.ru': '.float-right>small>a.text-muted',
                     'prog-help.ru': '.eclip > a',
                     'programmerz.ru': '.source-share-link',
                     'py4u.net': '.question .author .src a', // site offline / site not found / 2022-05-01

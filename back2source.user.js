@@ -76,6 +76,7 @@
 // @match        *://*.coderquestion.ru/q/*
 // @match        *://*.codersatellite.com/question-with-identifier-*
 // @match        *://*.coredump.biz/questions/*
+// @match        *://*.codetd.com/article/*
 // @match        *://*.culinarydegree.info/*
 // @match        *://*.datewiki.ru/wiki/*
 // @match        *://*.de-vraag.com/*
@@ -83,6 +84,7 @@
 // @match        *://*.debugko.com/article/*
 // @match        *://*.desarrollo-web-br-bd.com/es/*
 // @match        *://*.devdreamz.com/question/*
+// @match        *://*.develop-bugs.com/article/*
 // @match        *://*.developreference.com/article/*
 // @match        *://*.devfaq.fr/question/*
 // @match        *://*.dir.md/*
@@ -730,6 +732,9 @@ a{
             return byHeader('h1', _, lang);
         case 'devdreamz.com':
             return byHeader('h1','[class^="ButtonTags_tags_container"] a', 'en');
+        case 'develop-bugs.com':
+            tt = _t('blockquote > h2 > a').innerHTML.split('  -  ');
+            return byHeader([tt[0]] ,tt[1] ,'en');
         case 'developreference.com':
             var parts = document.title.split(' - ');
             var devpref = _ps[3].replace(/[-+]/g, ' ').replace(/(%ef|%bc|%9f)+$/i, '');
@@ -964,6 +969,8 @@ a{
         case 'coder-question-ko.com':
         case 'coder-question.com':
             return _go(bySel('article a.bg-success-soft'));
+        case 'codetd.com':
+            return _go('https://' + _t('.article-refer span:nth-child(2)').innerText)
         case 'dir.md':
             return (tt = _h.match(/^https?:\/\/dir.md\/(.+)(&|\?)host=([a-zA-Z\.-]+)$/)) && _go('https://' + tt[3] + '/' + tt[1]);
         case 'icode9.com':

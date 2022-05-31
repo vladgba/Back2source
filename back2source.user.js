@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name         Back2source
-// @version      0.1.113
+// @version      0.1.114
 // @description  Redirecting to source sites from sites with machine translation, etc.
 // @namespace    vladgba
 // @author       vladgba@gmail.com
@@ -27,9 +27,9 @@
 // @match        *://*.answeright.com/*
 // @match        *://*.antwortenhier.me/*
 // @match        *://*.arip-photo.org/*
-// @match        *://*.ask.roboflow.ai/question/*
 // @match        *://*.ask-dev.ru/info/*
 // @match        *://*.ask-ubuntu.ru/questions/*
+// @match        *://*.ask.roboflow.ai/question/*
 // @match        *://*.askcodez.com/*
 // @match        *://*.askdev.info/questions/*
 // @match        *://*.askdev.ru/q-*
@@ -66,23 +66,24 @@
 // @match        *://*.codeindex.ru/q/*
 // @match        *://*.codengineering.ru/q/*
 // @match        *://*.codenong.com/*
-// @match        *://*.coder.work/article/*
 // @match        *://*.coder-question-ko.com/cq-ko-blog/*
 // @match        *://*.coder-question.com/cq-blog/*
+// @match        *://*.coder.work/article/*
 // @match        *://*.coderedirect.com/*
 // @match        *://*.coderoad.in/questions/*
 // @match        *://*.coderoad.ru/*
 // @match        *://*.coderoad.wiki/*
 // @match        *://*.coderquestion.ru/q/*
 // @match        *://*.codersatellite.com/question-with-identifier-*
-// @match        *://*.coredump.biz/questions/*
 // @match        *://*.codetd.com/article/*
+// @match        *://*.coredump.biz/questions/*
 // @match        *://*.culinarydegree.info/*
 // @match        *://*.datewiki.ru/wiki/*
 // @match        *://*.de-vraag.com/*
 // @match        *://*.debugcn.com/*article/*
 // @match        *://*.debugko.com/article/*
 // @match        *://*.desarrollo-web-br-bd.com/es/*
+// @match        *://*.devasking.com/issue/*
 // @match        *://*.devdreamz.com/question/*
 // @match        *://*.develop-bugs.com/article/*
 // @match        *://*.developreference.com/article/*
@@ -162,8 +163,8 @@
 // @match        *://*.narkive.jp/*
 // @match        *://*.newbedev.com/*
 // @match        *://*.noblenaz.org/*
-// @match        *://*.npmmirror.com/package/*
 // @match        *://*.npm.io/package/*
+// @match        *://*.npmmirror.com/package/*
 // @match        *://*.ntcdoon.org/*
 // @match        *://*.nuomiphp.com/*/*
 // @match        *://*.nwikiit.cyou/wiki/*
@@ -223,6 +224,7 @@
 // @match        *://*.sobrelinux.info/questions/*
 // @match        *://*.softwareuser.asklobster.com/posts/*
 // @match        *://*.soinside.com/question/*
+// @match        *://*.solveforum.com/forums/threads/*
 // @match        *://*.sprosi.pro/questions/*
 // @match        *://*.sqlite.in/*
 // @match        *://*.stackanswers.net/questions/*
@@ -259,6 +261,7 @@
 // @match        *://*.waymanamechurch.org/*
 // @match        *://*.web-answers.ru/*/*
 // @match        *://*.web-dev-qa-db-fr.com/fr/*
+// @match        *://*.web-dev-qa-db-fra.com/fr/*
 // @match        *://*.web-dev-qa-db-ja.com/ja/*
 // @match        *://*.web-dev-qa-db-pt.com/pt/*
 // @match        *://*.web-gaebal-jilmun-dabbyeon-db.com/ko/*
@@ -596,6 +599,7 @@ a{
         case 'risposta-alla-domanda-sullo-sviluppo-web-bd.com':
         case 'tra-loi-cau-hoi-phat-trien-web.com':
         case 'web-dev-qa-db-fr.com':
+        case 'web-dev-qa-db-fra.com':
         case 'web-dev-qa-db-ja.com':
         case 'web-gaebal-jilmun-dabbyeon-db.com':
         case 'web-gelistirme-sc.com':
@@ -698,14 +702,14 @@ a{
             return byHeader([dropMarks(textContent('h1'))], _, 'en');
         case 'cndgn.com':
             return 'https://' + _ps[2].replace(/(.+)stack/,'$1.stackexchange').replace(/^(stack)$/,'$1overflow') + '.com/questions/' + _ps[3];
-        case 'codeguides.site':
-        case 'stormcrow.dev': // site offline / other content /2022-05-22
-            return byNumber(_ps[3]);
         case 'code-examples.net':
         case 'ffff65535.com':
         case 'i-harness.com':
         case 'src-bin.com':
             return byNumber(lastPathPart(), 16);
+        case 'codeguides.site':
+        case 'stormcrow.dev': // site offline / other content /2022-05-22
+            return byNumber(_ps[3]);
         case 'codehunter.cc':
             return byHeader('h1', '.badge', 'en');
         case 'codeindex.ru': // site offline / Cloudflare error / 2022-05-01
@@ -733,6 +737,8 @@ a{
         case 'xsprogram.com':
             lng('en');
             return byHeader('h1', _, lang);
+        case 'devasking.com':
+            return byHeader('h1', _, 'en');
         case 'devdreamz.com':
             return byHeader('h1','[class^="ButtonTags_tags_container"] a', 'en');
         case 'develop-bugs.com':
@@ -792,15 +798,15 @@ a{
             return clr('#292d2f') && (urlByImg('https://superuser.com/questions/') || byHeader([lastPathPart().replace(/(-closed|-duplicate)?(\d+)?(\.html)?$/, '').replace(/-/g, ' ')], '.tags a', 'en', ['superuser.com']));
         case 'localcoder.org':
             return byHeader('h1', '.categories a', 'en');
+        case 'microeducate.tech':
+        case 'programmierfrage.com':
+        case 'routinepanic.com':
+            return _tc('a');
         case 'mlink.in':
         case 'sqlite.in':
             if(!_t('h1 a')) return;
             badImgs = true;
             return bySel('a[rel="nofollow"][target="_blank"]') || byHeader([_t('.qa-main-heading h1').innerText.replace(/^(\s+)?([a-z])+\s-/, '').trim()], '.qa-q-view-main .qa-tag-link', 'en', '');
-        case 'microeducate.tech':
-        case 'programmierfrage.com':
-        case 'routinepanic.com':
-            return _tc('a');
         case 'mlog.club':
             addJS('var redir = window.__NUXT__.data[0].article.sourceUrl; redir && window.location.replace(redir);');
             return lng('zh') && byHeader('h1', [await transTags('.article-tag')], 'zh');
@@ -832,6 +838,8 @@ a{
             return byHeader('h1', '.tags .tag a', 'pt', _se);
         case 'soinside.com':
             return clr('#333') && byHeader('h1', '.q-tag', 'zh');
+        case 'solveforum.com':
+            return byHeader(removePartBefore('h1', '[Solved] '), _, 'en');
         case 'stackanswers.net':
             clr('#999') && lng('en');
             return location.hostname.startsWith('publish.') && all('.panel-body a')[1].href;
@@ -859,11 +867,11 @@ a{
             return byHeader('h1.entry-title', '.tag', 'ru');
         case 'v-resheno.ru':
             return textContent('.linkurl > b');
-        case 'wekeepcoding.com':
-            return byHeader('h4', _, 'en');
         case 'webdevdesigner.com':
             tt = (_ps[1] == 'q' ? _ps[2] : _ps[1].replace(/^q-/, '')).replace(/-\d+$/, '').replace(/-/g, ' ');
             return (await findByApi(tt)) || prepareSearch(tt, '.tags a', ['superuser.com', 'stackoverflow.com', 'stackexchange.com']);
+        case 'wekeepcoding.com':
+            return byHeader('h4', _, 'en');
         case 'wikiroot.ru':
             tt = _t('section section div.footer-post div.d-inline-block button');
             tt = tt && (getAttr(tt, 'data-url', /https?:\/\/wikiroot\.ru\/comment\/new\/([0-9]+)/) || getAttr(tt, 'data-target', /#buttoncollapse-([0-9]+)/));

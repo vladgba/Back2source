@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name         Back2source
-// @version      0.1.112
+// @version      0.1.113
 // @description  Redirecting to source sites from sites with machine translation, etc.
 // @namespace    vladgba
 // @author       vladgba@gmail.com
@@ -97,6 +97,7 @@
 // @match        *://*.edupro.id/questions/*
 // @match        *://*.encyclopaedia.bid/*
 // @match        *://*.exceptionshub.com/*
+// @match        *://*.exchangetuts.com/*-*
 // @match        *://*.extutorial.com/ask/*
 // @match        *://*.faithcov.org/*
 // @match        *://*.fitforlearning.org/*
@@ -137,7 +138,9 @@
 // @match        *://*.itnan.ru/post.php*
 // @match        *://*.itranslater.com/qa/details/*
 // @match        *://*.jablogs.com/detail/*
+// @match        *://*.javacodexamples.com/examples/*
 // @match        *://*.javaer101.com/*/*
+// @match        *://*.javafixing.com/*/*/*.html
 // @match        *://*.jejakjabar.com/wiki/*
 // @match        *://*.jike.in/forum.php?mod=viewthread&tid=*
 // @match        *://*.jpdebug.com/p/*
@@ -752,6 +755,8 @@ a{
             return clr('#2c3e50') && byHeader('h1', '.tag', lang);
         case 'exceptionshub.com': // site offline / Cloudflare error / 2022-05-01
             return _c(/\.html$/) && byPath(1);
+        case 'exchangetuts.com':
+            return byHeader('h1', '.item-tag > a', 'en');
         case 'extutorial.com':
             return byHeader('h1', 'a[href*="/tags/"]', 'en');
         case 'fixes.pub':
@@ -770,6 +775,8 @@ a{
             return byHeader([removePartBefore('h1',' – ').replace(/How to/, '')], _, 'en');
         case 'itectec.com':
             return byHeader([removePartBefore('h1', ' – ')], '.badge','en', _se);
+        case 'javacodexamples.com':
+            return byHeader('h1', '.titleBox > p > a', 'en');
         case 'javaer101.com':
             return byHeader('h1', 'nav .col-tag', _ps[1] == 'article' ? 'ja' : _ps[1]);
         case 'jike.in':
@@ -1018,6 +1025,7 @@ a{
                     'isolution.pro': '.box-body div:nth-child(3) .pull-right',
                     'itranslater.com': '.body > div:last-child > a',
                     'iquestion.pro': '.box-body div:nth-child(3) .pull-right',
+                    'javafixing.com': '.entry-content > a:last-of-type',
                     'jpdebug.com': '.text-warning',
                     'knews.vip': '.box-body div:nth-child(3) .pull-right',
                     'narkive.jp': '#postq > div > div > a',

@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name         Back2source
-// @version      0.1.114
+// @version      0.1.115
 // @description  Redirecting to source sites from sites with machine translation, etc.
 // @namespace    vladgba
 // @author       vladgba@gmail.com
@@ -60,6 +60,7 @@
 // @match        *://*.codefaq.ru/*
 // @match        *://*.codegear.dev/*/questions/*
 // @match        *://*.codegrepper.com/*
+// @match        *://*.codegrepr.com/question/*
 // @match        *://*.codeguides.site/questions/*
 // @match        *://*.codehero.jp/*
 // @match        *://*.codehunter.cc/*
@@ -97,6 +98,7 @@
 // @match        *://*.editcode.net/article-*
 // @match        *://*.edupro.id/questions/*
 // @match        *://*.encyclopaedia.bid/*
+// @match        *://*.errorsfixing.com/*
 // @match        *://*.exceptionshub.com/*
 // @match        *://*.exchangetuts.com/*-*
 // @match        *://*.extutorial.com/ask/*
@@ -152,6 +154,7 @@
 // @match        *://*.kotaeta.com/*
 // @match        *://*.legkovopros.ru/questions/*
 // @match        *://*.lifesaver.codes/answer/*
+// @match        *://*.linuxfixes.com/*/*/*
 // @match        *://*.livepcwiki.ru/wiki/*
 // @match        *://*.living-sun.com/*/*
 // @match        *://*.localcoder.org/*
@@ -182,7 +185,6 @@
 // @match        *://*.prog-help.ru/*
 // @match        *://*.progi.pro/*
 // @match        *://*.programmierfrage.com/items/*
-// @match        *://*.projectbackpack.org/*
 // @match        *://*.projectbackpack.org/*
 // @match        *://*.proubuntu.ru/*/*
 // @match        *://*.py4u.net/discuss/*
@@ -217,7 +219,7 @@
 // @match        *://*.sbup.com/wiki/*
 // @match        *://*.sch22.org/*
 // @match        *://*.semicolonworld.com/question/*
-// @match        *://*.serveanswer.com/questions/*
+// @match        *://*.serveanswer.com/issue/*
 // @match        *://*.sierrasummit2005.org/*
 // @match        *://*.siwib.org/*
 // @match        *://*.snyk.io/advisor/npm-package/*
@@ -239,6 +241,7 @@
 // @match        *://*.string.quest/read/*
 // @match        *://*.sunflowercreations.org/*
 // @match        *://*.switch-case.com/*
+// @match        *://*.syntaxfix.com/question/*
 // @match        *://*.sysadminde.com/questions/*
 // @match        *://*.techarks.ru/qa/*
 // @match        *://*.techfeed.net/*
@@ -589,7 +592,7 @@ a{
 
     switch (host) {
         case '1r1g.com':
-            return clr('#343a40') && byHeader();
+            return clr('#343a40') && byHeader('h1', 'a.badge', 'en');
         case '5axxw.com':
             return byHeader('h1','.badge-tag','zh') && byHeader('h2',_,'zh');
         case '8101010108.cn':
@@ -759,6 +762,8 @@ a{
         case 'younggeeks.in':
             lng('hi');
             return clr('#2c3e50') && byHeader('h1', '.tag', lang);
+        case 'errorsfixing.com':
+            return bySel('div.entry-content.boxed > p:nth-last-of-type(3) > a');
         case 'exceptionshub.com': // site offline / Cloudflare error / 2022-05-01
             return _c(/\.html$/) && byPath(1);
         case 'exchangetuts.com':
@@ -849,6 +854,8 @@ a{
             return (tt = _h.match(/^https?:\/\/stackoverflood\.com\/([a-zA-Z]{2})\/q\/(.+)/)) && byNumber(tt[2]);
         case 'string.quest':
             return byHeader([removePartBefore('h1', ' - ')], '.tag-links a', 'zh');
+        case 'syntaxfix.com':
+            return byHeader('h1', '.tag_askd>p>span>code', 'en');
         case 'sysadminde.com':
             return 'https://serverfault.com/questions/' + _ps[2];
         case 'techfeed.net':
@@ -1025,6 +1032,7 @@ a{
                     'codefaq.ru': '.aa-link',
                     'codegear.dev': 'p.text-right > a',
                     'codegrepper.com': '.answer_source > a',
+                    'codegrepr.com': 'div.content-text > p > a',
                     'e-learn.cn': '.zhuanzai + div a', // other content / 2022-05-29
                     'fooobar.com': '.question-text > .aa-link', // all pages 404 / 2022-05-01
                     'generacodice.com': '#fontePrincipale > a.link',
@@ -1036,6 +1044,7 @@ a{
                     'javafixing.com': '.entry-content > a:last-of-type',
                     'jpdebug.com': '.text-warning',
                     'knews.vip': '.box-body div:nth-child(3) .pull-right',
+                    'linuxfixes.com':'.entry-content > a:nth-last-of-type(2)',
                     'narkive.jp': '#postq > div > div > a',
                     'nuomiphp.com': '.alert-warning a',
                     'overcoder.net': '.info_outlink',

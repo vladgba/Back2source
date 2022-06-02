@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name         Back2source
-// @version      0.1.115
+// @version      0.1.116
 // @description  Redirecting to source sites from sites with machine translation, etc.
 // @namespace    vladgba
 // @author       vladgba@gmail.com
@@ -59,7 +59,7 @@
 // @match        *://*.codefaq.info/*
 // @match        *://*.codefaq.ru/*
 // @match        *://*.codegear.dev/*/questions/*
-// @match        *://*.codegrepper.com/*
+// @match        *://*.codegrepper.com/code-examples/*
 // @match        *://*.codegrepr.com/question/*
 // @match        *://*.codeguides.site/questions/*
 // @match        *://*.codehero.jp/*
@@ -353,7 +353,7 @@
     /** Creates a Wikipedia link with language and article text or the number of the part in the website url, optionally adding the /wiki/ part */
     var wiki = (l = 0, p = 2, w = true) => 'https://' + (_$s(l) ? l : _ps[l]) + '.wikipedia.org' + (w ? '/wiki/' : '') + (_$s(p) ? p : _ps[p]);
     /** Creates the bottom bar with the text, the code parts and images to search for */
-    var prepareSearch = (h, t, s) => promtRedirect(sitecolor, toSearch(h + ' ' + getTags(t).join(' ').replace(/\s+/g, ' '), s), !badCode && allTexts('pre code'), !badImgs && [...new Set([...allAttr('img[src*="://i.stack.imgur.com/"]', 'src'), ...allAttr('a[href*="://i.stack.imgur.com/"]', 'href')])], s);
+    var prepareSearch = (h, t, s) => promptRedirect(sitecolor, toSearch(h + ' ' + getTags(t).join(' ').replace(/\s+/g, ' '), s), !badCode && allTexts('pre code'), !badImgs && [...new Set([...allAttr('img[src*="://i.stack.imgur.com/"]', 'src'), ...allAttr('a[href*="://i.stack.imgur.com/"]', 'href')])], s);
     /** Translates all tags given as an array */
     var transTags = async (t) => (await yaTranslate(allTexts(t).join(' '), lang)).split(' ');
     /** Creates the Google search link with the slightly aligned text to search for, the sites to search on, optionally searching for images */
@@ -428,7 +428,7 @@
     }
 
     /** Creates the bottom bar to search for a question */
-    async function promtRedirect(bgcolor, link, codef, imgf, site) {
+    async function promptRedirect(bgcolor, link, codef, imgf, site) {
         const dialog = document.createElement('div');
         try {
             document.body.appendChild(dialog);
@@ -750,7 +750,7 @@ a{
         case 'developreference.com':
             var parts = document.title.split(' - ');
             var devpref = _ps[3].replace(/[-+]/g, ' ').replace(/(%ef|%bc|%9f)+$/i, '');
-            return (await findByApi(devpref)) || (await findByApi(parts[0], _, _, [parts.pop()])) || promtRedirect(sitecolor, toSearch(devpref));
+            return (await findByApi(devpref)) || (await findByApi(parts[0], _, _, [parts.pop()])) || promptRedirect(sitecolor, toSearch(devpref));
         case 'devfaq.fr':
             return byHeader('h1', '.badge-info', 'fr');
         case 'e-learn.cn': // other content / 2022-05-29
@@ -962,8 +962,8 @@ a{
             return _c(/^\/(repo\/|@)/) && _go('https://github.com' + _p.replace(/^\/(repo\/|@)/,'/'));
         case 'codefactor.io':
             document.addEventListener('DOMContentLoaded', (e)=>{
-                if (_ps[2]=='github' && _ps[5]=='source') return _go(bySel('a[title^="View on"]') + '/blob/' + _ps.splice(6).join('/'));
-                return _go(bySel('a.page-title-link') || bySel('a[analytics-event^="View file on"]') || bySel('a[title^="View on"]'));
+                if (_ps[2]=='github' && _ps[5]=='source') _go(bySel('a[title^="View on"]') + '/blob/' + _ps.splice(6).join('/'));
+                _go(bySel('a.page-title-link') || bySel('a[analytics-event^="View file on"]') || bySel('a[title^="View on"]'));
             });
             break;
         case 'giters.com':
@@ -988,6 +988,11 @@ a{
         case 'snyk.io':
             return 'https://www.npmjs.com/package/'+_ps[3];
         /* Other */
+        case 'codegrepper.com':
+            document.addEventListener('DOMContentLoaded', (e)=>{
+                _go(bySel('.answer_source > a')) || promptRedirect(sitecolor, toSearch(textContent('h1').replace(/“(.*)” Code Answer(’s)?/,'$1'),[]), allTexts('.TaysCodeMirror-code .TaysCodeMirror-line'), _, [])
+            });
+            break;
         case 'coder-question-ko.com':
         case 'coder-question.com':
             return _go(bySel('article a.bg-success-soft'));
@@ -1031,7 +1036,6 @@ a{
                     'codefaq.info': '.aa-link',
                     'codefaq.ru': '.aa-link',
                     'codegear.dev': 'p.text-right > a',
-                    'codegrepper.com': '.answer_source > a',
                     'codegrepr.com': 'div.content-text > p > a',
                     'e-learn.cn': '.zhuanzai + div a', // other content / 2022-05-29
                     'fooobar.com': '.question-text > .aa-link', // all pages 404 / 2022-05-01

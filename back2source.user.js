@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name         Back2source
-// @version      0.1.116
+// @version      0.1.117
 // @description  Redirecting to source sites from sites with machine translation, etc.
 // @namespace    vladgba
 // @author       vladgba@gmail.com
@@ -261,8 +261,10 @@
 // @match        *://*.v-resheno.ru/*
 // @match        *://*.voidcc.com/question/*
 // @match        *://*.vvikipedla.com/wiki/*
+// @match        *://*.wake-up-neo.com/*/*
 // @match        *://*.waymanamechurch.org/*
 // @match        *://*.web-answers.ru/*/*
+// @match        *://*.web-dev-qa-db-de.com/de/*
 // @match        *://*.web-dev-qa-db-fr.com/fr/*
 // @match        *://*.web-dev-qa-db-fra.com/fr/*
 // @match        *://*.web-dev-qa-db-ja.com/ja/*
@@ -601,6 +603,8 @@ a{
         case 'reponse-question-developpement-web-bd.com':
         case 'risposta-alla-domanda-sullo-sviluppo-web-bd.com':
         case 'tra-loi-cau-hoi-phat-trien-web.com':
+        case 'wake-up-neo.com':
+        case 'web-dev-qa-db-de.com':
         case 'web-dev-qa-db-fr.com':
         case 'web-dev-qa-db-fra.com':
         case 'web-dev-qa-db-ja.com':
@@ -1042,13 +1046,13 @@ a{
                     'generacodice.com': '#fontePrincipale > a.link',
                     'howtosolves.com': '#question .question .source a',
                     'husl.ru': '.source-link',
+                    'iquestion.pro': '.box-body div:nth-child(3) .pull-right',
                     'isolution.pro': '.box-body div:nth-child(3) .pull-right',
                     'itranslater.com': '.body > div:last-child > a',
-                    'iquestion.pro': '.box-body div:nth-child(3) .pull-right',
                     'javafixing.com': '.entry-content > a:last-of-type',
                     'jpdebug.com': '.text-warning',
                     'knews.vip': '.box-body div:nth-child(3) .pull-right',
-                    'linuxfixes.com':'.entry-content > a:nth-last-of-type(2)',
+                    'linuxfixes.com': '.entry-content > a:nth-last-of-type(2)',
                     'narkive.jp': '#postq > div > div > a',
                     'nuomiphp.com': '.alert-warning a',
                     'overcoder.net': '.info_outlink',
@@ -1057,24 +1061,25 @@ a{
                     'prog-help.ru': '.eclip > a',
                     'programmerz.ru': '.source-share-link',
                     'py4u.net': '.question .author .src a', // site offline / site not found / 2022-05-01
-                    'pythonq.com':'a[style="color:red"]', // site offline / site not found / 2022-05-01
+                    'pythonq.com': 'a[style="color:red"]', // site offline / site not found / 2022-05-01
                     'qacode.ru': '.question-info .cc-link', // all pages 404 / 2022-05-01
                     'qarchive.ru': 'cite > a',
                     'qarus.ru': 'em > a',
                     'qna.one': '.page-container-question .source-share-block a',
                     'rstopup.com': '.td-post-content .origlink > a',
-                    'serveanswer.com':'a[title="Source"]',
+                    'serveanswer.com': 'a[title="Source"]',
                     'sprosi.pro': '#qsource > a',
                     'stackguides.com': 'a[title="Go to Source post"]',
                     'stackovergo.com': '.qeditacti a:nth-child(2)',
                     'stackru.com': '.q-source',
                     'try2explore.com': 'div.tagsandsource span.source a[target="_blank"]', // site offline / site not found / 2022-05-01
-                    'ubuntugeeks.com': '.question-text > .a-link', // site offline / site not found / 2022-05-01
                     'ubuntuaa.com': '.post-info a',
+                    'ubuntugeeks.com': '.question-text > .a-link', // site offline / site not found / 2022-05-01
                     'uwenku.com': '.post-info a', // site offline / site not found / 2022-05-01
                     'voidcc.com': '.source > a',
+                    'wake-up-neo.com': 'span.q-source.i-source > a.gat',
                     'web-answers.ru': '.source > a',
-                    'yingqusp.com': '.container>div>div>div>p>a'
+                    'yingqusp.com': '.container>div>div>div>p>a',
                 };
                 link = cssSelectors[host] && _tc(cssSelectors[host]);
                 console.log(link);

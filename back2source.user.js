@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name         Back2source
-// @version      0.1.117
+// @version      0.1.118
 // @description  Redirecting to source sites from sites with machine translation, etc.
 // @namespace    vladgba
 // @author       vladgba@gmail.com
@@ -25,6 +25,7 @@
 // @match        *://*.answacode.com/questions/*
 // @match        *://*.answer-id.com/*
 // @match        *://*.answeright.com/*
+// @match        *://*.answerlib.com/question/*
 // @match        *://*.antwortenhier.me/*
 // @match        *://*.arip-photo.org/*
 // @match        *://*.ask-dev.ru/info/*
@@ -97,6 +98,7 @@
 // @match        *://*.ecnf2016.org/*
 // @match        *://*.editcode.net/article-*
 // @match        *://*.edupro.id/questions/*
+// @match        *://*.elfishgene.com/*
 // @match        *://*.encyclopaedia.bid/*
 // @match        *://*.errorsfixing.com/*
 // @match        *://*.exceptionshub.com/*
@@ -145,7 +147,7 @@
 // @match        *://*.javaer101.com/*/*
 // @match        *://*.javafixing.com/*/*/*.html
 // @match        *://*.jejakjabar.com/wiki/*
-// @match        *://*.jike.in/forum.php?mod=viewthread&tid=*
+// @match        *://*.jike.in/*?*
 // @match        *://*.jpdebug.com/p/*
 // @match        *://*.jscodetips.com/examples/*
 // @match        *://*.jsrepos.com/*/*
@@ -355,11 +357,11 @@
     /** Creates a Wikipedia link with language and article text or the number of the part in the website url, optionally adding the /wiki/ part */
     var wiki = (l = 0, p = 2, w = true) => 'https://' + (_$s(l) ? l : _ps[l]) + '.wikipedia.org' + (w ? '/wiki/' : '') + (_$s(p) ? p : _ps[p]);
     /** Creates the bottom bar with the text, the code parts and images to search for */
-    var prepareSearch = (h, t, s) => promptRedirect(sitecolor, toSearch(h + ' ' + getTags(t).join(' ').replace(/\s+/g, ' '), s), !badCode && allTexts('pre code'), !badImgs && [...new Set([...allAttr('img[src*="://i.stack.imgur.com/"]', 'src'), ...allAttr('a[href*="://i.stack.imgur.com/"]', 'href')])], s);
+    var prepareSearch = (h, t, s) => promptRedirect(sitecolor, toSearch(h + (t ? ' ' : '') + getTags(t).join(' ').replace(/\s+/g, ' '), s), !badCode && allTexts('pre code'), !badImgs && [...new Set([...allAttr('img[src*="://i.stack.imgur.com/"]', 'src'), ...allAttr('a[href*="://i.stack.imgur.com/"]', 'href')])], s);
     /** Translates all tags given as an array */
     var transTags = async (t) => (await yaTranslate(allTexts(t).join(' '), lang)).split(' ');
     /** Creates the Google search link with the slightly aligned text to search for, the sites to search on, optionally searching for images */
-    var toSearch = (s, site, i) => (s = dropMarks(s) && s ? 'https://google.com/search?q=' + ((site && Array.isArray(site)) ? (site.length < 1 ? '' : 'site%3A' + site.join('+OR+site%3A') + '+') : 'site%3Astackexchange.com+OR+site%3Astackoverflow.com+') + encodeURIComponent(s) + (i ? '&tbm=isch' : '') : null);
+    var toSearch = (s, site, i) => (s = dropMarks(s) && s && (ll = s.split(' ').filter(i => !i.match(/^(and|an|are|for|how|in|is|it|i|of|or|the|to)$/i)).length) ? 'https://google.com/search?q=' + (ll <= 32 ? encodeURIComponent(s) + '+' : '') + ((site && Array.isArray(site)) ? (site.length < 1 ? '' : 'site%3A' + site.join('+OR+site%3A')) : 'site%3Astackexchange.com+OR+site%3Astackoverflow.com') + (ll <= 32 ? '' : '+' + encodeURIComponent(s)) + (i ? '&tbm=isch' : '') : null);
     /** Gets the textcontent of a selected element, if it exists */
     var textContent = (s) => _t(s)?.textContent.trim();
     /** Creates StackOverflow link by article id, optionally mofifying it before */
@@ -620,6 +622,7 @@ a{
         case 'domainelespailles.net':
         case 'ec-europe.org':
         case 'ecnf2016.org':
+        case 'elfishgene.com':
         case 'faithcov.org':
         case 'fitforlearning.org':
         case 'fluffyfables.com':
@@ -640,7 +643,7 @@ a{
         case 'waymanamechurch.org':
         case 'zsharp.org':
             tt = _t('meta[property="og:image"]').content.split('/').pop().split('.')[0].replace(/-/g,' ');
-            return tt && (await findByApi(tt) || prepareSearch(tt, '', ['stackoverflow.com','superuser.com','askubuntu.com','stackexchange.com']));
+            return tt && (await findByApi(tt) || prepareSearch(tt, _, ['stackoverflow.com','superuser.com','askubuntu.com','stackexchange.com']));
         case 'answacode.com':
         case 'asklobster.com':
         case 'bestecode.com':
@@ -662,6 +665,8 @@ a{
         case 'thinbug.com':
         case 'xbuba.com': // site offline / site not found / 2022-05-01
             return byNumber(_ps[2]);
+        case 'answerlib.com':
+            return byPath(3);
         case 'antwortenhier.me':
             lng('de');
         case 'askfrance.me':
@@ -871,6 +876,8 @@ a{
         case 'tistory.com':
             return all('.article-view p > a').pop().href;
         case 'tousu.in':
+        case 'jike.in':
+            if (textContent('h1').match(/[\u4e00-\u9fa5]/)) return byHeader('h1', _, 'zh');
             return byHeader([removePartBefore('h1',' - ')], _, 'en');
         case 'tutorialmore.com':
             return byHeader([removePartBefore('h1',' - ')], '.tags a', 'ja', ['superuser.com', 'stackoverflow.com', 'stackexchange.com']);

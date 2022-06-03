@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name         Back2source
-// @version      0.1.118
+// @version      0.1.119
 // @description  Redirecting to source sites from sites with machine translation, etc.
 // @namespace    vladgba
 // @author       vladgba@gmail.com
@@ -15,6 +15,9 @@
 // @grant        GM_setValue
 // @grant        GM_getValue
 // @connect      api.browser.yandex.ru
+// @connect      api.github.com
+// @connect      api.stackexchange.com
+// @connect      api.zcxv.icu
 // @noframes
 // @match        *://*.*.nina.az/wiki/*
 // @match        *://*.360wiki.ru/wiki/*
@@ -41,7 +44,9 @@
 // @match        *://*.askubuntu.ru/questions/*
 // @match        *://*.askvoprosy.com/voprosy/*
 // @match        *://*.athabasca-foto.com/*
+// @match        *://*.awesomeopensource.com/project/*
 // @match        *://*.bcqaw.com/*.html
+// @match        *://*.bestofcpp.com/repo/*
 // @match        *://*.bildiredi.com/*
 // @match        *://*.bilee.com/*.html
 // @match        *://*.bleepcoder.com/*/*
@@ -56,6 +61,7 @@
 // @match        *://*.cndgn.com/question/*
 // @match        *://*.code-examples.net/*/q/*
 // @match        *://*.code.i-harness.com/*/q/*
+// @match        *://*.codebug.zone/*
 // @match        *://*.codefactor.io/repository/*
 // @match        *://*.codefaq.info/*
 // @match        *://*.codefaq.ru/*
@@ -80,6 +86,7 @@
 // @match        *://*.codetd.com/article/*
 // @match        *://*.coredump.biz/questions/*
 // @match        *://*.culinarydegree.info/*
+// @match        *://*.daplus.net/*
 // @match        *://*.datewiki.ru/wiki/*
 // @match        *://*.de-vraag.com/*
 // @match        *://*.debugcn.com/*article/*
@@ -105,6 +112,7 @@
 // @match        *://*.exchangetuts.com/*-*
 // @match        *://*.extutorial.com/ask/*
 // @match        *://*.faithcov.org/*
+// @match        *://*.firstlightsalon.in/*/questions/*
 // @match        *://*.fitforlearning.org/*
 // @match        *://*.fixes.pub/*/*.html
 // @match        *://*.fluffyfables.com/*
@@ -114,11 +122,15 @@
 // @match        *://*.geek-tips.imtqy.com/articles/*/*.html
 // @match        *://*.generacodice.com/*
 // @match        *://*.ghcc.net/*
+// @match        *://*.gitanswer.net/*
 // @match        *://*.giters.com/*
+// @match        *://*.githubhelp.com/*
+// @match        *://*.githubplus.com/*
 // @match        *://*.githubhot.com/*
 // @match        *://*.githublab.com/*/*
 // @match        *://*.githubmemory.com/*
 // @match        *://*.gitrush.ru/*/*/*
+// @match        *://*.golangrepo.com/repo/*
 // @match        *://*.gupgallery.com/*
 // @match        *://*.helpex.vn/question/*
 // @match        *://*.higithub.com/*/*
@@ -173,6 +185,7 @@
 // @match        *://*.ntcdoon.org/*
 // @match        *://*.nuomiphp.com/*/*
 // @match        *://*.nwikiit.cyou/wiki/*
+// @match        *://*.opensourcelibs.com/lib/*
 // @match        *://*.ostack.cn/*?*=*
 // @match        *://*.ourladylakes.org/*
 // @match        *://*.overcoder.net/q/*
@@ -191,6 +204,7 @@
 // @match        *://*.proubuntu.ru/*/*
 // @match        *://*.py4u.net/discuss/*
 // @match        *://*.pythonq.com/*/*/*
+// @match        *://*.pythonrepo.com/repo/*
 // @match        *://*.qa-help.ru/*
 // @match        *://*.qa-stack.pl/*
 // @match        *://*.qa.1r1g.com/sf/ask/*
@@ -210,6 +224,7 @@
 // @match        *://*.recalll.co/*
 // @match        *://*.reddit.fun/*/*
 // @match        *://*.reponse-question-developpement-web-bd.com/fr/*
+// @match        *://*.reposhub.com/*/*
 // @match        *://*.respuestas.me/*
 // @match        *://*.risposta-alla-domanda-sullo-sviluppo-web-bd.com/it/*
 // @match        *://*.routinepanic.com/questions/*
@@ -276,6 +291,7 @@
 // @match        *://*.webdevdesigner.com/q*
 // @match        *://*.webentwicklung-frage-antwort-db.com.de/de/*
 // @match        *://*.wekeepcoding.com/article/*/*
+// @match        *://*.wenyanet.com/opensource/*
 // @match        *://*.while-do.com/*
 // @match        *://*.wiki-org.ru/*
 // @match        *://*.wiki-wiki.ru/wp/*
@@ -356,6 +372,8 @@
     var mulreplace = (str, a) => a.forEach((v) => (str = str.replace(v[0], v[1]))) || str;
     /** Creates a Wikipedia link with language and article text or the number of the part in the website url, optionally adding the /wiki/ part */
     var wiki = (l = 0, p = 2, w = true) => 'https://' + (_$s(l) ? l : _ps[l]) + '.wikipedia.org' + (w ? '/wiki/' : '') + (_$s(p) ? p : _ps[p]);
+    /** Creates a Github link with project and repository or the number of the part in the website url, optionally adding the /wiki/ part */
+    var github = (l) => l ? 'https://github.com' + l : null;
     /** Creates the bottom bar with the text, the code parts and images to search for */
     var prepareSearch = (h, t, s) => promptRedirect(sitecolor, toSearch(h + (t ? ' ' : '') + getTags(t).join(' ').replace(/\s+/g, ' '), s), !badCode && allTexts('pre code'), !badImgs && [...new Set([...allAttr('img[src*="://i.stack.imgur.com/"]', 'src'), ...allAttr('a[href*="://i.stack.imgur.com/"]', 'href')])], s);
     /** Translates all tags given as an array */
@@ -553,6 +571,16 @@ a{
         return dfgdr;
     }
 
+    async function findByGitHubApi(q, user) {
+        var dfgdr = q && fetch(
+            `https://api.github.com/search/issues?q=${encodeURIComponent(q)}` +
+            (user ? ' author:' + encodeURIComponent(user) : ''), {
+                credentials: 'omit'
+            })
+            .then(r => r.json())
+            .then(r => r?.items[0]?.html_url);
+        return dfgdr;
+    }
     /**
      * Takes the slightly aligned text of the header or a given selector, optionally translates it, tries to find it per API and otherwise creates the bottom bar to search for
      * @param {string|array} [h] - header selector (def: 'h1')
@@ -719,6 +747,8 @@ a{
         case 'i-harness.com':
         case 'src-bin.com':
             return byNumber(lastPathPart(), 16);
+        case 'codebug.zone':
+            return byHeader([removePartBefore('h1', ' – ')], _, 'es');
         case 'codeguides.site':
         case 'stormcrow.dev': // site offline / other content /2022-05-22
             return byNumber(_ps[3]);
@@ -741,6 +771,8 @@ a{
             return byHeader('h1', '.custom-head .post-tag', 'en');
         case 'codersatellite.com': // site offline / timeout / 2022-05-01
             return byNumber(_ps[1].split('-')[3]);
+        case 'daplus.net':
+            return byHeader([removePartBefore('h1','] ')], _, 'ko');
         case 'debugcn.com':
             lng(_ps[1] == 'article' ? 'zh' : _ps[1]);
         case 'debugko.com':
@@ -779,6 +811,8 @@ a{
             return byHeader('h1', '.item-tag > a', 'en');
         case 'extutorial.com':
             return byHeader('h1', 'a[href*="/tags/"]', 'en');
+        case 'firstlightsalon.in':
+            return 'https://' + _ps[1].replace('_threads','.stackexchange.com/questions/')+_ps[3];
         case 'fixes.pub':
             return byHeader('h1', 'aside li a[href*="fixes.pub/topics"]', 'ja');
         case 'ghcc.net':
@@ -890,6 +924,8 @@ a{
             return (await findByApi(tt)) || prepareSearch(tt, '.tags a', ['superuser.com', 'stackoverflow.com', 'stackexchange.com']);
         case 'wekeepcoding.com':
             return byHeader('h4', _, 'en');
+        case 'wenyanet.com':
+            return bySel('.question-date a');
         case 'wikiroot.ru':
             tt = _t('section section div.footer-post div.d-inline-block button');
             tt = tt && (getAttr(tt, 'data-url', /https?:\/\/wikiroot\.ru\/comment\/new\/([0-9]+)/) || getAttr(tt, 'data-target', /#buttoncollapse-([0-9]+)/));
@@ -965,32 +1001,40 @@ a{
         case 'xcv.wiki':
             return (tt = _h.match(/https?:\/\/([a-zA-z]{2,4})\.xcv\.wiki\/wiki\/(.+)/)) && wiki('de', tt[2]);
         /* GitHub */
+        case 'awesomeopensource.com':
+            return github(_p.replace(/^\/project/,''));
+        case 'bestofcpp.com':
+        case 'golangrepo.com':
+        case 'pythonrepo.com':
+            return byInner('#basic a.btn','GitHub Repository');
         case 'bleepcoder.com':
             return bySel('.float-right .text-muted');
         case 'bytemeta.vip':
         case 'githubhot.com':
         case 'githubmemory.com':
-            return _c(/^\/(repo\/|@)/) && _go('https://github.com' + _p.replace(/^\/(repo\/|@)/,'/'));
-        case 'codefactor.io':
-            document.addEventListener('DOMContentLoaded', (e)=>{
-                if (_ps[2]=='github' && _ps[5]=='source') _go(bySel('a[title^="View on"]') + '/blob/' + _ps.splice(6).join('/'));
-                _go(bySel('a.page-title-link') || bySel('a[analytics-event^="View file on"]') || bySel('a[title^="View on"]'));
-            });
-            break;
+            return _c(/^\/(repo\/|@)/) && github(_p.replace(/^\/(repo\/|@)/,'/'));
+        case 'gitanswer.net':
+            return findByGitHubApi(textContent('h1').replace(/ - .*$/, '').replace(new RegExp('^('+allTexts('.post-tags a.button').join(' |')+' )'),''), _t('.avatar').parentElement.querySelector('span').innerText);
         case 'giters.com':
-            return 'https://github.com' + _p;
+        case 'githubhelp.com':
+        case 'githubplus.com':
+            return github(_p);
         case 'githublab.com':
-            return 'https://github.com' + _p.replace(/^\/(repository|profile)/,'').replace(/^(\/issues)(\/.*\/.*)(\/.*)/,'$2$1$3').replace(/^(\/issues)(\/.*\/.*)/,'$2$1');
+            return github(_p.replace(/^\/(repository|profile)/,'').replace(/^(\/issues)(\/.*\/.*)(\/.*)/,'$2$1$3').replace(/^(\/issues)(\/.*\/.*)/,'$2$1'));
         case 'higithub.com':
-            return 'https://github.com' + _p.replace(/\/(repo\/|user$)/,'/').replace(/^(\/.*)(\/issue)(\/.*)(\/.*)/,'$1$3$2s$4').replace(/^(\/.*)\/repo_(issues)(\/.*)/,'$1$3/$2');
+            return github(_p.replace(/\/(repo\/|user$)/,'/').replace(/^(\/.*)(\/issue)(\/.*)(\/.*)/,'$1$3$2s$4').replace(/^(\/.*)\/repo_(issues)(\/.*)/,'$1$3/$2'));
         case 'issueantenna.com':
-            return 'https://github.com' + _p.replace(/^\/(repo|author)/,'');
+            return github(_p.replace(/^\/(repo|author)/,''));
         case 'issueexplorer.com': // other content / 2022-05-01
-            return 'https://github.com' + _p.replace(/^\/repo/,'');
+            return github(_p.replace(/^\/repo/,''));
         case 'jsrepos.com':
             return bySel('article.markdown-body>a[rel="nofollow"]:last-child');
         case 'lifesaver.codes':
             return byInner('a[role="link"]','Original');
+        case 'opensourcelibs.com':
+            return byInner('.repo-stats a','github.com');
+        case 'reposhub.com':
+            return bySel('#githome');
         /* NPM */
         case 'npm.io':
             return 'https://www.npmjs.com'+_p;
@@ -999,6 +1043,12 @@ a{
         case 'snyk.io':
             return 'https://www.npmjs.com/package/'+_ps[3];
         /* Other */
+        case 'codefactor.io':
+            document.addEventListener('DOMContentLoaded', (e)=>{
+                if (_ps[2]=='github' && _ps[5]=='source') _go(bySel('a[title^="View on"]') + '/blob/' + _ps.splice(6).join('/'));
+                _go(bySel('a.page-title-link') || bySel('a[analytics-event^="View file on"]') || bySel('a[title^="View on"]'));
+            });
+            break;
         case 'codegrepper.com':
             document.addEventListener('DOMContentLoaded', (e)=>{
                 _go(bySel('.answer_source > a')) || promptRedirect(sitecolor, toSearch(textContent('h1').replace(/“(.*)” Code Answer(’s)?/,'$1'),[]), allTexts('.TaysCodeMirror-code .TaysCodeMirror-line'), _, [])
@@ -1127,7 +1177,7 @@ a{
         /^https?:\/\/(superuser\.com|askubuntu\.com|mathoverflow\.net|serverfault\.com|stackapps\.com)\/questions\/([0-9]{1,12})/.test(link) ||
         /^https?:\/\/([a-zA-z\-]+\.)?(habr\.com|geektimes\.ru)\/(.+)/.test(link) ||
         /^https?:\/\/[a-zA-z\-]+\.wikipedia\.org\/wiki\/(?!wiki\/)(.+)/.test(link) ||
-        /^https?:\/\/(www\.)?github\.com\/(.+)/.test(link) ||
+        /^https?:\/\/github\.com\/(.+)/.test(link) ||
         /^https?:\/\/www\.npmjs\.com\/package\/(.+)/.test(link)) {
         return run(link);
     }
@@ -1137,5 +1187,6 @@ a{
     fix(/^https?:\/\/([a-z]+\.)?(superuser\.com|askubuntu\.com|mathoverflow\.net|serverfault\.com|stackapps\.com)\/([a-z]+)\/([0-9]{1,12})/, 'https://$1$2/questions/$4') ||
     fix(/^https?:\/\/([a-zA-z\-]+\.)wikipedia\.org\/w\/index\.php\?title=(.+)&oldid=([0-9]{1,12})/, 'https://$1wikipedia.org/wiki/$2') ||
     fix(/^https?:\/\/([a-zA-z\-]+\.)wikipedia\.org\/wiki\/wiki\/(.+)/, 'https://$1wikipedia.org/wiki/$2');
+    fix(/^https?:\/\/www\.github\.com\/(.+)/, 'https://github.com/$1');
 
 }).catch(console.error.bind(console));

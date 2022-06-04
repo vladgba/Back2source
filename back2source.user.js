@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name         Back2source
-// @version      0.1.119
+// @version      0.1.120
 // @description  Redirecting to source sites from sites with machine translation, etc.
 // @namespace    vladgba
 // @author       vladgba@gmail.com
@@ -185,6 +185,7 @@
 // @match        *://*.ntcdoon.org/*
 // @match        *://*.nuomiphp.com/*/*
 // @match        *://*.nwikiit.cyou/wiki/*
+// @match        *://*.ogeek.cn/thread-*.html
 // @match        *://*.opensourcelibs.com/lib/*
 // @match        *://*.ostack.cn/*?*=*
 // @match        *://*.ourladylakes.org/*
@@ -250,6 +251,7 @@
 // @match        *://*.stackfinder.jp.net/questions/*
 // @match        *://*.stackfinder.ru/questions/*
 // @match        *://*.stackguides.com/questions/*
+// @match        *://*.stackify.dev/*
 // @match        *://*.stackoom.com/*question/*
 // @match        *://*.stackoverflood.com/*
 // @match        *://*.stackovergo.com/*q/*
@@ -270,6 +272,7 @@
 // @match        *://*.tousu.in/qa/*
 // @match        *://*.tra-loi-cau-hoi-phat-trien-web.com/vi/*
 // @match        *://*.try2explore.com/*
+// @match        *://*.tutorialguruji.com/*/*
 // @match        *://*.tutorialmore.com/questions-*
 // @match        *://*.ubuntuaa.com/*q/*
 // @match        *://*.ubuntugeeks.com/questions/*
@@ -281,6 +284,7 @@
 // @match        *://*.wake-up-neo.com/*/*
 // @match        *://*.waymanamechurch.org/*
 // @match        *://*.web-answers.ru/*/*
+// @match        *://*.web-dev-qa-db-br.com/pt/*
 // @match        *://*.web-dev-qa-db-de.com/de/*
 // @match        *://*.web-dev-qa-db-fr.com/fr/*
 // @match        *://*.web-dev-qa-db-fra.com/fr/*
@@ -634,6 +638,7 @@ a{
         case 'risposta-alla-domanda-sullo-sviluppo-web-bd.com':
         case 'tra-loi-cau-hoi-phat-trien-web.com':
         case 'wake-up-neo.com':
+        case 'web-dev-qa-db-br.com':
         case 'web-dev-qa-db-de.com':
         case 'web-dev-qa-db-fr.com':
         case 'web-dev-qa-db-fra.com':
@@ -860,6 +865,9 @@ a{
             return lng('zh') && byHeader('h1', [await transTags('.article-tag')], 'zh');
         case 'newbedev.com':
             return _t('article') && byHeader('h1', 'h4.tags a.item-tag', 'en', _se);
+        case 'ogeek.cn':
+            if (textContent('#pt a:nth-child(5)') == '知识问答') return byHeader('h1', _, 'en');
+            break;
         case 'overstack.in':
             return byHeader([removePartBefore('h1',' - ')], _, 'en');
         case 'poweruser.guru':
@@ -891,6 +899,8 @@ a{
         case 'stackanswers.net':
             clr('#999') && lng('en');
             return location.hostname.startsWith('publish.') && all('.panel-body a')[1].href;
+        case 'stackify.dev':
+            return byHeader('h1', '.tags-container span.front', 'en');
         case 'stackoom.com':
             return byNumber(_t('[id^=question_content_]').id.split('_')[2]);
         case 'stackoverflood.com':
@@ -913,6 +923,8 @@ a{
         case 'jike.in':
             if (textContent('h1').match(/[\u4e00-\u9fa5]/)) return byHeader('h1', _, 'zh');
             return byHeader([removePartBefore('h1',' - ')], _, 'en');
+        case 'tutorialguruji.com':
+            return byHeader([textContent('h1').replace(/ *Code Answer *$/, '')], _, 'en');
         case 'tutorialmore.com':
             return byHeader([removePartBefore('h1',' - ')], '.tags a', 'ja', ['superuser.com', 'stackoverflow.com', 'stackexchange.com']);
         case 'utyatnishna.ru':

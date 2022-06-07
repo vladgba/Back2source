@@ -857,7 +857,7 @@ a{
         case 'xstack.us':
             if (_c(/^\/thread-.*.html$/) && textContent('#pt a:nth-child(5)') == '知识问答') return byHeader([removePartBefore('h1',' - ')], _, 'en');
             if (_c(/^\/article-.*.html$/) && textContent('#pt a:nth-child(5)') == '开源') return bySel('.deanedit > a');
-            if (_ps[1] == 'qa'){
+            if (_ps[1] == 'qa' && _t('h1 a')){
 				if (textContent('h1').match(/[\u4e00-\u9fa5]/)) return byHeader('h1', _, 'zh');
 				return byHeader([removePartBefore('h1',' - ')], _, 'en');
 			}

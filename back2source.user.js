@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name         Back2source
-// @version      0.1.120
+// @version      0.1.121
 // @description  Redirecting to source sites from sites with machine translation, etc.
 // @namespace    vladgba
 // @author       vladgba@gmail.com
@@ -36,8 +36,7 @@
 // @match        *://*.ask.roboflow.ai/question/*
 // @match        *://*.askcodez.com/*
 // @match        *://*.askdev.info/questions/*
-// @match        *://*.askdev.ru/q-*
-// @match        *://*.askdev.ru/q/*
+// @match        *://*.askdev.ru/q*
 // @match        *://*.askdevz.com/question/*
 // @match        *://*.askentire.net/q/*-*
 // @match        *://*.askfrance.me/*
@@ -125,10 +124,10 @@
 // @match        *://*.gitanswer.net/*
 // @match        *://*.giters.com/*
 // @match        *://*.githubhelp.com/*
-// @match        *://*.githubplus.com/*
 // @match        *://*.githubhot.com/*
 // @match        *://*.githublab.com/*/*
 // @match        *://*.githubmemory.com/*
+// @match        *://*.githubplus.com/*
 // @match        *://*.gitrush.ru/*/*/*
 // @match        *://*.golangrepo.com/repo/*
 // @match        *://*.gupgallery.com/*
@@ -159,7 +158,8 @@
 // @match        *://*.javaer101.com/*/*
 // @match        *://*.javafixing.com/*/*/*.html
 // @match        *://*.jejakjabar.com/wiki/*
-// @match        *://*.jike.in/*?*
+// @match        *://*.jike.in/qa/*
+// @match        *://*.jike.in/*-1.html
 // @match        *://*.jpdebug.com/p/*
 // @match        *://*.jscodetips.com/examples/*
 // @match        *://*.jsrepos.com/*/*
@@ -175,7 +175,7 @@
 // @match        *://*.mediatagtw.com/*/*
 // @match        *://*.microeducate.tech/*
 // @match        *://*.mihalicdictionary.org/*
-// @match        *://*.mlink.in/*
+// @match        *://*.mlink.in/qa/*
 // @match        *://*.mlog.club/article/*
 // @match        *://*.narkive.jp/*
 // @match        *://*.newbedev.com/*
@@ -185,13 +185,16 @@
 // @match        *://*.ntcdoon.org/*
 // @match        *://*.nuomiphp.com/*/*
 // @match        *://*.nwikiit.cyou/wiki/*
-// @match        *://*.ogeek.cn/thread-*.html
+// @match        *://*.ogeek.cn/qa/*
+// @match        *://*.ogeek.cn/*-1.html
 // @match        *://*.opensourcelibs.com/lib/*
-// @match        *://*.ostack.cn/*?*=*
+// @match        *://*.ostack.cn/qa/*
+// @match        *://*.ostack.cn/*-1.html
 // @match        *://*.ourladylakes.org/*
 // @match        *://*.overcoder.net/q/*
 // @match        *://*.overcoder.ru/q/*
 // @match        *://*.overstack.in/qa/*
+// @match        *://*.overstack.in/*-1.html
 // @match        *://*.pakostnici.com/*
 // @match        *://*.panaindustrial.com/*
 // @match        *://*.pcbconline.org/*
@@ -217,7 +220,8 @@
 // @match        *://*.qastack.in.th/*
 // @match        *://*.qastack.info.tr/*
 // @match        *://*.qastack.net.bd/*
-// @match        *://*.qi-u.com/forum.php?mod=viewthread&tid=*
+// @match        *://*.qi-u.com/qa/*
+// @match        *://*.qi-u.com/*-1.html
 // @match        *://*.quabr.com/*
 // @match        *://*.quares.ru/?id=*
 // @match        *://*.question-it.com/questions/*
@@ -246,7 +250,8 @@
 // @match        *://*.soinside.com/question/*
 // @match        *://*.solveforum.com/forums/threads/*
 // @match        *://*.sprosi.pro/questions/*
-// @match        *://*.sqlite.in/*
+// @match        *://*.sqlite.in/qa/*
+// @match        *://*.sqlite.in/*-1.html
 // @match        *://*.stackanswers.net/questions/*
 // @match        *://*.stackfinder.jp.net/questions/*
 // @match        *://*.stackfinder.ru/questions/*
@@ -317,11 +322,13 @@
 // @match        *://*.wikivisually.com/wiki/*
 // @match        *://*.wikiwand.com/*/*
 // @match        *://*.wikizero.com/*/*
-// @match        *://*.wujigu.com/*?*=*
+// @match        *://*.wujigu.com/qa/*
 // @match        *://*.xbuba.com/*
 // @match        *://*.xcv.wiki/*
 // @match        *://*.xiu2.net/it/details/*
 // @match        *://*.xsprogram.com/content/*
+// @match        *://*.xstack.us/qa/*
+// @match        *://*.xstack.us/*-1.html
 // @match        *://*.xszz.org/*/question-*
 // @match        *://*.yingqusp.com/so/*
 // @match        *://*.ylhow.com/*
@@ -839,12 +846,22 @@ a{
         case 'javaer101.com':
             return byHeader('h1', 'nav .col-tag', _ps[1] == 'article' ? 'ja' : _ps[1]);
         case 'jike.in':
+        case 'mlink.in':
+        case 'ogeek.cn':
         case 'ostack.cn':
+        case 'overstack.in':
         case 'qi-u.com':
+        case 'sqlite.in':
+        case 'tousu.in':
         case 'wujigu.com':
-            tt = removePartBefore('h1',' - ');
-            if(tt.match(/[\u4e00-\u9fa5]{2,}/)) tt = fromParentheses(tt); //if detected chinese symbols, then we need to extract text from the parentheses
-            return byHeader([dropMarks(tt)], _, 'en');
+        case 'xstack.us':
+            if (_c(/^\/thread-.*.html$/) && textContent('#pt a:nth-child(5)') == '知识问答') return byHeader([removePartBefore('h1',' - ')], _, 'en');
+            if (_c(/^\/article-.*.html$/) && textContent('#pt a:nth-child(5)') == '开源') return bySel('.deanedit > a');
+            if (_ps[1] == 'qa'){
+				if (textContent('h1').match(/[\u4e00-\u9fa5]/)) return byHeader('h1', _, 'zh');
+				return byHeader([removePartBefore('h1',' - ')], _, 'en');
+			}
+			return;
         case 'jscodetips.com':
             return byHeader('h1', '.contentBox > div:nth-child(3) > a', 'en');
         case 'kompsekret.ru':
@@ -855,21 +872,11 @@ a{
         case 'programmierfrage.com':
         case 'routinepanic.com':
             return _tc('a');
-        case 'mlink.in':
-        case 'sqlite.in':
-            if(!_t('h1 a')) return;
-            badImgs = true;
-            return bySel('a[rel="nofollow"][target="_blank"]') || byHeader([_t('.qa-main-heading h1').innerText.replace(/^(\s+)?([a-z])+\s-/, '').trim()], '.qa-q-view-main .qa-tag-link', 'en', '');
         case 'mlog.club':
             addJS('var redir = window.__NUXT__.data[0].article.sourceUrl; redir && window.location.replace(redir);');
             return lng('zh') && byHeader('h1', [await transTags('.article-tag')], 'zh');
         case 'newbedev.com':
             return _t('article') && byHeader('h1', 'h4.tags a.item-tag', 'en', _se);
-        case 'ogeek.cn':
-            if (textContent('#pt a:nth-child(5)') == '知识问答') return byHeader('h1', _, 'en');
-            break;
-        case 'overstack.in':
-            return byHeader([removePartBefore('h1',' - ')], _, 'en');
         case 'poweruser.guru':
             return _t('div.post-menu a.suggest-edit-post[href*="superuser.com/questions/"]');
         case 'progi.pro':
@@ -919,10 +926,6 @@ a{
             return byHeader('h1', '.blog-pagination > a', 'en');
         case 'tistory.com':
             return all('.article-view p > a').pop().href;
-        case 'tousu.in':
-        case 'jike.in':
-            if (textContent('h1').match(/[\u4e00-\u9fa5]/)) return byHeader('h1', _, 'zh');
-            return byHeader([removePartBefore('h1',' - ')], _, 'en');
         case 'tutorialguruji.com':
             return byHeader([textContent('h1').replace(/ *Code Answer *$/, '')], _, 'en');
         case 'tutorialmore.com':

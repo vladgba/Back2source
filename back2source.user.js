@@ -25,7 +25,7 @@
 // @match        *://*.8101010108.cn/zh/*
 // @match        *://*.abcdef.wiki/*
 // @match        *://*.amuddycup.com/*
-// @match        *://*.answacode.com/questions/*
+// @match        *://*.answacode.com/*
 // @match        *://*.answer-id.com/*
 // @match        *://*.answeright.com/*
 // @match        *://*.answerlib.com/question/*
@@ -687,7 +687,6 @@ a{
         case 'zsharp.org':
             tt = _t('meta[property="og:image"]').content.split('/').pop().split('.')[0].replace(/-/g,' ');
             return tt && (await findByApi(tt) || prepareSearch(tt, _, ['stackoverflow.com','superuser.com','askubuntu.com','stackexchange.com']));
-        case 'answacode.com':
         case 'asklobster.com':
         case 'bestecode.com':
         case 'bonprog.com':
@@ -1117,6 +1116,7 @@ a{
                 console.log('check by selectors');
                 const cssSelectors = {
                     '4answered.com': '.view_body span a',
+                    'answacode.com': '.post__source',
                     'answer-id.com': 'a.link', // redirects to de-vraag.com / 2022-05-22
                     'answeright.com': 'a.link',
                     'ask-ubuntu.ru': '.q-source',

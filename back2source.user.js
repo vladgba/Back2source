@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name         Back2source
-// @version      0.1.121
+// @version      0.1.122
 // @description  Redirecting to source sites from sites with machine translation, etc.
 // @namespace    vladgba
 // @author       vladgba@gmail.com
@@ -158,14 +158,16 @@
 // @match        *://*.javaer101.com/*/*
 // @match        *://*.javafixing.com/*/*/*.html
 // @match        *://*.jejakjabar.com/wiki/*
-// @match        *://*.jike.in/qa/*
 // @match        *://*.jike.in/*-1.html
+// @match        *://*.jike.in/qa/*
 // @match        *://*.jpdebug.com/p/*
 // @match        *://*.jscodetips.com/examples/*
 // @match        *://*.jsrepos.com/*/*
+// @match        *://*.juejin.cn/post/*
 // @match        *://*.knews.vip/q/*
 // @match        *://*.kompsekret.ru/q/*
 // @match        *://*.kotaeta.com/*
+// @match        *://*.learnfk.com/*question/*
 // @match        *://*.legkovopros.ru/questions/*
 // @match        *://*.lifesaver.codes/answer/*
 // @match        *://*.linuxfixes.com/*/*/*
@@ -185,16 +187,16 @@
 // @match        *://*.ntcdoon.org/*
 // @match        *://*.nuomiphp.com/*/*
 // @match        *://*.nwikiit.cyou/wiki/*
-// @match        *://*.ogeek.cn/qa/*
 // @match        *://*.ogeek.cn/*-1.html
+// @match        *://*.ogeek.cn/qa/*
 // @match        *://*.opensourcelibs.com/lib/*
-// @match        *://*.ostack.cn/qa/*
 // @match        *://*.ostack.cn/*-1.html
+// @match        *://*.ostack.cn/qa/*
 // @match        *://*.ourladylakes.org/*
 // @match        *://*.overcoder.net/q/*
 // @match        *://*.overcoder.ru/q/*
-// @match        *://*.overstack.in/qa/*
 // @match        *://*.overstack.in/*-1.html
+// @match        *://*.overstack.in/qa/*
 // @match        *://*.pakostnici.com/*
 // @match        *://*.panaindustrial.com/*
 // @match        *://*.pcbconline.org/*
@@ -220,8 +222,8 @@
 // @match        *://*.qastack.in.th/*
 // @match        *://*.qastack.info.tr/*
 // @match        *://*.qastack.net.bd/*
-// @match        *://*.qi-u.com/qa/*
 // @match        *://*.qi-u.com/*-1.html
+// @match        *://*.qi-u.com/qa/*
 // @match        *://*.quabr.com/*
 // @match        *://*.quares.ru/?id=*
 // @match        *://*.question-it.com/questions/*
@@ -250,8 +252,8 @@
 // @match        *://*.soinside.com/question/*
 // @match        *://*.solveforum.com/forums/threads/*
 // @match        *://*.sprosi.pro/questions/*
-// @match        *://*.sqlite.in/qa/*
 // @match        *://*.sqlite.in/*-1.html
+// @match        *://*.sqlite.in/qa/*
 // @match        *://*.stackanswers.net/questions/*
 // @match        *://*.stackfinder.jp.net/questions/*
 // @match        *://*.stackfinder.ru/questions/*
@@ -278,6 +280,7 @@
 // @match        *://*.tra-loi-cau-hoi-phat-trien-web.com/vi/*
 // @match        *://*.try2explore.com/*
 // @match        *://*.tutorialguruji.com/*/*
+// @match        *://*.tutorialmeta.com/question/*
 // @match        *://*.tutorialmore.com/questions-*
 // @match        *://*.ubuntuaa.com/*q/*
 // @match        *://*.ubuntugeeks.com/questions/*
@@ -327,8 +330,8 @@
 // @match        *://*.xcv.wiki/*
 // @match        *://*.xiu2.net/it/details/*
 // @match        *://*.xsprogram.com/content/*
-// @match        *://*.xstack.us/qa/*
 // @match        *://*.xstack.us/*-1.html
+// @match        *://*.xstack.us/qa/*
 // @match        *://*.xszz.org/*/question-*
 // @match        *://*.yingqusp.com/so/*
 // @match        *://*.ylhow.com/*
@@ -386,7 +389,7 @@
     /** Creates a Github link with project and repository or the number of the part in the website url, optionally adding the /wiki/ part */
     var github = (l) => l ? 'https://github.com' + l : null;
     /** Creates the bottom bar with the text, the code parts and images to search for */
-    var prepareSearch = (h, t, s) => promptRedirect(sitecolor, toSearch(h + (t ? ' ' : '') + getTags(t).join(' ').replace(/\s+/g, ' '), s), !badCode && allTexts('pre code'), !badImgs && [...new Set([...allAttr('img[src*="://i.stack.imgur.com/"]', 'src'), ...allAttr('a[href*="://i.stack.imgur.com/"]', 'href')])], s);
+    var prepareSearch = (h, t, s) => promptRedirect(sitecolor, toSearch(h + (t ? ' ' + getTags(t).join(' ').replace(/\s+/g, ' ') : ''), s), !badCode && allTexts('pre code'), !badImgs && [...new Set([...allAttr('img[src*="://i.stack.imgur.com/"]', 'src'), ...allAttr('a[href*="://i.stack.imgur.com/"]', 'href')])], s);
     /** Translates all tags given as an array */
     var transTags = async (t) => (await yaTranslate(allTexts(t).join(' '), lang)).split(' ');
     /** Creates the Google search link with the slightly aligned text to search for, the sites to search on, optionally searching for images */
@@ -434,8 +437,8 @@
 
     /** Gets a redirect for the opened site from an online database */
     var dfgdr = fetch(`https://api.zcxv.icu/b2s.php?q=get&url=${encodeURIComponent(_h)}`, { credentials: 'omit' })
-        .then(r => r.json())
-        .then(r => r.res && r.response && _go(r.response));
+    .then(r => r.json())
+    .then(r => r.res && r.response && _go(r.response));
 
     /** Allows the user to specify a url to which the opened site should be redirected */
     GM_registerMenuCommand('Redirect', () => {
@@ -466,9 +469,9 @@
         try {
             document.body.appendChild(dialog);
             const shadowRoot = dialog.attachShadow ?
-                dialog.attachShadow({ mode: 'open' }) :
-                //@ts-ignore
-                dialog.createShadowRoot && dialog.createShadowRoot();
+                  dialog.attachShadow({ mode: 'open' }) :
+            //@ts-ignore
+            dialog.createShadowRoot && dialog.createShadowRoot();
             if (!shadowRoot) throw 'Shadow dom required!';
             shadowRoot.innerHTML = `
 <style>
@@ -522,9 +525,9 @@ a{
         try {
             //doesn't work in chrome
             return await fetch(q, {
-                    mode: 'no-cors',
-                    credentials: 'omit'
-                })
+                mode: 'no-cors',
+                credentials: 'omit'
+            })
                 .then(r => r.json())
                 .then(r => r.text);
         } catch (e) {
@@ -577,8 +580,8 @@ a{
             (Array.isArray(tags) && tags.length > 0 ? '&tagged=' + encodeURIComponent(Array.from(new Set(tags)).join(';')) : ''), {
                 credentials: 'omit'
             })
-            .then(r => r.json())
-            .then(r => r?.items[0]?.link);
+        .then(r => r.json())
+        .then(r => r?.items[0]?.link);
         return dfgdr;
     }
 
@@ -588,8 +591,8 @@ a{
             (user ? ' author:' + encodeURIComponent(user) : ''), {
                 credentials: 'omit'
             })
-            .then(r => r.json())
-            .then(r => r?.items[0]?.html_url);
+        .then(r => r.json())
+        .then(r => r?.items[0]?.html_url);
         return dfgdr;
     }
     /**
@@ -858,14 +861,17 @@ a{
             if (_c(/^\/thread-.*.html$/) && textContent('#pt a:nth-child(5)') == '知识问答') return byHeader([removePartBefore('h1',' - ')], _, 'en');
             if (_c(/^\/article-.*.html$/) && textContent('#pt a:nth-child(5)') == '开源') return bySel('.deanedit > a');
             if (_ps[1] == 'qa' && _t('h1 a')){
-				if (textContent('h1').match(/[\u4e00-\u9fa5]/)) return byHeader('h1', _, 'zh');
-				return byHeader([removePartBefore('h1',' - ')], _, 'en');
-			}
-			return;
+                if (textContent('h1').match(/[\u4e00-\u9fa5]/)) return byHeader('h1', _, 'zh');
+                return byHeader([removePartBefore('h1',' - ')], _, 'en');
+            }
+            return;
         case 'jscodetips.com':
             return byHeader('h1', '.contentBox > div:nth-child(3) > a', 'en');
         case 'kompsekret.ru':
             return clr('#292d2f') && (urlByImg('https://superuser.com/questions/') || byHeader([lastPathPart().replace(/(-closed|-duplicate)?(\d+)?(\.html)?$/, '').replace(/-/g, ' ')], '.tags a', 'en', ['superuser.com']));
+        case 'learnfk.com':
+            if (_ps[1] == 'en') return byHeader('h1', '.entry-info > .badge-tag', 'en');
+            return byHeader([removePartBefore('h2.h11','] ')], '.entry-info > .badge-tag', 'en');
         case 'localcoder.org':
             return byHeader('h1', '.categories a', 'en');
         case 'microeducate.tech':
@@ -928,6 +934,9 @@ a{
             return all('.article-view p > a').pop().href;
         case 'tutorialguruji.com':
             return byHeader([textContent('h1').replace(/ *Code Answer *$/, '')], _, 'en');
+        case 'tutorialmeta.com':
+            if (textContent('.tt-right:nth-last-of-type(3)') != 'source: stackoverflow.com') return;
+            return byHeader('h1', _, 'en');
         case 'tutorialmore.com':
             return byHeader([removePartBefore('h1',' - ')], '.tags a', 'ja', ['superuser.com', 'stackoverflow.com', 'stackexchange.com']);
         case 'utyatnishna.ru':
@@ -1063,12 +1072,12 @@ a{
                 if (_ps[2]=='github' && _ps[5]=='source') _go(bySel('a[title^="View on"]') + '/blob/' + _ps.splice(6).join('/'));
                 _go(bySel('a.page-title-link') || bySel('a[analytics-event^="View file on"]') || bySel('a[title^="View on"]'));
             });
-            break;
+            return;
         case 'codegrepper.com':
             document.addEventListener('DOMContentLoaded', (e)=>{
                 _go(bySel('.answer_source > a')) || promptRedirect(sitecolor, toSearch(textContent('h1').replace(/“(.*)” Code Answer(’s)?/,'$1'),[]), allTexts('.TaysCodeMirror-code .TaysCodeMirror-line'), _, [])
             });
-            break;
+            return;
         case 'coder-question-ko.com':
         case 'coder-question.com':
             return _go(bySel('article a.bg-success-soft'));
@@ -1084,10 +1093,15 @@ a{
             return _go(bySel('input[name="url"]', 'value'));
         case 'itnan.ru':
             return _h.match(/https?:\/\/([a-zA-Z]{2})?\.?itnan\.ru\/post\.php\?(.+)?p=([0-9]+)/) && bySel('article.entry .entry-meta a[title="Оригинальная публикация"]');
+        case 'juejin.cn':
+            document.addEventListener('DOMContentLoaded', (e)=>{
+                return byHeader('h1', _, 'zh', []);
+            });
+            return;
         case 'mediatagtw.com':
             if (_ps[1] == 'article') _go(bySel('#social_only > h3 > a'));
             if (_ps[1] == 'exit') _go(bySel('.h5 > a'));
-            break;
+            return;
         case 'savepearlharbor.com':
             return bySel('article.post > div.entry-content > p > a[href*="://habr.com/"]');
         default:
@@ -1201,7 +1215,7 @@ a{
     fix(/^https?:\/\/([a-z]+\.)?stackexchange\.com\/([a-z]+)\/([0-9]{1,12})/, 'https://$2.stackexchange.com/questions/$3') ||
     fix(/^https?:\/\/([a-z]+\.)?(superuser\.com|askubuntu\.com|mathoverflow\.net|serverfault\.com|stackapps\.com)\/([a-z]+)\/([0-9]{1,12})/, 'https://$1$2/questions/$4') ||
     fix(/^https?:\/\/([a-zA-z\-]+\.)wikipedia\.org\/w\/index\.php\?title=(.+)&oldid=([0-9]{1,12})/, 'https://$1wikipedia.org/wiki/$2') ||
-    fix(/^https?:\/\/([a-zA-z\-]+\.)wikipedia\.org\/wiki\/wiki\/(.+)/, 'https://$1wikipedia.org/wiki/$2');
+    fix(/^https?:\/\/([a-zA-z\-]+\.)wikipedia\.org\/wiki\/wiki\/(.+)/, 'https://$1wikipedia.org/wiki/$2') ||
     fix(/^https?:\/\/www\.github\.com\/(.+)/, 'https://github.com/$1');
 
 }).catch(console.error.bind(console));

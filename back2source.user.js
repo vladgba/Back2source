@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name         Back2source
-// @version      0.1.122
+// @version      0.1.123
 // @description  Redirecting to source sites from sites with machine translation, etc.
 // @namespace    vladgba
 // @author       vladgba@gmail.com
@@ -1067,13 +1067,13 @@ a{
             return 'https://www.npmjs.com/package/'+_ps[3];
         /* Other */
         case 'codefactor.io':
-            document.addEventListener('DOMContentLoaded', (e)=>{
+            window.addEventListener('DOMContentLoaded', (e)=>{
                 if (_ps[2]=='github' && _ps[5]=='source') _go(bySel('a[title^="View on"]') + '/blob/' + _ps.splice(6).join('/'));
                 _go(bySel('a.page-title-link') || bySel('a[analytics-event^="View file on"]') || bySel('a[title^="View on"]'));
             });
             return;
         case 'codegrepper.com':
-            document.addEventListener('DOMContentLoaded', (e)=>{
+            window.addEventListener('DOMContentLoaded', (e)=>{
                 _go(bySel('.answer_source > a')) || promptRedirect(sitecolor, toSearch(textContent('h1').replace(/“(.*)” Code Answer(’s)?/,'$1'),[]), allTexts('.TaysCodeMirror-code .TaysCodeMirror-line'), _, [])
             });
             return;
@@ -1093,7 +1093,7 @@ a{
         case 'itnan.ru':
             return _h.match(/https?:\/\/([a-zA-Z]{2})?\.?itnan\.ru\/post\.php\?(.+)?p=([0-9]+)/) && bySel('article.entry .entry-meta a[title="Оригинальная публикация"]');
         case 'juejin.cn':
-            document.addEventListener('DOMContentLoaded', (e)=>{
+            window.addEventListener('DOMContentLoaded', (e)=>{
                 return byHeader('h1', _, 'zh', []);
             });
             return;

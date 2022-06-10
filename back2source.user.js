@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name         Back2source
-// @version      0.1.123
+// @version      0.1.124
 // @description  Redirecting to source sites from sites with machine translation, etc.
 // @namespace    vladgba
 // @author       vladgba@gmail.com
@@ -51,6 +51,7 @@
 // @match        *://*.bleepcoder.com/*/*
 // @match        *://*.buildwiki.ru/wiki/*
 // @match        *://*.bytemeta.vip/*
+// @match        *://*.cache.one/read/*
 // @match        *://*.cainiaojiaocheng.com/questions/*
 // @match        *://*.catchconsole.com/code-example/*
 // @match        *://*.catwolf.org/qs*
@@ -1081,7 +1082,9 @@ a{
         case 'coder-question.com':
             return _go(bySel('article a.bg-success-soft'));
         case 'codetd.com':
-            return _go('https://' + _t('.article-refer span:nth-child(2)').innerText)
+            return _go('https://' + _t('.article-refer span:nth-child(2)').innerText);
+        case 'cache.one':
+            return _go(startsByText('.entry-tags p', '来源：'));
         case 'dir.md':
             return (tt = _h.match(/^https?:\/\/dir.md\/(.+)(&|\?)host=([a-zA-Z\.-]+)$/)) && _go('https://' + tt[3] + '/' + tt[1]);
         case 'icode9.com':

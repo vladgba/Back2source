@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name         Back2source
-// @version      0.1.124
+// @version      0.1.125
 // @description  Redirecting to source sites from sites with machine translation, etc.
 // @namespace    vladgba
 // @author       vladgba@gmail.com
@@ -140,15 +140,19 @@
 // @match        *://*.howtosolves.com/q/*
 // @match        *://*.html-agility-pack.net/knowledge-base/*
 // @match        *://*.husl.ru/questions/*
+// @match        *://*.ichi.pro/*
 // @match        *://*.icode9.com/*
 // @match        *://*.icopy.site/questions/*
 // @match        *://*.intellipaat.com/community/*
+// @match        *://*.intrepidgeeks.com/tutorial/*
 // @match        *://*.iquestion.pro/q/*
 // @match        *://*.isolution.pro/q/*
 // @match        *://*.issue.life/questions/*
 // @match        *://*.issueantenna.com/*/*
 // @match        *://*.issueexplorer.com/repo/*/*
 // @match        *://*.it-brain.online/question/*
+// @match        *://*.it1352.com/*.html
+// @match        *://*.itbaoku.cn/post/*.html
 // @match        *://*.itdaan.com/*
 // @match        *://*.itecnote.com/tecnote/*
 // @match        *://*.itectec.com/*/*
@@ -175,7 +179,9 @@
 // @match        *://*.livepcwiki.ru/wiki/*
 // @match        *://*.living-sun.com/*/*
 // @match        *://*.localcoder.org/*
+// @match        *://*.manongdao.com/*.html
 // @match        *://*.mediatagtw.com/*/*
+// @match        *://*.messiahlebanon.org/*
 // @match        *://*.microeducate.tech/*
 // @match        *://*.mihalicdictionary.org/*
 // @match        *://*.mlink.in/qa/*
@@ -671,6 +677,7 @@ a{
         case 'fitforlearning.org':
         case 'fluffyfables.com':
         case 'gupgallery.com':
+        case 'messiahlebanon.org':
         case 'noblenaz.org':
         case 'ntcdoon.org':
         case 'ourladylakes.org':
@@ -688,26 +695,6 @@ a{
         case 'zsharp.org':
             tt = _t('meta[property="og:image"]').content.split('/').pop().split('.')[0].replace(/-/g,' ');
             return tt && (await findByApi(tt) || prepareSearch(tt, _, ['stackoverflow.com','superuser.com','askubuntu.com','stackexchange.com']));
-        case 'asklobster.com':
-        case 'bestecode.com':
-        case 'bonprog.com':
-        case 'cainiaojiaocheng.com':
-        case 'codehero.jp': // site offline / empty site / 2022-05-22
-        case 'coderquestion.ru':
-        case 'coredump.biz':
-        case 'gitrush.ru':
-        case 'html-agility-pack.net':
-        case 'icopy.site':
-        case 'issue.life':
-        case 'profikoder.com':
-        case 'progaide.com':
-        case 'progexact.com':
-        case 'programqa.com':
-        case 'qaru.tech':
-        case 'stackfinder.ru':
-        case 'thinbug.com':
-        case 'xbuba.com': // site offline / site not found / 2022-05-01
-            return byNumber(_ps[2]);
         case 'answerlib.com':
             return byPath(3);
         case 'antwortenhier.me':
@@ -728,6 +715,26 @@ a{
         case 'askvoprosy.com':
         case 'living-sun.com':
             return byPath(2);
+        case 'asklobster.com':
+        case 'bestecode.com':
+        case 'bonprog.com':
+        case 'cainiaojiaocheng.com':
+        case 'codehero.jp': // site offline / empty site / 2022-05-22
+        case 'coderquestion.ru':
+        case 'coredump.biz':
+        case 'gitrush.ru':
+        case 'html-agility-pack.net':
+        case 'icopy.site':
+        case 'issue.life':
+        case 'profikoder.com':
+        case 'progaide.com':
+        case 'progexact.com':
+        case 'programqa.com':
+        case 'qaru.tech':
+        case 'stackfinder.ru':
+        case 'thinbug.com':
+        case 'xbuba.com': // site offline / site not found / 2022-05-01
+            return byNumber(_ps[2]);
         case 'askubuntu.ru':
             return byHeader('h1', 'nav .col-tag', 'ru', ['askubuntu.com']);
         case 'bcqaw.com':
@@ -840,6 +847,10 @@ a{
             return byHeader('.question-header>h1', _, 'en');
         case 'intellipaat.com':
             return byHeader('h1', '.qa-q-view-tag-item', 'en');
+        case 'it1352.com':
+            return byHeader([removePartBefore('h1 > em','] ')], 'div.arc-meta > span > a', 'en');
+        case 'itbaoku.cn':
+            return byHeader([removePartBefore('h1 > em','] ')], '.article-tags > a', 'en');
         case 'itecnote.com':
             return byHeader([removePartBefore('h1',' – ').replace(/How to/, '')], _, 'en');
         case 'itectec.com':
@@ -874,6 +885,8 @@ a{
             return byHeader([removePartBefore('h2.h11','] ')], '.entry-info > .badge-tag', 'en');
         case 'localcoder.org':
             return byHeader('h1', '.categories a', 'en');
+        case 'manongdao.com':
+            return byHeader('h2', 'a.notebook > span', 'en');
         case 'microeducate.tech':
         case 'programmierfrage.com':
         case 'routinepanic.com':
@@ -1087,8 +1100,12 @@ a{
             return _go(startsByText('.entry-tags p', '来源：'));
         case 'dir.md':
             return (tt = _h.match(/^https?:\/\/dir.md\/(.+)(&|\?)host=([a-zA-Z\.-]+)$/)) && _go('https://' + tt[3] + '/' + tt[1]);
+        case 'ichi.pro':
+            return byHeader('h1', _, 'ja', []);
         case 'icode9.com':
             return _go(textContent('#paragraph > p:last-child').split('来源：', 2)[1].trim());
+        case 'intrepidgeeks.com':
+            return _go(bySel('.source-div a.h5'));
         case 'it-brain.online':
             return _go('https://tutorialspoint.com/' + _ps[2]);
         case 'itdaan.com':

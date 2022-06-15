@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name         Back2source
-// @version      0.1.125
+// @version      0.1.126
 // @description  Redirecting to source sites from sites with machine translation, etc.
 // @namespace    vladgba
 // @author       vladgba@gmail.com
@@ -55,6 +55,7 @@
 // @match        *://*.cainiaojiaocheng.com/questions/*
 // @match        *://*.catchconsole.com/code-example/*
 // @match        *://*.catwolf.org/qs*
+// @match        *://*.cepe-eua.org/*/*
 // @match        *://*.cfadnc.org/*
 // @match        *://*.ciupacabra.com/*
 // @match        *://*.cloud.tencent.com/developer/ask/*
@@ -216,6 +217,7 @@
 // @match        *://*.projectbackpack.org/*
 // @match        *://*.proubuntu.ru/*/*
 // @match        *://*.py4u.net/discuss/*
+// @match        *://*.python2.net/questions-*.htm
 // @match        *://*.pythonq.com/*/*/*
 // @match        *://*.pythonrepo.com/repo/*
 // @match        *://*.qa-help.ru/*
@@ -244,6 +246,7 @@
 // @match        *://*.routinepanic.com/questions/*
 // @match        *://*.ru.encyclopedia.kz/index.php/*
 // @match        *://*.rudata.ru/wiki/*
+// @match        *://*.runebook.dev/*/docs/*
 // @match        *://*.ruphp.com/*.html
 // @match        *://*.safehavenpetrescue.org/*
 // @match        *://*.savepearlharbor.com/?p=*
@@ -253,6 +256,7 @@
 // @match        *://*.serveanswer.com/issue/*
 // @match        *://*.sierrasummit2005.org/*
 // @match        *://*.siwib.org/*
+// @match        *://*.smnggeophysics.com/*
 // @match        *://*.snyk.io/advisor/npm-package/*
 // @match        *://*.sobrelinux.info/questions/*
 // @match        *://*.softwareuser.asklobster.com/posts/*
@@ -689,6 +693,7 @@ a{
         case 'sch22.org':
         case 'sierrasummit2005.org':
         case 'siwib.org':
+        case 'smnggeophysics.com':
         case 'sunflowercreations.org':
         case 'theshuggahpies.com':
         case 'waymanamechurch.org':
@@ -696,19 +701,15 @@ a{
             tt = _t('meta[property="og:image"]').content.split('/').pop().split('.')[0].replace(/-/g,' ');
             return tt && (await findByApi(tt) || prepareSearch(tt, _, ['stackoverflow.com','superuser.com','askubuntu.com','stackexchange.com']));
         case 'answerlib.com':
-            return byPath(3);
-        case 'antwortenhier.me':
-            lng('de');
-        case 'askfrance.me':
-            lng('fr');
-        case 'respuestas.me':
-            lng('es');
-        case 'askentire.net':
-            clr('#2c3e50') && lng('ru');
-            return byHeader('h1', [await transTags('ul.x-tags li a[href*="/t/"]')], lang);
         case 'ask-dev.ru':
         case 'coderoad.in':
+        case 'younggeeks.in':
             return byPath(3);
+        case 'antwortenhier.me':
+        case 'askfrance.me':
+        case 'respuestas.me':
+        case 'askentire.net':
+            return clr('#2c3e50') && byHeader('h1', [await transTags('ul.x-tags li a[href*="/t/"]')], document.documentElement.lang);
         case 'askdev.ru':
             return clr('#970f1b') && urlByImg('https://superuser.com/questions/') || byHeader('h1', [await transTags('.block_taxonomies a')], 'ru');
         case 'askdevz.com':
@@ -759,7 +760,10 @@ a{
         case 'question-it.com':
             clr('#2c3e50');
         case 'legkovopros.ru':
-            return clr('#55b252') && byHeader('h1', '.tag', 'ru');
+            lng('ru') && clr('#55b252');
+        case 'edupro.id':
+            lng('id') && clr('#2c3e50');
+            return byHeader('h1', '.tag', lang);
         case 'catchconsole.com':
             return byHeader([dropMarks(textContent('h1'))], _, 'en');
         case 'cndgn.com':
@@ -801,15 +805,14 @@ a{
         case 'jablogs.com':
             lng('ja');
         case 'xsprogram.com':
+        case 'devasking.com':
             lng('en');
             return byHeader('h1', _, lang);
-        case 'devasking.com':
-            return byHeader('h1', _, 'en');
         case 'devdreamz.com':
             return byHeader('h1','[class^="ButtonTags_tags_container"] a', 'en');
         case 'develop-bugs.com':
             tt = _t('blockquote > h2 > a').innerHTML.split('  -  ');
-            return byHeader([tt[0]] ,tt[1] ,'en');
+            return byHeader([tt[0]], tt[1], 'en');
         case 'developreference.com':
             var parts = document.title.split(' - ');
             var devpref = _ps[3].replace(/[-+]/g, ' ').replace(/(%ef|%bc|%9f)+$/i, '');
@@ -820,11 +823,6 @@ a{
             return startsByText('div.content p:last-child', '来源：');
         case 'editcode.net':
             return byHeader([removePartBefore('h1', ':')], _,'en');
-        case 'edupro.id':
-            lng('id');
-        case 'younggeeks.in':
-            lng('hi');
-            return clr('#2c3e50') && byHeader('h1', '.tag', lang);
         case 'errorsfixing.com':
             return bySel('div.entry-content.boxed > p:nth-last-of-type(3) > a');
         case 'exceptionshub.com': // site offline / Cloudflare error / 2022-05-01
@@ -912,6 +910,8 @@ a{
             return byHeader('h1', '.qa-q-view-tags .qa-tag-link', 'en');
         case 'roboflow.ai':
             return byNumber(_ps[2]);
+        case 'runebook.dev':
+            return bySel('div.row > div:first-Child > div > p > a');
         case 'ruphp.com':
             return byHeader('h1', '.breadcrumb-item .badge a', 'ru');
         case 'semicolonworld.com':
@@ -1080,6 +1080,8 @@ a{
         case 'snyk.io':
             return 'https://www.npmjs.com/package/'+_ps[3];
         /* Other */
+        case 'cepe-eua.org':
+            return byHeader('h5', _, _ps[1], ['quora.com']);
         case 'codefactor.io':
             window.addEventListener('DOMContentLoaded', (e)=>{
                 if (_ps[2]=='github' && _ps[5]=='source') _go(bySel('a[title^="View on"]') + '/blob/' + _ps.splice(6).join('/'));
@@ -1167,6 +1169,7 @@ a{
                     'prog-help.ru': '.eclip > a',
                     'programmerz.ru': '.source-share-link',
                     'py4u.net': '.question .author .src a', // site offline / site not found / 2022-05-01
+                    'python2.net': 'div.user-box > span.fr > a',
                     'pythonq.com': 'a[style="color:red"]', // site offline / site not found / 2022-05-01
                     'qacode.ru': '.question-info .cc-link', // all pages 404 / 2022-05-01
                     'qarchive.ru': 'cite > a',

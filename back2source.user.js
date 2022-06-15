@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name         Back2source
-// @version      0.1.126
+// @version      0.1.127
 // @description  Redirecting to source sites from sites with machine translation, etc.
 // @namespace    vladgba
 // @author       vladgba@gmail.com
@@ -397,7 +397,7 @@
     var mulreplace = (str, a) => a.forEach((v) => (str = str.replace(v[0], v[1]))) || str;
     /** Creates a Wikipedia link with language and article text or the number of the part in the website url, optionally adding the /wiki/ part */
     var wiki = (l = 0, p = 2, w = true) => 'https://' + (_$s(l) ? l : _ps[l]) + '.wikipedia.org' + (w ? '/wiki/' : '') + (_$s(p) ? p : _ps[p]);
-    /** Creates a Github link with project and repository or the number of the part in the website url, optionally adding the /wiki/ part */
+    /** Creates a Github link with the project and repository */
     var github = (l) => l ? 'https://github.com' + l : null;
     /** Creates the bottom bar with the text, the code parts and images to search for */
     var prepareSearch = (h, t, s) => promptRedirect(sitecolor, toSearch(h + (t ? ' ' + getTags(t).join(' ').replace(/\s+/g, ' ') : ''), s), !badCode && allTexts('pre code'), !badImgs && [...new Set([...allAttr('img[src*="://i.stack.imgur.com/"]', 'src'), ...allAttr('a[href*="://i.stack.imgur.com/"]', 'href')])], s);
@@ -595,11 +595,11 @@ a{
         .then(r => r?.items[0]?.link);
         return dfgdr;
     }
-
+    /** Searches an issue text with the Github API, optionally with the user */
     async function findByGitHubApi(q, user) {
         var dfgdr = q && fetch(
             `https://api.github.com/search/issues?q=${encodeURIComponent(q)}` +
-            (user ? ' author:' + encodeURIComponent(user) : ''), {
+            (user && user != 'ghost' ? ' author:' + encodeURIComponent(user) : ''), {
                 credentials: 'omit'
             })
         .then(r => r.json())
@@ -1051,7 +1051,8 @@ a{
         case 'githubmemory.com':
             return _c(/^\/(repo\/|@)/) && github(_p.replace(/^\/(repo\/|@)/,'/'));
         case 'gitanswer.net':
-            return findByGitHubApi(textContent('h1').replace(/ - .*$/, '').replace(new RegExp('^('+allTexts('.post-tags a.button').join(' |')+' )'),''), _t('.avatar').parentElement.querySelector('span').innerText);
+            tt = '(\\b'+allTexts('.post-tags a.button').join('\\b|\\b')+'\\b)';
+            return findByGitHubApi(textContent('h1').replace(/ - .*$/, '').replace(new RegExp('(^' + tt + ' ?| ?' + tt + '$)', 'g'), ''), _t('.avatar').parentElement.querySelector('span').innerText);
         case 'giters.com':
         case 'githubhelp.com':
         case 'githubplus.com':

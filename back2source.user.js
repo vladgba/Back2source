@@ -1022,7 +1022,7 @@ a{
             return _t('.mw-parser-output') && wiki('ru', 1);
         case 'wiki2.net':
         case 'wikipedia.tel':
-            return wiki('ru', _p, false);
+            return wiki('ru', _p.substr(1));
         case 'wiki2.org':
             if (/\?search=/.test(location.search)) return;
             return ((tt = _h.match(/https?:\/\/wiki2\.org\/([a-zA-z]{2})\/(.+)/)) || (tt = _h.match(/https?:\/\/([a-z]{2})\.wiki2\.org\/wiki\/(.+)/))) && wiki(tt[1], tt[2]);

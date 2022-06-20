@@ -914,8 +914,6 @@ a{
             return byHeader('h1', '.qa-q-view-tags .qa-tag-link', 'en');
         case 'roboflow.ai':
             return byNumber(_ps[2]);
-        case 'runebook.dev':
-            return bySel('div.row > div:first-Child > div > p > a');
         case 'ruphp.com':
             return byHeader('h1', '.breadcrumb-item .badge a', 'ru');
         case 'semicolonworld.com':
@@ -1135,6 +1133,8 @@ a{
             if (_ps[1] == 'article') _go(bySel('#social_only > h3 > a'));
             if (_ps[1] == 'exit') _go(bySel('.h5 > a'));
             return;
+        case 'runebook.dev':
+            return _go(bySel('div.row > div:first-Child > div > p > a'));
         case 'savepearlharbor.com':
             return bySel('article.post > div.entry-content > p > a[href*="://habr.com/"]');
         default:

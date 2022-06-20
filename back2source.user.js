@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name         Back2source
-// @version      0.1.127
+// @version      0.1.128
 // @description  Redirecting to source sites from sites with machine translation, etc.
 // @namespace    vladgba
 // @author       vladgba@gmail.com
@@ -113,6 +113,7 @@
 // @match        *://*.exchangetuts.com/*-*
 // @match        *://*.extutorial.com/ask/*
 // @match        *://*.faithcov.org/*
+// @match        *://*.fantashit.com/*
 // @match        *://*.firstlightsalon.in/*/questions/*
 // @match        *://*.fitforlearning.org/*
 // @match        *://*.fixes.pub/*/*.html
@@ -125,12 +126,14 @@
 // @match        *://*.ghcc.net/*
 // @match        *://*.gitanswer.net/*
 // @match        *://*.giters.com/*
+// @match        *://*.gitfreak.com/*
 // @match        *://*.githubhelp.com/*
 // @match        *://*.githubhot.com/*
 // @match        *://*.githublab.com/*/*
 // @match        *://*.githubmemory.com/*
 // @match        *://*.githubplus.com/*
 // @match        *://*.gitrush.ru/*/*/*
+// @match        *://*.golangd.com/g/*
 // @match        *://*.golangrepo.com/repo/*
 // @match        *://*.gupgallery.com/*
 // @match        *://*.helpex.vn/question/*
@@ -218,6 +221,7 @@
 // @match        *://*.proubuntu.ru/*/*
 // @match        *://*.py4u.net/discuss/*
 // @match        *://*.python2.net/questions-*.htm
+// @match        *://*.pythonawesome.com/*
 // @match        *://*.pythonq.com/*/*/*
 // @match        *://*.pythonrepo.com/repo/*
 // @match        *://*.qa-help.ru/*
@@ -1050,10 +1054,15 @@ a{
         case 'githubhot.com':
         case 'githubmemory.com':
             return _c(/^\/(repo\/|@)/) && github(_p.replace(/^\/(repo\/|@)/,'/'));
+        case 'fantashit.com':
+            return findByGitHubApi(textContent('h1'));
+        case 'golangd.com':
+            return bySel('.box-body > a');
         case 'gitanswer.net':
             tt = '(\\b'+allTexts('.post-tags a.button').join('\\b|\\b')+'\\b)';
             return findByGitHubApi(textContent('h1').replace(/ - .*$/, '').replace(new RegExp('(^' + tt + ' ?| ?' + tt + '$)', 'g'), ''), _t('.avatar').parentElement.querySelector('span').innerText);
         case 'giters.com':
+        case 'gitfreak.com':
         case 'githubhelp.com':
         case 'githubplus.com':
             return github(_p);
@@ -1071,6 +1080,8 @@ a{
             return byInner('a[role="link"]','Original');
         case 'opensourcelibs.com':
             return byInner('.repo-stats a','github.com');
+        case 'pythonawesome.com':
+            return bySel('.github-view');
         case 'reposhub.com':
             return bySel('#githome');
         /* NPM */

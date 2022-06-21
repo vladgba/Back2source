@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name         Back2source
-// @version      0.1.128
+// @version      0.1.129
 // @description  Redirecting to source sites from sites with machine translation, etc.
 // @namespace    vladgba
 // @author       vladgba@gmail.com
@@ -19,7 +19,6 @@
 // @connect      api.stackexchange.com
 // @connect      api.zcxv.icu
 // @noframes
-// @match        *://*.*.nina.az/wiki/*
 // @match        *://*.360wiki.ru/wiki/*
 // @match        *://*.5axxw.com/*/*/*
 // @match        *://*.8101010108.cn/zh/*
@@ -46,6 +45,9 @@
 // @match        *://*.awesomeopensource.com/project/*
 // @match        *://*.bcqaw.com/*.html
 // @match        *://*.bestofcpp.com/repo/*
+// @match        *://*.bestofphp.com/repo/*
+// @match        *://*.bestofreactjs.com/repo/*
+// @match        *://*.bestofvue.com/repo/*
 // @match        *://*.bildiredi.com/*
 // @match        *://*.bilee.com/*.html
 // @match        *://*.bleepcoder.com/*/*
@@ -84,6 +86,7 @@
 // @match        *://*.coderoad.wiki/*
 // @match        *://*.coderquestion.ru/q/*
 // @match        *://*.codersatellite.com/question-with-identifier-*
+// @match        *://*.codespots.com/library/item/*
 // @match        *://*.codetd.com/article/*
 // @match        *://*.coredump.biz/questions/*
 // @match        *://*.culinarydegree.info/*
@@ -169,6 +172,7 @@
 // @match        *://*.jejakjabar.com/wiki/*
 // @match        *://*.jike.in/*-1.html
 // @match        *://*.jike.in/qa/*
+// @match        *://*.jonic.cn/qa/*
 // @match        *://*.jpdebug.com/p/*
 // @match        *://*.jscodetips.com/examples/*
 // @match        *://*.jsrepos.com/*/*
@@ -192,6 +196,7 @@
 // @match        *://*.mlog.club/article/*
 // @match        *://*.narkive.jp/*
 // @match        *://*.newbedev.com/*
+// @match        *://*.nina.az/wiki/*
 // @match        *://*.noblenaz.org/*
 // @match        *://*.npm.io/package/*
 // @match        *://*.npmmirror.com/package/*
@@ -862,6 +867,7 @@ a{
         case 'javaer101.com':
             return byHeader('h1', 'nav .col-tag', _ps[1] == 'article' ? 'ja' : _ps[1]);
         case 'jike.in':
+        case 'jonic.cn':
         case 'mlink.in':
         case 'ogeek.cn':
         case 'ostack.cn':
@@ -1046,16 +1052,20 @@ a{
         case 'golangrepo.com':
         case 'pythonrepo.com':
             return byInner('#basic a.btn','GitHub Repository');
+        case 'bestofphp.com':
+        case 'bestofvue.com':
+        case 'bestofreactjs.com':
+            return bySel('#description > article > a:last-of-type') || bySel('#description ~ a:last-of-type');
         case 'bleepcoder.com':
             return bySel('.float-right .text-muted');
         case 'bytemeta.vip':
         case 'githubhot.com':
         case 'githubmemory.com':
             return _c(/^\/(repo\/|@)/) && github(_p.replace(/^\/(repo\/|@)/,'/'));
+        case 'codespots.com':
+            return bySel('a.repo');
         case 'fantashit.com':
             return findByGitHubApi(textContent('h1'));
-        case 'golangd.com':
-            return bySel('.box-body > a');
         case 'gitanswer.net':
             tt = '(\\b'+allTexts('.post-tags a.button').join('\\b|\\b')+'\\b)';
             return findByGitHubApi(textContent('h1').replace(/ - .*$/, '').replace(new RegExp('(^' + tt + ' ?| ?' + tt + '$)', 'g'), ''), _t('.avatar').parentElement.querySelector('span').innerText);
@@ -1066,6 +1076,8 @@ a{
             return github(_p);
         case 'githublab.com':
             return github(_p.replace(/^\/(repository|profile)/,'').replace(/^(\/issues)(\/.*\/.*)(\/.*)/,'$2$1$3').replace(/^(\/issues)(\/.*\/.*)/,'$2$1'));
+        case 'golangd.com':
+            return bySel('.box-body > a');
         case 'higithub.com':
             return github(_p.replace(/\/(repo\/|user$)/,'/').replace(/^(\/.*)(\/issue)(\/.*)(\/.*)/,'$1$3$2s$4').replace(/^(\/.*)\/repo_(issues)(\/.*)/,'$1$3/$2'));
         case 'issueantenna.com':
@@ -1123,7 +1135,7 @@ a{
         case 'itdaan.com':
             return _go(bySel('input[name="url"]', 'value'));
         case 'itnan.ru':
-            return _h.match(/https?:\/\/([a-zA-Z]{2})?\.?itnan\.ru\/post\.php\?(.+)?p=([0-9]+)/) && bySel('article.entry .entry-meta a[title="Оригинальная публикация"]');
+            return _h.match(/https?:\/\/([a-zA-Z]{2})?\.?itnan\.ru\/post\.php\?(.+)?p=([0-9]+)/) && _go(bySel('article.entry .entry-meta a[title="Оригинальная публикация"]'));
         case 'juejin.cn':
             window.addEventListener('DOMContentLoaded', (e)=>{
                 return byHeader('h1', _, 'zh', []);
@@ -1136,7 +1148,7 @@ a{
         case 'runebook.dev':
             return _go(bySel('div.row > div:first-Child > div > p > a'));
         case 'savepearlharbor.com':
-            return bySel('article.post > div.entry-content > p > a[href*="://habr.com/"]');
+            return _go(bySel('article.post > div.entry-content > p > a[href*="://habr.com/"]'));
         default:
             if (_hst('qastack') || _hst('qa-stack')) {
                 return bySel('span.text-muted.fake_url a, span.text-muted.fake_url', 'src') ||
@@ -1239,7 +1251,6 @@ a{
     if (/^https?:\/\/((pt|ja|ru|es)\.)?stackoverflow\.com\/questions\/([0-9]{1,12})/.test(link) ||
         /^https?:\/\/([a-zA-z\-]+\.)?stackexchange\.com\/questions\/([0-9]{1,12})/.test(link) ||
         /^https?:\/\/(superuser\.com|askubuntu\.com|mathoverflow\.net|serverfault\.com|stackapps\.com)\/questions\/([0-9]{1,12})/.test(link) ||
-        /^https?:\/\/([a-zA-z\-]+\.)?(habr\.com|geektimes\.ru)\/(.+)/.test(link) ||
         /^https?:\/\/[a-zA-z\-]+\.wikipedia\.org\/wiki\/(?!wiki\/)(.+)/.test(link) ||
         /^https?:\/\/github\.com\/(.+)/.test(link) ||
         /^https?:\/\/www\.npmjs\.com\/package\/(.+)/.test(link)) {

@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name         Back2source
-// @version      0.1.129
+// @version      0.1.130
 // @description  Redirecting to source sites from sites with machine translation, etc.
 // @namespace    vladgba
 // @author       vladgba@gmail.com
@@ -24,6 +24,7 @@
 // @match        *://*.8101010108.cn/zh/*
 // @match        *://*.abcdef.wiki/*
 // @match        *://*.amuddycup.com/*
+// @match        *://*.androidrepo.com/repo/*
 // @match        *://*.answacode.com/*
 // @match        *://*.answer-id.com/*
 // @match        *://*.answeright.com/*
@@ -41,6 +42,7 @@
 // @match        *://*.askfrance.me/*
 // @match        *://*.askubuntu.ru/questions/*
 // @match        *://*.askvoprosy.com/voprosy/*
+// @match        *://*.astrophel.org/*
 // @match        *://*.athabasca-foto.com/*
 // @match        *://*.awesomeopensource.com/project/*
 // @match        *://*.bcqaw.com/*.html
@@ -79,6 +81,7 @@
 // @match        *://*.codenong.com/*
 // @match        *://*.coder-question-ko.com/cq-ko-blog/*
 // @match        *://*.coder-question.com/cq-blog/*
+// @match        *://*.coder.social/*
 // @match        *://*.coder.work/article/*
 // @match        *://*.coderedirect.com/*
 // @match        *://*.coderoad.in/questions/*
@@ -121,6 +124,7 @@
 // @match        *://*.fitforlearning.org/*
 // @match        *://*.fixes.pub/*/*.html
 // @match        *://*.fluffyfables.com/*
+// @match        *://*.flutterrepos.com/lib/*
 // @match        *://*.fooobar.com/questions/*
 // @match        *://*.fullstackuser.com/questions/*
 // @match        *://*.gaz.wiki/wiki/*
@@ -128,6 +132,7 @@
 // @match        *://*.generacodice.com/*
 // @match        *://*.ghcc.net/*
 // @match        *://*.gitanswer.net/*
+// @match        *://*.gitdetail.com/repositories/*
 // @match        *://*.giters.com/*
 // @match        *://*.gitfreak.com/*
 // @match        *://*.githubhelp.com/*
@@ -169,6 +174,7 @@
 // @match        *://*.javacodexamples.com/examples/*
 // @match        *://*.javaer101.com/*/*
 // @match        *://*.javafixing.com/*/*/*.html
+// @match        *://*.javarepos.com/lib/*
 // @match        *://*.jejakjabar.com/wiki/*
 // @match        *://*.jike.in/*-1.html
 // @match        *://*.jike.in/qa/*
@@ -182,6 +188,7 @@
 // @match        *://*.kotaeta.com/*
 // @match        *://*.learnfk.com/*question/*
 // @match        *://*.legkovopros.ru/questions/*
+// @match        *://*.libhunt.com/r/*
 // @match        *://*.lifesaver.codes/answer/*
 // @match        *://*.linuxfixes.com/*/*/*
 // @match        *://*.livepcwiki.ru/wiki/*
@@ -227,6 +234,7 @@
 // @match        *://*.py4u.net/discuss/*
 // @match        *://*.python2.net/questions-*.htm
 // @match        *://*.pythonawesome.com/*
+// @match        *://*.pythonlang.dev/repo/*
 // @match        *://*.pythonq.com/*/*/*
 // @match        *://*.pythonrepo.com/repo/*
 // @match        *://*.qa-help.ru/*
@@ -257,6 +265,7 @@
 // @match        *://*.rudata.ru/wiki/*
 // @match        *://*.runebook.dev/*/docs/*
 // @match        *://*.ruphp.com/*.html
+// @match        *://*.rustrepo.com/repo/*
 // @match        *://*.safehavenpetrescue.org/*
 // @match        *://*.savepearlharbor.com/?p=*
 // @match        *://*.sbup.com/wiki/*
@@ -286,6 +295,7 @@
 // @match        *://*.stormcrow.dev/*/questions/*
 // @match        *://*.string.quest/read/*
 // @match        *://*.sunflowercreations.org/*
+// @match        *://*.swiftobc.com/repo/*
 // @match        *://*.switch-case.com/*
 // @match        *://*.syntaxfix.com/question/*
 // @match        *://*.sysadminde.com/questions/*
@@ -359,6 +369,7 @@
 // @match        *://*.yuanmacha.com/*.html
 // @match        *://*.zapytay.com/*
 // @match        *://*.zsharp.org/*
+// @match        *://*.zzun.app/repo/*
 // @include      *://qastack.tld/*
 // ==/UserScript==
 /* jshint esversion: 10 */
@@ -1046,6 +1057,14 @@ a{
         case 'xcv.wiki':
             return (tt = _h.match(/https?:\/\/([a-zA-z]{2,4})\.xcv\.wiki\/wiki\/(.+)/)) && wiki('de', tt[2]);
         /* GitHub */
+        case 'androidrepo.com':
+            return bySel('article.markdown-body > a');
+        case 'astrophel.org':
+        case 'giters.com':
+        case 'gitfreak.com':
+        case 'githubhelp.com':
+        case 'githubplus.com':
+            return github(_p);
         case 'awesomeopensource.com':
             return github(_p.replace(/^\/project/,''));
         case 'bestofcpp.com':
@@ -1055,6 +1074,9 @@ a{
         case 'bestofphp.com':
         case 'bestofvue.com':
         case 'bestofreactjs.com':
+        case 'javarepos.com':
+        case 'flutterrepos.com':
+        case 'rustrepo.com':
             return bySel('#description > article > a:last-of-type') || bySel('#description ~ a:last-of-type');
         case 'bleepcoder.com':
             return bySel('.float-right .text-muted');
@@ -1062,6 +1084,8 @@ a{
         case 'githubhot.com':
         case 'githubmemory.com':
             return _c(/^\/(repo\/|@)/) && github(_p.replace(/^\/(repo\/|@)/,'/'));
+        case 'coder.social':
+            return bySel('h1.h1 > a.btn-git');
         case 'codespots.com':
             return bySel('a.repo');
         case 'fantashit.com':
@@ -1069,11 +1093,8 @@ a{
         case 'gitanswer.net':
             tt = '(\\b'+allTexts('.post-tags a.button').join('\\b|\\b')+'\\b)';
             return findByGitHubApi(textContent('h1').replace(/ - .*$/, '').replace(new RegExp('(^' + tt + ' ?| ?' + tt + '$)', 'g'), ''), _t('.avatar').parentElement.querySelector('span').innerText);
-        case 'giters.com':
-        case 'gitfreak.com':
-        case 'githubhelp.com':
-        case 'githubplus.com':
-            return github(_p);
+        case 'gitdetail.com':
+            return bySel('#right-sidebar a:last-of-type');
         case 'githublab.com':
             return github(_p.replace(/^\/(repository|profile)/,'').replace(/^(\/issues)(\/.*\/.*)(\/.*)/,'$2$1$3').replace(/^(\/issues)(\/.*\/.*)/,'$2$1'));
         case 'golangd.com':
@@ -1086,14 +1107,20 @@ a{
             return github(_p.replace(/^\/repo/,''));
         case 'jsrepos.com':
             return bySel('article.markdown-body>a[rel="nofollow"]:last-child');
+        case 'libhunt.com':
+            return github('/' + textContent('div.is-4 > p > strong'));
         case 'lifesaver.codes':
             return byInner('a[role="link"]','Original');
         case 'opensourcelibs.com':
             return byInner('.repo-stats a','github.com');
         case 'pythonawesome.com':
             return bySel('.github-view');
+        case 'pythonlang.dev':
+            return bySel('.widget-profile > p > a');
         case 'reposhub.com':
             return bySel('#githome');
+        case 'zzun.app':
+            return _go(byInner('#basic a.btn','GitHub Repository'));
         /* NPM */
         case 'npm.io':
             return 'https://www.npmjs.com'+_p;
@@ -1102,6 +1129,8 @@ a{
         case 'snyk.io':
             return 'https://www.npmjs.com/package/'+_ps[3];
         /* Other */
+        case 'cache.one':
+            return _go(startsByText('.entry-tags p', '来源：'));
         case 'cepe-eua.org':
             return byHeader('h5', _, _ps[1], ['quora.com']);
         case 'codefactor.io':
@@ -1120,8 +1149,6 @@ a{
             return _go(bySel('article a.bg-success-soft'));
         case 'codetd.com':
             return _go('https://' + _t('.article-refer span:nth-child(2)').innerText);
-        case 'cache.one':
-            return _go(startsByText('.entry-tags p', '来源：'));
         case 'dir.md':
             return (tt = _h.match(/^https?:\/\/dir.md\/(.+)(&|\?)host=([a-zA-Z\.-]+)$/)) && _go('https://' + tt[3] + '/' + tt[1]);
         case 'ichi.pro':

@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name         Back2source
-// @version      0.1.130
+// @version      0.1.131
 // @description  Redirecting to source sites from sites with machine translation, etc.
 // @namespace    vladgba
 // @author       vladgba@gmail.com
@@ -130,6 +130,7 @@
 // @match        *://*.gaz.wiki/wiki/*
 // @match        *://*.geek-tips.imtqy.com/articles/*/*.html
 // @match        *://*.generacodice.com/*
+// @match        *://*.getridbug.com/*/*
 // @match        *://*.ghcc.net/*
 // @match        *://*.gitanswer.net/*
 // @match        *://*.gitdetail.com/repositories/*
@@ -310,6 +311,7 @@
 // @match        *://*.tra-loi-cau-hoi-phat-trien-web.com/vi/*
 // @match        *://*.try2explore.com/*
 // @match        *://*.tutorialguruji.com/*/*
+// @match        *://*.tutorialink.com/*
 // @match        *://*.tutorialmeta.com/question/*
 // @match        *://*.tutorialmore.com/questions-*
 // @match        *://*.ubuntuaa.com/*q/*
@@ -855,6 +857,8 @@ a{
             return 'https://' + _ps[1].replace('_threads','.stackexchange.com/questions/')+_ps[3];
         case 'fixes.pub':
             return byHeader('h1', 'aside li a[href*="fixes.pub/topics"]', 'ja');
+        case 'getridbug.com':
+            return byHeader('h1', 'div.post-tags > a', 'en');
         case 'ghcc.net':
             return byHeader('h1', '.field__item > a', 'en');
         case 'helpex.vn':
@@ -966,6 +970,8 @@ a{
             return all('.article-view p > a').pop().href;
         case 'tutorialguruji.com':
             return byHeader([textContent('h1').replace(/ *Code Answer *$/, '')], _, 'en');
+        case 'tutorialink.com':
+            return byHeader('h1', 'a.tag-link', 'en');
         case 'tutorialmeta.com':
             if (textContent('.tt-right:nth-last-of-type(3)') != 'source: stackoverflow.com') return;
             return byHeader('h1', _, 'en');

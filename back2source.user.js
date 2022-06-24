@@ -326,8 +326,11 @@
 // @match        *://*.web-answers.ru/*/*
 // @match        *://*.web-dev-qa-db-br.com/pt/*
 // @match        *://*.web-dev-qa-db-de.com/de/*
+// @match        *://*.web-dev-qa-db-esp.com/es/*
 // @match        *://*.web-dev-qa-db-fr.com/fr/*
 // @match        *://*.web-dev-qa-db-fra.com/fr/*
+// @match        *://*.web-dev-qa-db-ger.com/de/*
+// @match        *://*.web-dev-qa-db-it.com/it/*
 // @match        *://*.web-dev-qa-db-ja.com/ja/*
 // @match        *://*.web-dev-qa-db-pt.com/pt/*
 // @match        *://*.web-gaebal-jilmun-dabbyeon-db.com/ko/*
@@ -674,21 +677,24 @@ a{
             return clr('#343a40') && byHeader('h1', 'a.badge', 'en');
         case '5axxw.com':
             return byHeader('h1','.badge-tag','zh') && byHeader('h2',_,'zh');
-        case '8101010108.cn':
-        case 'desarrollo-web-br-bd.com':
+        case '8101010108.cn': // redirects to wake-up-neo.com / 2022-06-24
+        case 'desarrollo-web-br-bd.com': // redirects to web-dev-qa-db-esp.com / 2022-06-24
         case 'pengembangan-web-mp-pd.com':
-        case 'reponse-question-developpement-web-bd.com':
-        case 'risposta-alla-domanda-sullo-sviluppo-web-bd.com':
+        case 'reponse-question-developpement-web-bd.com': // redirects to web-dev-qa-db-fra.com / 2022-06-24
+        case 'risposta-alla-domanda-sullo-sviluppo-web-bd.com': // redirects to web-dev-qa-db-it.com / 2022-06-24
         case 'tra-loi-cau-hoi-phat-trien-web.com':
         case 'wake-up-neo.com':
         case 'web-dev-qa-db-br.com':
-        case 'web-dev-qa-db-de.com':
-        case 'web-dev-qa-db-fr.com':
+        case 'web-dev-qa-db-de.com': // redirects to web-dev-qa-db-ger.com / 2022-06-24
+        case 'web-dev-qa-db-esp.com':
+        case 'web-dev-qa-db-fr.com': // redirects to web-dev-qa-db-fra.com / 2022-06-24
         case 'web-dev-qa-db-fra.com':
+        case 'web-dev-qa-db-ger.com':
         case 'web-dev-qa-db-ja.com':
-        case 'web-gaebal-jilmun-dabbyeon-db.com':
+        case 'web-dev-qa-db-it.com':
+        case 'web-gaebal-jilmun-dabbyeon-db.com': // redirects to wake-up-neo.com / 2022-06-24
         case 'web-gelistirme-sc.com':
-        case 'web-dev-qa-db-pt.com':
+        case 'web-dev-qa-db-pt.com': // redirects to wake-up-neo.com / 2022-06-24
             return bySel('.q-source > a');
         case 'amuddycup.com':
         case 'arip-photo.org':

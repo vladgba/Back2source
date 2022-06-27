@@ -104,6 +104,7 @@
 // @match        *://*.develop-bugs.com/article/*
 // @match        *://*.developreference.com/article/*
 // @match        *://*.devfaq.fr/question/*
+// @match        *://*.devtip.in/*/*
 // @match        *://*.dir.md/*
 // @match        *://*.domainelespailles.net/*
 // @match        *://*.donolik.com/*
@@ -124,6 +125,7 @@
 // @match        *://*.fitforlearning.org/*
 // @match        *://*.fixes.pub/*/*.html
 // @match        *://*.fluffyfables.com/*
+// @match        *://*.flutterhq.com/questions-and-answers/*
 // @match        *://*.flutterrepos.com/lib/*
 // @match        *://*.fooobar.com/questions/*
 // @match        *://*.fullstackuser.com/questions/*
@@ -303,6 +305,7 @@
 // @match        *://*.techarks.ru/qa/*
 // @match        *://*.techfeed.net/*
 // @match        *://*.territorioscuola.it/*
+// @match        *://*.thecodeteacher.com/question/*
 // @match        *://*.theshuggahpies.com/*
 // @match        *://*.thinbug.com/q/*
 // @match        *://*.tipsfordev.com/*
@@ -847,6 +850,8 @@ a{
             return (await findByApi(devpref)) || (await findByApi(parts[0], _, _, [parts.pop()])) || promptRedirect(sitecolor, toSearch(devpref));
         case 'devfaq.fr':
             return byHeader('h1', '.badge-info', 'fr');
+        case 'devtip.in':
+            return byHeader('h1', '.tag-list div', 'en');
         case 'e-learn.cn': // other content / 2022-05-29
             return startsByText('div.content p:last-child', '来源：');
         case 'editcode.net':
@@ -863,6 +868,8 @@ a{
             return 'https://' + _ps[1].replace('_threads','.stackexchange.com/questions/')+_ps[3];
         case 'fixes.pub':
             return byHeader('h1', 'aside li a[href*="fixes.pub/topics"]', 'ja');
+        case 'flutterhq.com':
+            return byInner('a', 'Stackoverflow.com');
         case 'getridbug.com':
             return byHeader('h1', 'div.post-tags > a', 'en');
         case 'ghcc.net':
@@ -970,6 +977,8 @@ a{
             return byHeader('main h1', '.tag', 'ru');
         case 'tencent.com':
             return byHeader('.ask-title h2', _, 'zh');
+        case 'thecodeteacher.com':
+            return byHeader('h1', _, 'en');
         case 'tipsfordev.com':
             return byHeader('h1', '.blog-pagination > a', 'en');
         case 'tistory.com':

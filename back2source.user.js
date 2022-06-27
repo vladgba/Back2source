@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name         Back2source
-// @version      0.1.131
+// @version      0.1.132
 // @description  Redirecting to source sites from sites with machine translation, etc.
 // @namespace    vladgba
 // @author       vladgba@gmail.com
@@ -826,7 +826,7 @@ a{
         case 'codersatellite.com': // site offline / timeout / 2022-05-01
             return byNumber(_ps[1].split('-')[3]);
         case 'daplus.net':
-            return byHeader([removePartBefore('h1','] ')], _, 'ko');
+            return byHeader([removePartBefore('h1','\\] ')], _, 'ko');
         case 'debugcn.com':
             lng(_ps[1] == 'article' ? 'zh' : _ps[1]);
         case 'debugko.com':
@@ -876,9 +876,9 @@ a{
         case 'intellipaat.com':
             return byHeader('h1', '.qa-q-view-tag-item', 'en');
         case 'it1352.com':
-            return byHeader([removePartBefore('h1 > em','] ')], 'div.arc-meta > span > a', 'en');
+            return byHeader([removePartBefore('h1 > em','\\] ')], 'div.arc-meta > span > a', 'en');
         case 'itbaoku.cn':
-            return byHeader([removePartBefore('h1 > em','] ')], '.article-tags > a', 'en');
+            return byHeader([removePartBefore('h1 > em','\\] ')], '.article-tags > a', 'en');
         case 'itecnote.com':
             return byHeader([removePartBefore('h1',' – ').replace(/How to/, '')], _, 'en');
         case 'itectec.com':
@@ -911,7 +911,7 @@ a{
             return clr('#292d2f') && (urlByImg('https://superuser.com/questions/') || byHeader([lastPathPart().replace(/(-closed|-duplicate)?(\d+)?(\.html)?$/, '').replace(/-/g, ' ')], '.tags a', 'en', ['superuser.com']));
         case 'learnfk.com':
             if (_ps[1] == 'en') return byHeader('h1', '.entry-info > .badge-tag', 'en');
-            return byHeader([removePartBefore('h2.h11','] ')], '.entry-info > .badge-tag', 'en');
+            return byHeader([removePartBefore('h2.h11','\\] ')], '.entry-info > .badge-tag', 'en');
         case 'localcoder.org':
             return byHeader('h1', '.categories a', 'en');
         case 'manongdao.com':
@@ -950,7 +950,7 @@ a{
         case 'soinside.com':
             return clr('#333') && byHeader('h1', '.q-tag', 'zh');
         case 'solveforum.com':
-            return byHeader(removePartBefore('h1', '[Solved] '), _, 'en');
+            return byHeader([removePartBefore('h1', '\\[Solved\\] ')], _, 'en');
         case 'stackanswers.net':
             clr('#999') && lng('en');
             return location.hostname.startsWith('publish.') && all('.panel-body a')[1].href;

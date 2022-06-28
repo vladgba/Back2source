@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name         Back2source
-// @version      0.1.132
+// @version      0.1.133
 // @description  Redirecting to source sites from sites with machine translation, etc.
 // @namespace    vladgba
 // @author       vladgba@gmail.com
@@ -30,6 +30,7 @@
 // @match        *://*.answeright.com/*
 // @match        *://*.answerlib.com/question/*
 // @match        *://*.antwortenhier.me/*
+// @match        *://*.appsloveworld.com/*/*
 // @match        *://*.arip-photo.org/*
 // @match        *://*.ask-dev.ru/info/*
 // @match        *://*.ask-ubuntu.ru/questions/*
@@ -79,6 +80,7 @@
 // @match        *://*.codeindex.ru/q/*
 // @match        *://*.codengineering.ru/q/*
 // @match        *://*.codenong.com/*
+// @match        *://*.codepudding.com/*/*.html
 // @match        *://*.coder-question-ko.com/cq-ko-blog/*
 // @match        *://*.coder-question.com/cq-blog/*
 // @match        *://*.coder.social/*
@@ -106,8 +108,10 @@
 // @match        *://*.devfaq.fr/question/*
 // @match        *://*.devtip.in/*/*
 // @match        *://*.dir.md/*
+// @match        *://*.dokry.com/*
 // @match        *://*.domainelespailles.net/*
 // @match        *://*.donolik.com/*
+// @match        *://*.duoduokou.com/*/*.html
 // @match        *://*.e-learn.cn/topic/*
 // @match        *://*.ec-europe.org/*
 // @match        *://*.ecnf2016.org/*
@@ -165,6 +169,7 @@
 // @match        *://*.issue.life/questions/*
 // @match        *://*.issueantenna.com/*/*
 // @match        *://*.issueexplorer.com/repo/*/*
+// @match        *://*.issuehint.com/issue/*/*/*
 // @match        *://*.it-brain.online/question/*
 // @match        *://*.it1352.com/*.html
 // @match        *://*.itbaoku.cn/post/*.html
@@ -304,6 +309,7 @@
 // @match        *://*.sysadminde.com/questions/*
 // @match        *://*.techarks.ru/qa/*
 // @match        *://*.techfeed.net/*
+// @match        *://*.techhelpnotes.com/*
 // @match        *://*.territorioscuola.it/*
 // @match        *://*.thecodeteacher.com/question/*
 // @match        *://*.theshuggahpies.com/*
@@ -741,6 +747,9 @@ a{
         case 'respuestas.me':
         case 'askentire.net':
             return clr('#2c3e50') && byHeader('h1', [await transTags('ul.x-tags li a[href*="/t/"]')], document.documentElement.lang);
+        case 'appsloveworld.com':
+            tt = textContent('h1').match(/\[Source Code\]-(.*)-[^-]/);
+            return tt && byHeader([tt[1]], _, 'en');
         case 'askdev.ru':
             return clr('#970f1b') && urlByImg('https://superuser.com/questions/') || byHeader('h1', [await transTags('.block_taxonomies a')], 'ru');
         case 'askdevz.com':
@@ -821,6 +830,8 @@ a{
         case 'coderoad.wiki': // site offline / Cloudflare error / 2022-05-01
         case 'quabr.com':
             return byNumber(_ps[1]);
+        case 'codepudding.com':
+            return byHeader('div.detail_title', '.hot-tags a', 'en');
         case 'coder.work':
             return bySel('div>p>a[rel="noreferrer noopener nofollow"]') || startsByText('p', 'stackoverflow链接', 'a[href*="stackoverflow.com"]') || startsByText('p', 'stackoverflow原址', 'a[href*="stackoverflow.com"]') || byHeader('h1', _/*'div[style="width: 100%;"] a[href*="/blog?tag="]'*/, 'zh');
         case 'coderedirect.com': // site redirects to fullstackuser.com / 2022-05-22
@@ -852,6 +863,10 @@ a{
             return byHeader('h1', '.badge-info', 'fr');
         case 'devtip.in':
             return byHeader('h1', '.tag-list div', 'en');
+        case 'dokry.com':
+            return byHeader('h1', '.badge a', 'es');
+        case 'duoduokou.com':
+            return byHeader('p.post-title', 'span.category > a', 'zh');
         case 'e-learn.cn': // other content / 2022-05-29
             return startsByText('div.content p:last-child', '来源：');
         case 'editcode.net':
@@ -975,6 +990,8 @@ a{
             return 'https://serverfault.com/questions/' + _ps[2];
         case 'techfeed.net':
             return byHeader('main h1', '.tag', 'ru');
+        case 'techhelpnotes.com':
+            return byHeader([removePartBefore('h1', ' – ')], _, 'en');
         case 'tencent.com':
             return byHeader('.ask-title h2', _, 'zh');
         case 'thecodeteacher.com':
@@ -1126,6 +1143,8 @@ a{
             return github(_p.replace(/^\/(repo|author)/,''));
         case 'issueexplorer.com': // other content / 2022-05-01
             return github(_p.replace(/^\/repo/,''));
+        case 'issuehint.com':
+            return findByGitHubApi(textContent('h1'));
         case 'jsrepos.com':
             return bySel('article.markdown-body>a[rel="nofollow"]:last-child');
         case 'libhunt.com':

@@ -1,11 +1,11 @@
 // ==UserScript==
 // @name         Back2source
-// @version      0.1.133
+// @version      0.1.134
 // @description  Redirecting to source sites from sites with machine translation, etc.
 // @namespace    vladgba
 // @author       vladgba@gmail.com
 // @run-at       document-end
-// @icon         https://www.google.com/s2/favicons?domain=stackoverflow.com
+// @icon         https://www.google.com/s2/favicons?sz=64&domain=stackoverflow.com
 // @downloadURL  https://github.com/vladgba/Back2source/raw/master/back2source.user.js
 // @updateURL    https://github.com/vladgba/Back2source/raw/master/back2source.user.js
 // @homepageURL  https://github.com/vladgba/Back2source
@@ -125,6 +125,7 @@
 // @match        *://*.extutorial.com/ask/*
 // @match        *://*.faithcov.org/*
 // @match        *://*.fantashit.com/*
+// @match        *://*.findbestopensource.com/product/*
 // @match        *://*.firstlightsalon.in/*/questions/*
 // @match        *://*.fitforlearning.org/*
 // @match        *://*.fixes.pub/*/*.html
@@ -139,6 +140,7 @@
 // @match        *://*.getridbug.com/*/*
 // @match        *://*.ghcc.net/*
 // @match        *://*.gitanswer.net/*
+// @match        *://*.gitcode.net/*
 // @match        *://*.gitdetail.com/repositories/*
 // @match        *://*.giters.com/*
 // @match        *://*.gitfreak.com/*
@@ -149,6 +151,7 @@
 // @match        *://*.githubplus.com/*
 // @match        *://*.gitrush.ru/*/*/*
 // @match        *://*.golangd.com/g/*
+// @match        *://*.golangexample.com/*
 // @match        *://*.golangrepo.com/repo/*
 // @match        *://*.gupgallery.com/*
 // @match        *://*.helpex.vn/question/*
@@ -202,6 +205,7 @@
 // @match        *://*.livepcwiki.ru/wiki/*
 // @match        *://*.living-sun.com/*/*
 // @match        *://*.localcoder.org/*
+// @match        *://*.macosrepo.com/software/*
 // @match        *://*.manongdao.com/*.html
 // @match        *://*.mediatagtw.com/*/*
 // @match        *://*.messiahlebanon.org/*
@@ -285,6 +289,7 @@
 // @match        *://*.smnggeophysics.com/*
 // @match        *://*.snyk.io/advisor/npm-package/*
 // @match        *://*.sobrelinux.info/questions/*
+// @match        *://*.softbranchdevelopers.com/*
 // @match        *://*.softwareuser.asklobster.com/posts/*
 // @match        *://*.soinside.com/question/*
 // @match        *://*.solveforum.com/forums/threads/*
@@ -329,6 +334,7 @@
 // @match        *://*.uwenku.com/question/*
 // @match        *://*.v-resheno.ru/*
 // @match        *://*.voidcc.com/question/*
+// @match        *://*.vuejscode.com/*
 // @match        *://*.vvikipedla.com/wiki/*
 // @match        *://*.wake-up-neo.com/*/*
 // @match        *://*.waymanamechurch.org/*
@@ -1013,6 +1019,8 @@ a{
             return byHeader('h1.entry-title', '.tag', 'ru');
         case 'v-resheno.ru':
             return textContent('.linkurl > b');
+        case 'vuejscode.com':
+            return bySel('article .mt-4 a') || byHeader('h1', _, 'en');
         case 'webdevdesigner.com':
             tt = (_ps[1] == 'q' ? _ps[2] : _ps[1].replace(/^q-/, '')).replace(/-\d+$/, '').replace(/-/g, ' ');
             return (await findByApi(tt)) || prepareSearch(tt, '.tags a', ['superuser.com', 'stackoverflow.com', 'stackexchange.com']);
@@ -1098,6 +1106,7 @@ a{
         case 'androidrepo.com':
             return bySel('article.markdown-body > a');
         case 'astrophel.org':
+        case 'gitcode.net':
         case 'giters.com':
         case 'gitfreak.com':
         case 'githubhelp.com':
@@ -1137,6 +1146,8 @@ a{
             return github(_p.replace(/^\/(repository|profile)/,'').replace(/^(\/issues)(\/.*\/.*)(\/.*)/,'$2$1$3').replace(/^(\/issues)(\/.*\/.*)/,'$2$1'));
         case 'golangd.com':
             return bySel('.box-body > a');
+        case 'golangexample.com':
+            return bySel('#github ~ p > a');
         case 'higithub.com':
             return github(_p.replace(/\/(repo\/|user$)/,'/').replace(/^(\/.*)(\/issue)(\/.*)(\/.*)/,'$1$3$2s$4').replace(/^(\/.*)\/repo_(issues)(\/.*)/,'$1$3/$2'));
         case 'issueantenna.com':
@@ -1154,6 +1165,7 @@ a{
         case 'opensourcelibs.com':
             return byInner('.repo-stats a','github.com');
         case 'pythonawesome.com':
+        case 'softbranchdevelopers.com':
             return bySel('.github-view');
         case 'pythonlang.dev':
             return bySel('.widget-profile > p > a');
@@ -1191,6 +1203,8 @@ a{
             return _go('https://' + _t('.article-refer span:nth-child(2)').innerText);
         case 'dir.md':
             return (tt = _h.match(/^https?:\/\/dir.md\/(.+)(&|\?)host=([a-zA-Z\.-]+)$/)) && _go('https://' + tt[3] + '/' + tt[1]);
+        case 'findbestopensource.com':
+            return _go(bySel('.row > .more-link:last-of-type'));
         case 'ichi.pro':
             return byHeader('h1', _, 'ja', []);
         case 'icode9.com':
@@ -1208,6 +1222,8 @@ a{
                 return byHeader('h1', _, 'zh', []);
             });
             return;
+        case 'macosrepo.com':
+            return _go(bySel('.user-info > .seller-link'));
         case 'mediatagtw.com':
             if (_ps[1] == 'article') _go(bySel('#social_only > h3 > a'));
             if (_ps[1] == 'exit') _go(bySel('.h5 > a'));

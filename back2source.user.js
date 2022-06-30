@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name         Back2source
-// @version      0.1.134
+// @version      0.1.135
 // @description  Redirecting to source sites from sites with machine translation, etc.
 // @namespace    vladgba
 // @author       vladgba@gmail.com
@@ -29,6 +29,7 @@
 // @match        *://*.answer-id.com/*
 // @match        *://*.answeright.com/*
 // @match        *://*.answerlib.com/question/*
+// @match        *://*.answerspoint.com/questions/*/*
 // @match        *://*.antwortenhier.me/*
 // @match        *://*.appsloveworld.com/*/*
 // @match        *://*.arip-photo.org/*
@@ -71,6 +72,7 @@
 // @match        *://*.codefactor.io/repository/*
 // @match        *://*.codefaq.info/*
 // @match        *://*.codefaq.ru/*
+// @match        *://*.codefordev.com/discuss/*/*
 // @match        *://*.codegear.dev/*/questions/*
 // @match        *://*.codegrepper.com/code-examples/*
 // @match        *://*.codegrepr.com/question/*
@@ -244,6 +246,7 @@
 // @match        *://*.projectbackpack.org/*
 // @match        *://*.proubuntu.ru/*/*
 // @match        *://*.py4u.net/discuss/*
+// @match        *://*.pyquestions.com/*
 // @match        *://*.python2.net/questions-*.htm
 // @match        *://*.pythonawesome.com/*
 // @match        *://*.pythonlang.dev/repo/*
@@ -744,7 +747,9 @@ a{
             tt = _t('meta[property="og:image"]').content.split('/').pop().split('.')[0].replace(/-/g,' ');
             return tt && (await findByApi(tt) || prepareSearch(tt, _, ['stackoverflow.com','superuser.com','askubuntu.com','stackexchange.com']));
         case 'answerlib.com':
+        case 'answerspoint.com':
         case 'ask-dev.ru':
+        case 'codefordev.com':
         case 'coderoad.in':
         case 'younggeeks.in':
             return byPath(3);
@@ -953,6 +958,8 @@ a{
             return lng('zh') && byHeader('h1', [await transTags('.article-tag')], 'zh');
         case 'newbedev.com':
             return _t('article') && byHeader('h1', 'h4.tags a.item-tag', 'en', _se);
+        case 'pyquestions.com':
+            return byPath(1);
         case 'poweruser.guru':
             return _t('div.post-menu a.suggest-edit-post[href*="superuser.com/questions/"]');
         case 'progi.pro':

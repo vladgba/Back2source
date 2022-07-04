@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name         Back2source
-// @version      0.1.135
+// @version      0.1.136
 // @description  Redirecting to source sites from sites with machine translation, etc.
 // @namespace    vladgba
 // @author       vladgba@gmail.com
@@ -369,6 +369,7 @@
 // @match        *://*.wikichi.ru/wiki/*
 // @match        *://*.wikidark.ru/wiki/*
 // @match        *://*.wikies.wiki/wiki/*
+// @match        *://*.wikimho.com/*/q/*/*
 // @match        *://*.wikipe.wiki/wiki/*
 // @match        *://*.wikipedia-on-ipfs.org/wiki/*
 // @match        *://*.wikipedia.tel/*
@@ -749,7 +750,6 @@ a{
         case 'answerlib.com':
         case 'answerspoint.com':
         case 'ask-dev.ru':
-        case 'codefordev.com':
         case 'coderoad.in':
         case 'younggeeks.in':
             return byPath(3);
@@ -826,6 +826,8 @@ a{
             return byNumber(lastPathPart(), 16);
         case 'codebug.zone':
             return byHeader([removePartBefore('h1', ' – ')], _, 'es');
+        case 'codefordev.com':
+            return byHeader('h1', '.ui.small.label', 'en');
         case 'codeguides.site':
         case 'stormcrow.dev': // site offline / other content /2022-05-22
             return byNumber(_ps[3]);
@@ -959,7 +961,8 @@ a{
         case 'newbedev.com':
             return _t('article') && byHeader('h1', 'h4.tags a.item-tag', 'en', _se);
         case 'pyquestions.com':
-            return byPath(1);
+            tt = '(' + getTags('.btn.btn-secondary').join('|') + ')';
+            return tt && byHeader([textContent('h1').replace(new RegExp('(^' + tt + ': | in ' + tt + '$)', 'i'),'')], '.btn.btn-secondary', 'en');
         case 'poweruser.guru':
             return _t('div.post-menu a.suggest-edit-post[href*="superuser.com/questions/"]');
         case 'progi.pro':
@@ -1302,7 +1305,8 @@ a{
                     'voidcc.com': '.source > a',
                     'wake-up-neo.com': 'span.q-source.i-source > a.gat',
                     'web-answers.ru': '.source > a',
-                    'yingqusp.com': '.container>div>div>div>p>a',
+                    'wikimho.com': '.page-footer .float-right a',
+                    'yingqusp.com': '.container > div > div > div > p > a',
                 };
                 link = cssSelectors[host] && _tc(cssSelectors[host]);
                 console.log(link);

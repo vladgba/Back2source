@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name         Back2source
-// @version      0.1.136
+// @version      0.1.137
 // @description  Redirecting to source sites from sites with machine translation, etc.
 // @namespace    vladgba
 // @author       vladgba@gmail.com
@@ -26,7 +26,6 @@
 // @match        *://*.amuddycup.com/*
 // @match        *://*.androidrepo.com/repo/*
 // @match        *://*.answacode.com/*
-// @match        *://*.answer-id.com/*
 // @match        *://*.answeright.com/*
 // @match        *://*.answerlib.com/question/*
 // @match        *://*.answerspoint.com/questions/*/*
@@ -77,9 +76,7 @@
 // @match        *://*.codegrepper.com/code-examples/*
 // @match        *://*.codegrepr.com/question/*
 // @match        *://*.codeguides.site/questions/*
-// @match        *://*.codehero.jp/*
 // @match        *://*.codehunter.cc/*
-// @match        *://*.codeindex.ru/q/*
 // @match        *://*.codengineering.ru/q/*
 // @match        *://*.codenong.com/*
 // @match        *://*.codepudding.com/*/*.html
@@ -87,12 +84,9 @@
 // @match        *://*.coder-question.com/cq-blog/*
 // @match        *://*.coder.social/*
 // @match        *://*.coder.work/article/*
-// @match        *://*.coderedirect.com/*
 // @match        *://*.coderoad.in/questions/*
 // @match        *://*.coderoad.ru/*
-// @match        *://*.coderoad.wiki/*
 // @match        *://*.coderquestion.ru/q/*
-// @match        *://*.codersatellite.com/question-with-identifier-*
 // @match        *://*.codespots.com/library/item/*
 // @match        *://*.codetd.com/article/*
 // @match        *://*.coredump.biz/questions/*
@@ -122,7 +116,6 @@
 // @match        *://*.elfishgene.com/*
 // @match        *://*.encyclopaedia.bid/*
 // @match        *://*.errorsfixing.com/*
-// @match        *://*.exceptionshub.com/*
 // @match        *://*.exchangetuts.com/*-*
 // @match        *://*.extutorial.com/ask/*
 // @match        *://*.faithcov.org/*
@@ -134,7 +127,6 @@
 // @match        *://*.fluffyfables.com/*
 // @match        *://*.flutterhq.com/questions-and-answers/*
 // @match        *://*.flutterrepos.com/lib/*
-// @match        *://*.fooobar.com/questions/*
 // @match        *://*.fullstackuser.com/questions/*
 // @match        *://*.gaz.wiki/wiki/*
 // @match        *://*.geek-tips.imtqy.com/articles/*/*.html
@@ -173,7 +165,6 @@
 // @match        *://*.isolution.pro/q/*
 // @match        *://*.issue.life/questions/*
 // @match        *://*.issueantenna.com/*/*
-// @match        *://*.issueexplorer.com/repo/*/*
 // @match        *://*.issuehint.com/issue/*/*/*
 // @match        *://*.it-brain.online/question/*
 // @match        *://*.it1352.com/*.html
@@ -212,7 +203,6 @@
 // @match        *://*.mediatagtw.com/*/*
 // @match        *://*.messiahlebanon.org/*
 // @match        *://*.microeducate.tech/*
-// @match        *://*.mihalicdictionary.org/*
 // @match        *://*.mlink.in/qa/*
 // @match        *://*.mlog.club/article/*
 // @match        *://*.narkive.jp/*
@@ -245,17 +235,13 @@
 // @match        *://*.programmierfrage.com/items/*
 // @match        *://*.projectbackpack.org/*
 // @match        *://*.proubuntu.ru/*/*
-// @match        *://*.py4u.net/discuss/*
 // @match        *://*.pyquestions.com/*
 // @match        *://*.python2.net/questions-*.htm
 // @match        *://*.pythonawesome.com/*
 // @match        *://*.pythonlang.dev/repo/*
-// @match        *://*.pythonq.com/*/*/*
 // @match        *://*.pythonrepo.com/repo/*
-// @match        *://*.qa-help.ru/*
 // @match        *://*.qa-stack.pl/*
 // @match        *://*.qa.1r1g.com/sf/ask/*
-// @match        *://*.qacode.ru/questions/*
 // @match        *://*.qapicks.com/question/*
 // @match        *://*.qarchive.ru/*
 // @match        *://*.qaru.tech/questions/*
@@ -266,10 +252,8 @@
 // @match        *://*.qi-u.com/*-1.html
 // @match        *://*.qi-u.com/qa/*
 // @match        *://*.quabr.com/*
-// @match        *://*.quares.ru/?id=*
 // @match        *://*.question-it.com/questions/*
 // @match        *://*.questu.ru/questions/*
-// @match        *://*.recalll.co/*
 // @match        *://*.reddit.fun/*/*
 // @match        *://*.reponse-question-developpement-web-bd.com/fr/*
 // @match        *://*.reposhub.com/*/*
@@ -308,7 +292,6 @@
 // @match        *://*.stackoverflood.com/*
 // @match        *://*.stackovergo.com/*q/*
 // @match        *://*.stackru.com/questions/*
-// @match        *://*.stormcrow.dev/*/questions/*
 // @match        *://*.string.quest/read/*
 // @match        *://*.sunflowercreations.org/*
 // @match        *://*.swiftobc.com/repo/*
@@ -332,7 +315,6 @@
 // @match        *://*.tutorialmeta.com/question/*
 // @match        *://*.tutorialmore.com/questions-*
 // @match        *://*.ubuntuaa.com/*q/*
-// @match        *://*.ubuntugeeks.com/questions/*
 // @match        *://*.utyatnishna.ru/info/*
 // @match        *://*.uwenku.com/question/*
 // @match        *://*.v-resheno.ru/*
@@ -363,7 +345,6 @@
 // @match        *://*.wiki.cologne/*
 // @match        *://*.wiki2.info/*
 // @match        *://*.wiki2.net/*
-// @match        *://*.wiki2.online/*
 // @match        *://*.wiki2.org/*
 // @match        *://*.wiki2.wiki/wiki/*
 // @match        *://*.wikichi.ru/wiki/*
@@ -380,7 +361,6 @@
 // @match        *://*.wikiwand.com/*/*
 // @match        *://*.wikizero.com/*/*
 // @match        *://*.wujigu.com/qa/*
-// @match        *://*.xbuba.com/*
 // @match        *://*.xcv.wiki/*
 // @match        *://*.xiu2.net/it/details/*
 // @match        *://*.xsprogram.com/content/*
@@ -391,6 +371,7 @@
 // @match        *://*.ylhow.com/*
 // @match        *://*.younggeeks.in/questions/*
 // @match        *://*.yuanmacha.com/*.html
+// @match        *://*.zahn-info-portal.de/wiki/*
 // @match        *://*.zapytay.com/*
 // @match        *://*.zsharp.org/*
 // @match        *://*.zzun.app/repo/*
@@ -771,7 +752,6 @@ a{
         case 'bestecode.com':
         case 'bonprog.com':
         case 'cainiaojiaocheng.com':
-        case 'codehero.jp': // site offline / empty site / 2022-05-22
         case 'coderquestion.ru':
         case 'coredump.biz':
         case 'gitrush.ru':
@@ -785,7 +765,6 @@ a{
         case 'qaru.tech':
         case 'stackfinder.ru':
         case 'thinbug.com':
-        case 'xbuba.com': // site offline / site not found / 2022-05-01
             return byNumber(_ps[2]);
         case 'askubuntu.ru':
             return byHeader('h1', 'nav .col-tag', 'ru', ['askubuntu.com']);
@@ -806,8 +785,6 @@ a{
             clr('#178acc');
         case 'techarks.ru':
             clr('#20a169');
-        case 'quares.ru': // site offline / site not found / 2022-05-01
-            clr('#fcdb00');
         case 'question-it.com':
             clr('#2c3e50');
         case 'legkovopros.ru':
@@ -829,29 +806,19 @@ a{
         case 'codefordev.com':
             return byHeader('h1', '.ui.small.label', 'en');
         case 'codeguides.site':
-        case 'stormcrow.dev': // site offline / other content /2022-05-22
             return byNumber(_ps[3]);
         case 'codehunter.cc':
             return byHeader('h1', '.badge', 'en');
-        case 'codeindex.ru': // site offline / Cloudflare error / 2022-05-01
-        case 'qa-help.ru': // site offline / Cloudflare error / 2022-05-01
-            return bySel('span.text-muted.fake_url', 'src') || _tc('.text-muted.small');
         case 'codengineering.ru':
             return toSearch(lastPathPart().replace(/(-closed|-duplicate)?(-\d+)?(\.html)?$/, ''), true);
         case 'codenong.com':
         case 'coderoad.ru':
-        case 'coderoad.wiki': // site offline / Cloudflare error / 2022-05-01
         case 'quabr.com':
             return byNumber(_ps[1]);
         case 'codepudding.com':
             return byHeader('div.detail_title', '.hot-tags a', 'en');
         case 'coder.work':
-            return bySel('div>p>a[rel="noreferrer noopener nofollow"]') || startsByText('p', 'stackoverflow链接', 'a[href*="stackoverflow.com"]') || startsByText('p', 'stackoverflow原址', 'a[href*="stackoverflow.com"]') || byHeader('h1', _/*'div[style="width: 100%;"] a[href*="/blog?tag="]'*/, 'zh');
-        case 'coderedirect.com': // site redirects to fullstackuser.com / 2022-05-22
-        case 'fullstackuser.com':
-            return byHeader('h1', '.custom-head .post-tag', 'en');
-        case 'codersatellite.com': // site offline / timeout / 2022-05-01
-            return byNumber(_ps[1].split('-')[3]);
+            return bySel('div>p>a[rel="noreferrer noopener nofollow"]') || startsByText('p', 'stackoverflow链接', 'a[href*="stackoverflow.com"]') || startsByText('p', 'stackoverflow原址', 'a[href*="stackoverflow.com"]') || byHeader('h1', _, 'zh');
         case 'daplus.net':
             return byHeader([removePartBefore('h1','\\] ')], _, 'ko');
         case 'debugcn.com':
@@ -880,14 +847,12 @@ a{
             return byHeader('h1', '.badge a', 'es');
         case 'duoduokou.com':
             return byHeader('p.post-title', 'span.category > a', 'zh');
-        case 'e-learn.cn': // other content / 2022-05-29
+        case 'e-learn.cn':
             return startsByText('div.content p:last-child', '来源：');
         case 'editcode.net':
             return byHeader([removePartBefore('h1', ':')], _,'en');
         case 'errorsfixing.com':
             return bySel('div.entry-content.boxed > p:nth-last-of-type(3) > a');
-        case 'exceptionshub.com': // site offline / Cloudflare error / 2022-05-01
-            return _c(/\.html$/) && byPath(1);
         case 'exchangetuts.com':
             return byHeader('h1', '.item-tag > a', 'en');
         case 'extutorial.com':
@@ -898,6 +863,8 @@ a{
             return byHeader('h1', 'aside li a[href*="fixes.pub/topics"]', 'ja');
         case 'flutterhq.com':
             return byInner('a', 'Stackoverflow.com');
+        case 'fullstackuser.com':
+            return byHeader('h1', '.custom-head .post-tag', 'en');
         case 'getridbug.com':
             return byHeader('h1', 'div.post-tags > a', 'en');
         case 'ghcc.net':
@@ -973,8 +940,6 @@ a{
             return byNumber(_ps[2].split('-')[0]);
         case 'questu.ru':
             return byInner('a', 'источник');
-        case 'recalll.co': // site offline / site not found / 2022-05-01
-            return _t('div.label-wrap a[href*="stackoverflow.com/"][target="_blank"]')?.href || byHeader('h2#mainTitle', 'a[href*="/tags/"]', 'en');
         case 'reddit.fun':
             return byHeader('h1', '.qa-q-view-tags .qa-tag-link', 'en');
         case 'roboflow.ai':
@@ -1042,7 +1007,7 @@ a{
             tt = _t('section section div.footer-post div.d-inline-block button');
             tt = tt && (getAttr(tt, 'data-url', /https?:\/\/wikiroot\.ru\/comment\/new\/([0-9]+)/) || getAttr(tt, 'data-target', /#buttoncollapse-([0-9]+)/));
             return tt ? 'https://superuser.com/questions/' + tt : byHeader('h1', 'ul.tags-list li a', 'ru');
-        case 'xiu2.net':
+        case 'xiu2.net': // redirects to site with 502 / 2022-07-06
             addJS('var redir = window.__NUXT__.data[0].info.sourceUrl; redir && window.location.replace(redir);');
             return lng('zh') && byHeader('h1', '.contents .tag-time a[href*="/it/tag/"]', 'zh');
         case 'xszz.org':
@@ -1063,6 +1028,7 @@ a{
         case 'wiki2.wiki':
         case 'wikichi.ru':
         case 'wikivisually.com':
+        case 'zahn-info-portal.de':
             return wiki('en', 2);
         case 'abcdef.wiki':
             return wiki('en', _p, false);
@@ -1072,10 +1038,8 @@ a{
             return _hst('ru.encyclopedia.kz') && wiki('ru', 2);
         case 'gaz.wiki':
             return wiki('en', 3);
-        case 'jejakjabar.com': // all pages 404 / 2022-05-01
+        case 'jejakjabar.com': // redirects to zahn-info-portal.de / 2022-07-06
             return (tt = _h.match(/https?:\/\/([a-zA-z]+\.)?jejakjabar\.com\/wiki\/(.+)/)) && wiki('en', tt[2]);
-        case 'mihalicdictionary.org': // site offline / site not found / 2022-05-01
-            return (tt = _h.match(/https?:\/\/([a-zA-Z]{2})?\.?mihalicdictionary\.org(.+)/)) && wiki(tt[1], tt[2], false);
         case 'nina.az':
             return (tt = _h.match(/https?:\/\/wikipedia\.(([a-z]{2})\.)?nina\.az\/wiki\/(.+)/)) && wiki(mulreplace(tt[2], [ ['ua', 'uk'], ['us', 'en'] ]), tt[3]);
         case 'rudata.ru':
@@ -1090,7 +1054,6 @@ a{
             return wiki('ru', 3);
         case 'wiki.cologne':
         case 'wiki2.info':
-        case 'wiki2.online': // other content / 2022-05-01
         case 'wikipedia24.ru':
             return _t('.mw-parser-output') && wiki('ru', 1);
         case 'wiki2.net':
@@ -1114,7 +1077,15 @@ a{
             return (tt = _h.match(/https?:\/\/([a-zA-z]{2,4})\.xcv\.wiki\/wiki\/(.+)/)) && wiki('de', tt[2]);
         /* GitHub */
         case 'androidrepo.com':
-            return bySel('article.markdown-body > a');
+        case 'bestofphp.com':
+        case 'bestofvue.com':
+        case 'bestofreactjs.com':
+        case 'javarepos.com':
+        case 'jsrepos.com':
+        case 'flutterrepos.com':
+        case 'rustrepo.com':
+        case 'swiftobc.com':
+            return bySel('#description > article > a:last-of-type') || bySel('#description ~ a:last-of-type');
         case 'astrophel.org':
         case 'gitcode.net':
         case 'giters.com':
@@ -1128,13 +1099,6 @@ a{
         case 'golangrepo.com':
         case 'pythonrepo.com':
             return byInner('#basic a.btn','GitHub Repository');
-        case 'bestofphp.com':
-        case 'bestofvue.com':
-        case 'bestofreactjs.com':
-        case 'javarepos.com':
-        case 'flutterrepos.com':
-        case 'rustrepo.com':
-            return bySel('#description > article > a:last-of-type') || bySel('#description ~ a:last-of-type');
         case 'bleepcoder.com':
             return bySel('.float-right .text-muted');
         case 'bytemeta.vip':
@@ -1162,12 +1126,8 @@ a{
             return github(_p.replace(/\/(repo\/|user$)/,'/').replace(/^(\/.*)(\/issue)(\/.*)(\/.*)/,'$1$3$2s$4').replace(/^(\/.*)\/repo_(issues)(\/.*)/,'$1$3/$2'));
         case 'issueantenna.com':
             return github(_p.replace(/^\/(repo|author)/,''));
-        case 'issueexplorer.com': // other content / 2022-05-01
-            return github(_p.replace(/^\/repo/,''));
         case 'issuehint.com':
             return findByGitHubApi(textContent('h1'));
-        case 'jsrepos.com':
-            return bySel('article.markdown-body>a[rel="nofollow"]:last-child');
         case 'libhunt.com':
             return github('/' + textContent('div.is-4 > p > strong'));
         case 'lifesaver.codes':
@@ -1256,19 +1216,16 @@ a{
                 const cssSelectors = {
                     '4answered.com': '.view_body span a',
                     'answacode.com': '.post__source',
-                    'answer-id.com': 'a.link', // redirects to de-vraag.com / 2022-05-22
                     'answeright.com': 'a.link',
                     'ask-ubuntu.ru': '.q-source',
                     'askcodez.com': '.orli a',
-                    'askdev.info': '.question-text > .a-link', // site offline / site not found / 2022-05-01
+                    'askdev.info': '.question-text > .a-link',
                     'catwolf.org': '.text-left.small > a',
                     'codefaq.info': '.aa-link',
                     'codefaq.ru': '.aa-link',
                     'codegear.dev': 'p.text-right > a',
                     'codegrepr.com': 'div.content-text > p > a',
-                    'e-learn.cn': '.zhuanzai + div a', // other content / 2022-05-29
-                    'fooobar.com': '.question-text > .aa-link', // all pages 404 / 2022-05-01
-                    'generacodice.com': '#fontePrincipale > a.link',
+                    'generacodice.com': '#fontePrincipale > a.link', // site offline / site not found / 2022-07-06
                     'howtosolves.com': '#question .question .source a',
                     'husl.ru': '.source-link',
                     'iquestion.pro': '.box-body div:nth-child(3) .pull-right',
@@ -1285,10 +1242,7 @@ a{
                     'phptime.ru': '.float-right>small>a.text-muted',
                     'prog-help.ru': '.eclip > a',
                     'programmerz.ru': '.source-share-link',
-                    'py4u.net': '.question .author .src a', // site offline / site not found / 2022-05-01
                     'python2.net': 'div.user-box > span.fr > a',
-                    'pythonq.com': 'a[style="color:red"]', // site offline / site not found / 2022-05-01
-                    'qacode.ru': '.question-info .cc-link', // all pages 404 / 2022-05-01
                     'qarchive.ru': 'cite > a',
                     'qarus.ru': 'em > a',
                     'qna.one': '.page-container-question .source-share-block a',
@@ -1298,10 +1252,9 @@ a{
                     'stackguides.com': 'a[title="Go to Source post"]',
                     'stackovergo.com': '.qeditacti a:nth-child(2)',
                     'stackru.com': '.q-source',
-                    'try2explore.com': 'div.tagsandsource span.source a[target="_blank"]', // site offline / site not found / 2022-05-01
+                    'try2explore.com': 'div.tagsandsource span.source a[target="_blank"]',
                     'ubuntuaa.com': '.post-info a',
-                    'ubuntugeeks.com': '.question-text > .a-link', // site offline / site not found / 2022-05-01
-                    'uwenku.com': '.post-info a', // site offline / site not found / 2022-05-01
+                    'uwenku.com': '.post-info a',
                     'voidcc.com': '.source > a',
                     'wake-up-neo.com': 'span.q-source.i-source > a.gat',
                     'web-answers.ru': '.source > a',

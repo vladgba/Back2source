@@ -53,6 +53,7 @@
 // @match        *://*.bestofvue.com/repo/*
 // @match        *://*.bildiredi.com/*
 // @match        *://*.bilee.com/*.html
+// @match        *://*.binarydevelop.com/article/*
 // @match        *://*.bleepcoder.com/*/*
 // @match        *://*.buildwiki.ru/wiki/*
 // @match        *://*.bytemeta.vip/*
@@ -91,6 +92,7 @@
 // @match        *://*.codetd.com/article/*
 // @match        *://*.coredump.biz/questions/*
 // @match        *://*.culinarydegree.info/*
+// @match        *://*.dailydevsblog.com/troubleshoot/*
 // @match        *://*.daplus.net/*
 // @match        *://*.datewiki.ru/wiki/*
 // @match        *://*.de-vraag.com/*
@@ -646,7 +648,7 @@ a{
     /** Gets the text to search for from a part of the path, tries to find it per API and otherwise creates the bottom bar to search for */
     async function byPath(pos, s) {
         ll = _ps[pos].replace(/(-closed|-duplicate)?(\.html)?$/, '').replace(/^\d+-/, '').replace(/[-+]/g, ' ');
-        ll = ll.replace(/\b(are|ca|could|did|does|do|has|have|is|must|were|wo)nt\b/g,'$1n\'t').replace(/\b(they|you)(re|ve)\b/g,'$1\'$2').replace(/\bi(m|ve)\b/g,'i\'$1');
+        ll = ll.replace(/\b(are|ca|could|did|does|do|has|have|is|must|were|wo)n ?t\b/g,'$1n\'t').replace(/\b(they|you) ?(re|ve)\b/g,'$1\'$2').replace(/\bi ?(m|ve)\b/g,'i\'$1').replace(/\b(what|there) ?s\b/g,'$1\'s');
         return (await findByApi(ll)) || prepareSearch(ll, '', s);
     }
 
@@ -792,6 +794,8 @@ a{
         case 'edupro.id':
             lng('id') && clr('#2c3e50');
             return byHeader('h1', '.tag', lang);
+        case 'binarydevelop.com':
+            return bySel('div.cc', 'data-href');
         case 'catchconsole.com':
             return byHeader([dropMarks(textContent('h1'))], _, 'en');
         case 'cndgn.com':
@@ -819,6 +823,8 @@ a{
             return byHeader('div.detail_title', '.hot-tags a', 'en');
         case 'coder.work':
             return bySel('div>p>a[rel="noreferrer noopener nofollow"]') || startsByText('p', 'stackoverflow链接', 'a[href*="stackoverflow.com"]') || startsByText('p', 'stackoverflow原址', 'a[href*="stackoverflow.com"]') || byHeader('h1', _, 'zh');
+        case 'dailydevsblog.com':
+            return byHeader([removePartBefore('h1', 'Resolved: ')], '.tags > a', 'en');
         case 'daplus.net':
             return byHeader([removePartBefore('h1','\\] ')], _, 'ko');
         case 'debugcn.com':
@@ -927,15 +933,15 @@ a{
             return lng('zh') && byHeader('h1', [await transTags('.article-tag')], 'zh');
         case 'newbedev.com':
             return _t('article') && byHeader('h1', 'h4.tags a.item-tag', 'en', _se);
-        case 'pyquestions.com':
-            tt = '(' + getTags('.btn.btn-secondary').join('|') + ')';
-            return tt && byHeader([textContent('h1').replace(new RegExp('(^' + tt + ': | in ' + tt + '$)', 'i'),'')], '.btn.btn-secondary', 'en');
         case 'poweruser.guru':
             return _t('div.post-menu a.suggest-edit-post[href*="superuser.com/questions/"]');
         case 'progi.pro':
             return clr('#4e82c2') && byHeader('h1[itemprop="name"]', '.tag-list a', 'ru');
         case 'proubuntu.ru':
             return byHeader('h1>a>span[itemprop="name"]', [await transTags('a[rel="tag"]')],'ru', ['askubuntu.com']);
+        case 'pyquestions.com':
+            tt = '(' + getTags('.btn.btn-secondary').join('|') + ')';
+            return tt && byHeader([textContent('h1').replace(new RegExp('(^' + tt + ': | in ' + tt + '$)', 'i'),'')], '.btn.btn-secondary', 'en');
         case 'qapicks.com':
             return byNumber(_ps[2].split('-')[0]);
         case 'questu.ru':

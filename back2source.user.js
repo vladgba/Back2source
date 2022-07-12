@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name         Back2source
-// @version      0.1.137
+// @version      0.1.138
 // @description  Redirecting to source sites from sites with machine translation, etc.
 // @namespace    vladgba
 // @author       vladgba@gmail.com
@@ -122,6 +122,7 @@
 // @match        *://*.extutorial.com/ask/*
 // @match        *://*.faithcov.org/*
 // @match        *://*.fantashit.com/*
+// @match        *://*.findatwiki.com/*
 // @match        *://*.findbestopensource.com/product/*
 // @match        *://*.firstlightsalon.in/*/questions/*
 // @match        *://*.fitforlearning.org/*
@@ -129,6 +130,7 @@
 // @match        *://*.fluffyfables.com/*
 // @match        *://*.flutterhq.com/questions-and-answers/*
 // @match        *://*.flutterrepos.com/lib/*
+// @match        *://*.frwiki.wiki/wiki/*
 // @match        *://*.fullstackuser.com/questions/*
 // @match        *://*.gaz.wiki/wiki/*
 // @match        *://*.geek-tips.imtqy.com/articles/*/*.html
@@ -349,8 +351,10 @@
 // @match        *://*.wiki2.net/*
 // @match        *://*.wiki2.org/*
 // @match        *://*.wiki2.wiki/wiki/*
+// @match        *://*.wiki5.ru/wiki/*
 // @match        *://*.wikichi.ru/wiki/*
 // @match        *://*.wikidark.ru/wiki/*
+// @match        *://*.wikidea.ru/wiki/*
 // @match        *://*.wikies.wiki/wiki/*
 // @match        *://*.wikimho.com/*/q/*/*
 // @match        *://*.wikipe.wiki/wiki/*
@@ -359,6 +363,7 @@
 // @match        *://*.wikipedia24.ru/*
 // @match        *://*.wikiredia.ru/*
 // @match        *://*.wikiroot.ru/question/*
+// @match        *://*.wikit.wiki/article/*/*
 // @match        *://*.wikivisually.com/wiki/*
 // @match        *://*.wikiwand.com/*/*
 // @match        *://*.wikizero.com/*/*
@@ -369,6 +374,7 @@
 // @match        *://*.xstack.us/*-1.html
 // @match        *://*.xstack.us/qa/*
 // @match        *://*.xszz.org/*/question-*
+// @match        *://*.yaoply.com/items/*
 // @match        *://*.yingqusp.com/so/*
 // @match        *://*.ylhow.com/*
 // @match        *://*.younggeeks.in/questions/*
@@ -376,6 +382,7 @@
 // @match        *://*.zahn-info-portal.de/wiki/*
 // @match        *://*.zapytay.com/*
 // @match        *://*.zsharp.org/*
+// @match        *://*.zxc.wiki/wiki/*
 // @match        *://*.zzun.app/repo/*
 // @include      *://qastack.tld/*
 // ==/UserScript==
@@ -749,6 +756,7 @@ a{
         case 'askdevz.com':
         case 'askvoprosy.com':
         case 'living-sun.com':
+        case 'yaoply.com':
             return byPath(2);
         case 'asklobster.com':
         case 'bestecode.com':
@@ -1032,7 +1040,9 @@ a{
         case 'nwikiit.cyou':
         case 'vvikipedla.com':
         case 'wiki2.wiki':
+        case 'wiki5.ru':
         case 'wikichi.ru':
+        case 'wikidea.ru':
         case 'wikivisually.com':
         case 'zahn-info-portal.de':
             return wiki('en', 2);
@@ -1042,6 +1052,10 @@ a{
             return wiki('ru', _p.replace(/^\/%D0%B2%D0%B8%D0%BA%D0%B8%D0%BF%D0%B5%D0%B4%D0%B8%D1%8F/, '/wiki'), false);
         case 'encyclopedia.kz':
             return _hst('ru.encyclopedia.kz') && wiki('ru', 2);
+        case 'findatwiki.com':
+            return wiki('en', 1);
+        case 'frwiki.wiki':
+            return wiki('fr', 2);
         case 'gaz.wiki':
             return wiki('en', 3);
         case 'jejakjabar.com': // redirects to zahn-info-portal.de / 2022-07-06
@@ -1072,6 +1086,7 @@ a{
             return wiki('ru', _p, false);
         case 'wikies.wiki':
         case 'wikipe.wiki':
+        case 'wikit.wiki':
             return wiki(2, 3);
         case 'wikipedia-on-ipfs.org':
             return wiki(_hp(3), 2);
@@ -1081,6 +1096,8 @@ a{
             return wiki(1, 2);
         case 'xcv.wiki':
             return (tt = _h.match(/https?:\/\/([a-zA-z]{2,4})\.xcv\.wiki\/wiki\/(.+)/)) && wiki('de', tt[2]);
+        case 'zxc.wiki':
+            return wiki('de', 2);
         /* GitHub */
         case 'androidrepo.com':
         case 'bestofphp.com':

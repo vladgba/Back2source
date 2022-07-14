@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name         Back2source
-// @version      0.1.138
+// @version      0.1.139
 // @description  Redirecting to source sites from sites with machine translation, etc.
 // @namespace    vladgba
 // @author       vladgba@gmail.com
@@ -19,7 +19,10 @@
 // @connect      api.stackexchange.com
 // @connect      api.zcxv.icu
 // @noframes
+// @match        *://*.16892.net/qa/*
+// @match        *://*.1r1g.com/sf/ask/*
 // @match        *://*.360wiki.ru/wiki/*
+// @match        *://*.55276.net/qa/*
 // @match        *://*.5axxw.com/*/*/*
 // @match        *://*.8101010108.cn/zh/*
 // @match        *://*.abcdef.wiki/*
@@ -245,7 +248,6 @@
 // @match        *://*.pythonlang.dev/repo/*
 // @match        *://*.pythonrepo.com/repo/*
 // @match        *://*.qa-stack.pl/*
-// @match        *://*.qa.1r1g.com/sf/ask/*
 // @match        *://*.qapicks.com/question/*
 // @match        *://*.qarchive.ru/*
 // @match        *://*.qaru.tech/questions/*
@@ -275,6 +277,9 @@
 // @match        *://*.sch22.org/*
 // @match        *://*.semicolonworld.com/question/*
 // @match        *://*.serveanswer.com/issue/*
+// @match        *://*.shenghuobao.net/qa/*
+// @match        *://*.shenzhenjia.cn/qa/*
+// @match        *://*.shenzhenjia.net/qa/*
 // @match        *://*.sierrasummit2005.org/*
 // @match        *://*.siwib.org/*
 // @match        *://*.smnggeophysics.com/*
@@ -322,6 +327,9 @@
 // @match        *://*.utyatnishna.ru/info/*
 // @match        *://*.uwenku.com/question/*
 // @match        *://*.v-resheno.ru/*
+// @match        *://*.vigge.cn/qa/*
+// @match        *://*.vigge.net/qa/*
+// @match        *://*.vigges.net/qa/*
 // @match        *://*.voidcc.com/question/*
 // @match        *://*.vuejscode.com/*
 // @match        *://*.vvikipedla.com/wiki/*
@@ -371,6 +379,7 @@
 // @match        *://*.xcv.wiki/*
 // @match        *://*.xiu2.net/it/details/*
 // @match        *://*.xsprogram.com/content/*
+// @match        *://*.xstack.ru/qa/*
 // @match        *://*.xstack.us/*-1.html
 // @match        *://*.xstack.us/qa/*
 // @match        *://*.xszz.org/*/question-*
@@ -380,6 +389,8 @@
 // @match        *://*.younggeeks.in/questions/*
 // @match        *://*.yuanmacha.com/*.html
 // @match        *://*.zahn-info-portal.de/wiki/*
+// @match        *://*.zaizhele.cn/qa/*
+// @match        *://*.zaizhele.net/qa/*
 // @match        *://*.zapytay.com/*
 // @match        *://*.zsharp.org/*
 // @match        *://*.zxc.wiki/wiki/*
@@ -682,6 +693,35 @@ a{
     console.log('Checking site: ' + location.hostname + ' as ' + host);
 
     switch (host) {
+        case '16892.net':
+        case '55276.net':
+        case 'jike.in':
+        case 'jonic.cn':
+        case 'mlink.in':
+        case 'ogeek.cn':
+        case 'ostack.cn':
+        case 'overstack.in':
+        case 'qi-u.com':
+        case 'shenghuobao.net':
+        case 'shenzhenjia.cn':
+        case 'shenzhenjia.net':
+        case 'sqlite.in':
+        case 'tousu.in':
+        case 'vigge.cn':
+        case 'vigge.net':
+        case 'vigges.net':
+        case 'wujigu.com':
+        case 'xstack.ru':
+        case 'xstack.us':
+        case 'zaizhele.cn':
+        case 'zaizhele.net':
+            if (_c(/^\/thread-.*.html$/) && textContent('#pt a:nth-child(5)') == '知识问答') return byHeader([removePartBefore('h1',' - ')], _, 'en');
+            if (_c(/^\/article-.*.html$/) && textContent('#pt a:nth-child(5)') == '开源') return bySel('.deanedit > a');
+            if (_ps[1] == 'qa' && _t('h1 a')){
+                if (textContent('h1').match(/[\u4e00-\u9fa5]/)) return byHeader('h1', _, 'zh');
+                return byHeader([removePartBefore('h1',' - ')], _, 'en');
+            }
+            return;
         case '1r1g.com':
             return clr('#343a40') && byHeader('h1', 'a.badge', 'en');
         case '5axxw.com':
@@ -903,24 +943,6 @@ a{
             return byHeader('h1', '.titleBox > p > a', 'en');
         case 'javaer101.com':
             return byHeader('h1', 'nav .col-tag', _ps[1] == 'article' ? 'ja' : _ps[1]);
-        case 'jike.in':
-        case 'jonic.cn':
-        case 'mlink.in':
-        case 'ogeek.cn':
-        case 'ostack.cn':
-        case 'overstack.in':
-        case 'qi-u.com':
-        case 'sqlite.in':
-        case 'tousu.in':
-        case 'wujigu.com':
-        case 'xstack.us':
-            if (_c(/^\/thread-.*.html$/) && textContent('#pt a:nth-child(5)') == '知识问答') return byHeader([removePartBefore('h1',' - ')], _, 'en');
-            if (_c(/^\/article-.*.html$/) && textContent('#pt a:nth-child(5)') == '开源') return bySel('.deanedit > a');
-            if (_ps[1] == 'qa' && _t('h1 a')){
-                if (textContent('h1').match(/[\u4e00-\u9fa5]/)) return byHeader('h1', _, 'zh');
-                return byHeader([removePartBefore('h1',' - ')], _, 'en');
-            }
-            return;
         case 'jscodetips.com':
             return byHeader('h1', '.contentBox > div:nth-child(3) > a', 'en');
         case 'kompsekret.ru':

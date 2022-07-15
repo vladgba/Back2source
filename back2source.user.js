@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name         Back2source
-// @version      0.1.139
+// @version      0.1.140
 // @description  Redirecting to source sites from sites with machine translation, etc.
 // @namespace    vladgba
 // @author       vladgba@gmail.com
@@ -25,6 +25,7 @@
 // @match        *://*.55276.net/qa/*
 // @match        *://*.5axxw.com/*/*/*
 // @match        *://*.8101010108.cn/zh/*
+// @match        *://*.9ishenzhen.com/?qa=*
 // @match        *://*.abcdef.wiki/*
 // @match        *://*.amuddycup.com/*
 // @match        *://*.androidrepo.com/repo/*
@@ -33,6 +34,7 @@
 // @match        *://*.answerlib.com/question/*
 // @match        *://*.answerspoint.com/questions/*/*
 // @match        *://*.antwortenhier.me/*
+// @match        *://*.ape-ask.com/read-*.html
 // @match        *://*.appsloveworld.com/*/*
 // @match        *://*.arip-photo.org/*
 // @match        *://*.ask-dev.ru/info/*
@@ -112,6 +114,7 @@
 // @match        *://*.dokry.com/*
 // @match        *://*.domainelespailles.net/*
 // @match        *://*.donolik.com/*
+// @match        *://*.duhoctrungquoc.vn/wiki/*/*
 // @match        *://*.duoduokou.com/*/*.html
 // @match        *://*.e-learn.cn/topic/*
 // @match        *://*.ec-europe.org/*
@@ -120,8 +123,10 @@
 // @match        *://*.edupro.id/questions/*
 // @match        *://*.elfishgene.com/*
 // @match        *://*.encyclopaedia.bid/*
+// @match        *://*.encyclopedia.thefreedictionary.com/*
 // @match        *://*.errorsfixing.com/*
 // @match        *://*.exchangetuts.com/*-*
+// @match        *://*.explained.today/*
 // @match        *://*.extutorial.com/ask/*
 // @match        *://*.faithcov.org/*
 // @match        *://*.fantashit.com/*
@@ -151,6 +156,7 @@
 // @match        *://*.githubmemory.com/*
 // @match        *://*.githubplus.com/*
 // @match        *://*.gitrush.ru/*/*/*
+// @match        *://*.globalwikionline.com/detial/*/*
 // @match        *://*.golangd.com/g/*
 // @match        *://*.golangexample.com/*
 // @match        *://*.golangrepo.com/repo/*
@@ -208,6 +214,7 @@
 // @match        *://*.macosrepo.com/software/*
 // @match        *://*.manongdao.com/*.html
 // @match        *://*.mediatagtw.com/*/*
+// @match        *://*.mediawiki.feverous.co.uk/index.php/*
 // @match        *://*.messiahlebanon.org/*
 // @match        *://*.microeducate.tech/*
 // @match        *://*.mlink.in/qa/*
@@ -275,6 +282,7 @@
 // @match        *://*.savepearlharbor.com/?p=*
 // @match        *://*.sbup.com/wiki/*
 // @match        *://*.sch22.org/*
+// @match        *://*.secret-bases.co.uk/wiki/*
 // @match        *://*.semicolonworld.com/question/*
 // @match        *://*.serveanswer.com/issue/*
 // @match        *://*.shenghuobao.net/qa/*
@@ -745,6 +753,8 @@ a{
         case 'web-gelistirme-sc.com':
         case 'web-dev-qa-db-pt.com': // redirects to wake-up-neo.com / 2022-06-24
             return bySel('.q-source > a');
+        case '9ishenzhen.com':
+            return !_c(/[\u4e00-\u9fa5]/) && _t('h1 a') && byHeader([removePartBefore('h1',' - ')], _, 'en');
         case 'amuddycup.com':
         case 'arip-photo.org':
         case 'athabasca-foto.com':
@@ -788,6 +798,8 @@ a{
         case 'respuestas.me':
         case 'askentire.net':
             return clr('#2c3e50') && byHeader('h1', [await transTags('ul.x-tags li a[href*="/t/"]')], document.documentElement.lang);
+        case 'ape-ask.com':
+            return all('script').filter(i => i.innerText.indexOf('originfo') != -1)[0].innerText.match(/\.text\("(.*)"\)/)[1];
         case 'appsloveworld.com':
             tt = textContent('h1').match(/\[Source Code\]-(.*)-[^-]/);
             return tt && byHeader([tt[1]], _, 'en');
@@ -1070,10 +1082,17 @@ a{
             return wiki('en', 2);
         case 'abcdef.wiki':
             return wiki('en', _p, false);
+        case 'duhoctrungquoc.vn':
+        case 'globalwikionline.com':
+        case 'wikies.wiki':
+        case 'wikipe.wiki':
+        case 'wikit.wiki':
+            return wiki(2, 3);
         case 'encyclopaedia.bid':
             return wiki('ru', _p.replace(/^\/%D0%B2%D0%B8%D0%BA%D0%B8%D0%BF%D0%B5%D0%B4%D0%B8%D1%8F/, '/wiki'), false);
         case 'encyclopedia.kz':
             return _hst('ru.encyclopedia.kz') && wiki('ru', 2);
+        case 'explained.today':
         case 'findatwiki.com':
             return wiki('en', 1);
         case 'frwiki.wiki':
@@ -1092,6 +1111,8 @@ a{
             return wiki('ru', _p, false);
         case 'territorioscuola.it':
             return (tt = _h.match(/https?:\/\/enhancedwiki\.territorioscuola\.it\/\?title=(.+)/)) && wiki('it', tt[1]);
+        case 'thefreedictionary.com':
+            return wiki('en', textContent('h1'));
         case 'wiki-wiki.ru':
             return wiki('ru', 3);
         case 'wiki.cologne':
@@ -1106,10 +1127,6 @@ a{
             return ((tt = _h.match(/https?:\/\/wiki2\.org\/([a-zA-z]{2})\/(.+)/)) || (tt = _h.match(/https?:\/\/([a-z]{2})\.wiki2\.org\/wiki\/(.+)/))) && wiki(tt[1], tt[2]);
         case 'wikidark.ru':
             return wiki('ru', _p, false);
-        case 'wikies.wiki':
-        case 'wikipe.wiki':
-        case 'wikit.wiki':
-            return wiki(2, 3);
         case 'wikipedia-on-ipfs.org':
             return wiki(_hp(3), 2);
         case 'wikiwand.com':
@@ -1248,10 +1265,14 @@ a{
         case 'savepearlharbor.com':
             return _go(bySel('article.post > div.entry-content > p > a[href*="://habr.com/"]'));
         default:
-            if (_hst('qastack') || _hst('qa-stack')) {
+            if (_hst('mediawiki.feverous.co.uk')){
+                return wiki('en', 2);
+            } else if (_hst('qastack') || _hst('qa-stack')) {
                 return bySel('span.text-muted.fake_url a, span.text-muted.fake_url', 'src') ||
                     bySel('.text-muted a:last-child[href*="stackoverflow.com/"],.text-muted a:last-child[href*="stackexchange.com/"],.text-muted a:last-child[href*="serverfault.com/"],.text-muted a:last-child[href*="superuser.com/"],.text-muted a:last-child[href*="mathoverflow.net/"]') ||
                     ((tt = _h.match(/https?:\/\/qa-?stack\.([a-z\.]+)\/([a-z]+)\/([0-9]+)\/(.+)/)) && 'https://' + tt[2] + '.stackexchange.com/questions/' + tt[3] + '/' + tt[4]);
+            } else if (_hst('secret-bases.co.uk')){
+                return wiki('en', 2);
             } else if (_hst('stackfinder.jp.net')) {
                 return byNumber(_ps[2]);
             } else if (_hst('webentwicklung-frage-antwort-db.com.de')) {

@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name         Back2source
-// @version      0.1.140
+// @version      0.1.141
 // @description  Redirecting to source sites from sites with machine translation, etc.
 // @namespace    vladgba
 // @author       vladgba@gmail.com
@@ -28,6 +28,7 @@
 // @match        *://*.9ishenzhen.com/?qa=*
 // @match        *://*.abcdef.wiki/*
 // @match        *://*.amuddycup.com/*
+// @match        *://*.androiderrors.com/*
 // @match        *://*.androidrepo.com/repo/*
 // @match        *://*.answacode.com/*
 // @match        *://*.answeright.com/*
@@ -252,6 +253,7 @@
 // @match        *://*.pyquestions.com/*
 // @match        *://*.python2.net/questions-*.htm
 // @match        *://*.pythonawesome.com/*
+// @match        *://*.pythonfixing.com/*.html
 // @match        *://*.pythonlang.dev/repo/*
 // @match        *://*.pythonrepo.com/repo/*
 // @match        *://*.qa-stack.pl/*
@@ -332,6 +334,7 @@
 // @match        *://*.tutorialmeta.com/question/*
 // @match        *://*.tutorialmore.com/questions-*
 // @match        *://*.ubuntuaa.com/*q/*
+// @match        *://*.ubuntuplace.info/questions/*
 // @match        *://*.utyatnishna.ru/info/*
 // @match        *://*.uwenku.com/question/*
 // @match        *://*.v-resheno.ru/*
@@ -787,6 +790,8 @@ a{
         case 'zsharp.org':
             tt = _t('meta[property="og:image"]').content.split('/').pop().split('.')[0].replace(/-/g,' ');
             return tt && (await findByApi(tt) || prepareSearch(tt, _, ['stackoverflow.com','superuser.com','askubuntu.com','stackexchange.com']));
+        case 'androiderrors.com':
+            return byHeader('h1', 'span.tags-links > a', 'en');
         case 'answerlib.com':
         case 'answerspoint.com':
         case 'ask-dev.ru':
@@ -1309,6 +1314,7 @@ a{
                     'prog-help.ru': '.eclip > a',
                     'programmerz.ru': '.source-share-link',
                     'python2.net': 'div.user-box > span.fr > a',
+                    'pythonfixing.com': 'article > div.post-body > a:last-of-type',
                     'qarchive.ru': 'cite > a',
                     'qarus.ru': 'em > a',
                     'qna.one': '.page-container-question .source-share-block a',
@@ -1320,6 +1326,7 @@ a{
                     'stackru.com': '.q-source',
                     'try2explore.com': 'div.tagsandsource span.source a[target="_blank"]',
                     'ubuntuaa.com': '.post-info a',
+                    'ubuntuplace.info': 'div.question-text > a.a-link',
                     'uwenku.com': '.post-info a',
                     'voidcc.com': '.source > a',
                     'wake-up-neo.com': 'span.q-source.i-source > a.gat',

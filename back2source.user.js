@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name         Back2source
-// @version      0.1.141
+// @version      0.1.142
 // @description  Redirecting to source sites from sites with machine translation, etc.
 // @namespace    vladgba
 // @author       vladgba@gmail.com
@@ -274,6 +274,7 @@
 // @match        *://*.reposhub.com/*/*
 // @match        *://*.respuestas.me/*
 // @match        *://*.risposta-alla-domanda-sullo-sviluppo-web-bd.com/it/*
+// @match        *://*.rotadev.com/*
 // @match        *://*.routinepanic.com/questions/*
 // @match        *://*.ru.encyclopedia.kz/index.php/*
 // @match        *://*.rudata.ru/wiki/*
@@ -287,6 +288,7 @@
 // @match        *://*.secret-bases.co.uk/wiki/*
 // @match        *://*.semicolonworld.com/question/*
 // @match        *://*.serveanswer.com/issue/*
+// @match        *://*.server-fault.ru/questions/*
 // @match        *://*.shenghuobao.net/qa/*
 // @match        *://*.shenzhenjia.cn/qa/*
 // @match        *://*.shenzhenjia.net/qa/*
@@ -344,6 +346,7 @@
 // @match        *://*.voidcc.com/question/*
 // @match        *://*.vuejscode.com/*
 // @match        *://*.vvikipedla.com/wiki/*
+// @match        *://*.w3coded.com/questions/*/*
 // @match        *://*.wake-up-neo.com/*/*
 // @match        *://*.waymanamechurch.org/*
 // @match        *://*.web-answers.ru/*/*
@@ -450,7 +453,7 @@
     /** Get an array of the textcontent of: elements with the tag-class if no parameter is given; elements matching the given selector; or the first element, if the parameter is an array*/
     var getTags = (t) => t ? (Array.isArray(t) ? [t[0]] : allTexts(t)) : allTexts('.tag');
     /** Replaces in a string all occurrences of the first element of an arraygroup with the second */
-    var mulreplace = (str, a) => a.forEach((v) => (str = str.replace(v[0], v[1]))) || str;
+    var mulReplace = (str, a) => a.forEach((v) => (str = str.replace(v[0], v[1]))) || str;
     /** Creates a Wikipedia link with language and article text or the number of the part in the website url, optionally adding the /wiki/ part */
     var wiki = (l = 0, p = 2, w = true) => 'https://' + (_$s(l) ? l : _ps[l]) + '.wikipedia.org' + (w ? '/wiki/' : '') + (_$s(p) ? p : _ps[p]);
     /** Creates a Github link with the project and repository */
@@ -638,10 +641,11 @@ a{
      * @param {Date} [before]
      * @param {Date} [after]
      * @param {string[]} [tags]
+     * @param {string} [site]
      */
-    async function findByApi(q, before, after, tags) {
+    async function findByApi(q, before, after, tags, site='stackoverflow.com') {
         var dfgdr = (q = dropMarks(q)) && q && fetch(
-            `https://api.stackexchange.com/2.2/search?page=1&pagesize=1&order=desc&sort=relevance&intitle=${encodeURIComponent(q)}&site=stackoverflow` +
+            `https://api.stackexchange.com/2.3/search?page=1&pagesize=1&order=desc&sort=relevance&intitle=${encodeURIComponent(q)}&site=${site.split('.')[0]}` +
             (after ? '&fromdate=' + (after.getTime() / 1000 - 120 | 0) : '') +
             (before ? '&todate=' + (before.getTime() / 1000 + 120 | 0) : '') +
             (Array.isArray(tags) && tags.length > 0 ? '&tagged=' + encodeURIComponent(Array.from(new Set(tags)).join(';')) : ''), {
@@ -671,7 +675,7 @@ a{
      */
     async function byHeader(h, t, l, s) {
         var sbh = (l == 'en') ? (Array.isArray(h) ? h[0] : textContent(h ? h : 'h1')) : filterText(await yaTranslate(getHeader(h), l), 1);
-        return sbh && (await findByApi(sbh, _, _, getTags(t)) || prepareSearch(sbh, t, s));
+        return sbh && (await findByApi(sbh, _, _, getTags(t), Array.isArray(s) ? s[0] : _) || prepareSearch(sbh, t, s));
     }
 
     /** Gets the text to search for from a part of the path, tries to find it per API and otherwise creates the bottom bar to search for */
@@ -788,8 +792,7 @@ a{
         case 'theshuggahpies.com':
         case 'waymanamechurch.org':
         case 'zsharp.org':
-            tt = _t('meta[property="og:image"]').content.split('/').pop().split('.')[0].replace(/-/g,' ');
-            return tt && (await findByApi(tt) || prepareSearch(tt, _, ['stackoverflow.com','superuser.com','askubuntu.com','stackexchange.com']));
+            return (tt = _t('meta[property="og:image"]').content.split('/').pop().split('.')[0].replace(/-/g,' ')) && byHeader([tt], _, 'en', ['stackoverflow.com','superuser.com','askubuntu.com','stackexchange.com']);
         case 'androiderrors.com':
             return byHeader('h1', 'span.tags-links > a', 'en');
         case 'answerlib.com':
@@ -929,7 +932,7 @@ a{
         case 'extutorial.com':
             return byHeader('h1', 'a[href*="/tags/"]', 'en');
         case 'firstlightsalon.in':
-            return 'https://' + _ps[1].replace('_threads','.stackexchange.com/questions/')+_ps[3];
+            return 'https://' + _ps[1].replace('_threads','.stackexchange.com/questions/') + _ps[3];
         case 'fixes.pub':
             return byHeader('h1', 'aside li a[href*="fixes.pub/topics"]', 'ja');
         case 'flutterhq.com':
@@ -985,10 +988,9 @@ a{
         case 'progi.pro':
             return clr('#4e82c2') && byHeader('h1[itemprop="name"]', '.tag-list a', 'ru');
         case 'proubuntu.ru':
-            return byHeader('h1>a>span[itemprop="name"]', [await transTags('a[rel="tag"]')],'ru', ['askubuntu.com']);
+            return byHeader('h1>a>span[itemprop="name"]', [await transTags('a[rel="tag"]')], 'ru', ['askubuntu.com']);
         case 'pyquestions.com':
-            tt = '(' + getTags('.btn.btn-secondary').join('|') + ')';
-            return tt && byHeader([textContent('h1').replace(new RegExp('(^' + tt + ': | in ' + tt + '$)', 'i'),'')], '.btn.btn-secondary', 'en');
+            return (tt = '(' + getTags('.btn.btn-secondary').join('|') + ')') && byHeader([textContent('h1').replace(new RegExp('(^' + tt + ': | in ' + tt + '$)', 'i'),'')], '.btn.btn-secondary', 'en');
         case 'qapicks.com':
             return byNumber(_ps[2].split('-')[0]);
         case 'questu.ru':
@@ -997,10 +999,14 @@ a{
             return byHeader('h1', '.qa-q-view-tags .qa-tag-link', 'en');
         case 'roboflow.ai':
             return byNumber(_ps[2]);
+        case 'rotadev.com':
+            return (tt = textContent('h1').split(/ – (Dev|Super User|Server Fault)$/)) && byHeader(tt, _, 'en', [mulReplace(tt[1], [['Dev', 'stackoverflow.com'], ['Super User', 'superuser.com'], ['Server Fault', 'serverfault.com']])]);
         case 'ruphp.com':
             return byHeader('h1', '.breadcrumb-item .badge a', 'ru');
         case 'semicolonworld.com':
             return byHeader('h1', '.post__category', 'en');
+        case 'server-fault.ru':
+            return byHeader('h1', 'div.question-text > div.tags > a.tag', 'ru', ['serverfault.com']);
         case 'sobrelinux.info':
             return byHeader('h1', '.tags .tag a', 'pt', _se);
         case 'soinside.com':
@@ -1029,6 +1035,7 @@ a{
         case 'tencent.com':
             return byHeader('.ask-title h2', _, 'zh');
         case 'thecodeteacher.com':
+        case 'w3coded.com':
             return byHeader('h1', _, 'en');
         case 'tipsfordev.com':
             return byHeader('h1', '.blog-pagination > a', 'en');
@@ -1050,8 +1057,7 @@ a{
         case 'vuejscode.com':
             return bySel('article .mt-4 a') || byHeader('h1', _, 'en');
         case 'webdevdesigner.com':
-            tt = (_ps[1] == 'q' ? _ps[2] : _ps[1].replace(/^q-/, '')).replace(/-\d+$/, '').replace(/-/g, ' ');
-            return (await findByApi(tt)) || prepareSearch(tt, '.tags a', ['superuser.com', 'stackoverflow.com', 'stackexchange.com']);
+            return (tt = (_ps[1] == 'q' ? _ps[2] : _ps[1].replace(/^q-/, '')).replace(/-\d+$/, '').replace(/-/g, ' ')) && byHeader([tt], '.tags a', 'en', ['stackoverflow.com', 'superuser.com', 'stackexchange.com']);
         case 'wekeepcoding.com':
             return byHeader('h4', _, 'en');
         case 'wenyanet.com':
@@ -1107,7 +1113,7 @@ a{
         case 'jejakjabar.com': // redirects to zahn-info-portal.de / 2022-07-06
             return (tt = _h.match(/https?:\/\/([a-zA-z]+\.)?jejakjabar\.com\/wiki\/(.+)/)) && wiki('en', tt[2]);
         case 'nina.az':
-            return (tt = _h.match(/https?:\/\/wikipedia\.(([a-z]{2})\.)?nina\.az\/wiki\/(.+)/)) && wiki(mulreplace(tt[2], [ ['ua', 'uk'], ['us', 'en'] ]), tt[3]);
+            return (tt = _h.match(/https?:\/\/wikipedia\.(([a-z]{2})\.)?nina\.az\/wiki\/(.+)/)) && wiki(mulReplace(tt[2], [ ['ua', 'uk'], ['us', 'en'] ]), tt[3]);
         case 'rudata.ru':
             return bySel('a.external[href*="ru.wikipedia.org"]');
         case 'sbup.com':

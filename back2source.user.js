@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name         Back2source
-// @version      0.1.142
+// @version      0.1.143
 // @description  Redirecting to source sites from sites with machine translation, etc.
 // @namespace    vladgba
 // @author       vladgba@gmail.com
@@ -207,6 +207,7 @@
 // @match        *://*.learnfk.com/*question/*
 // @match        *://*.legkovopros.ru/questions/*
 // @match        *://*.libhunt.com/r/*
+// @match        *://*.libraries.io/*/*
 // @match        *://*.lifesaver.codes/answer/*
 // @match        *://*.linuxfixes.com/*/*/*
 // @match        *://*.livepcwiki.ru/wiki/*
@@ -297,6 +298,7 @@
 // @match        *://*.smnggeophysics.com/*
 // @match        *://*.snyk.io/advisor/npm-package/*
 // @match        *://*.sobrelinux.info/questions/*
+// @match        *://*.socket.dev/npm/package/*
 // @match        *://*.softbranchdevelopers.com/*
 // @match        *://*.softwareuser.asklobster.com/posts/*
 // @match        *://*.soinside.com/question/*
@@ -806,8 +808,6 @@ a{
         case 'respuestas.me':
         case 'askentire.net':
             return clr('#2c3e50') && byHeader('h1', [await transTags('ul.x-tags li a[href*="/t/"]')], document.documentElement.lang);
-        case 'ape-ask.com':
-            return all('script').filter(i => i.innerText.indexOf('originfo') != -1)[0].innerText.match(/\.text\("(.*)"\)/)[1];
         case 'appsloveworld.com':
             tt = textContent('h1').match(/\[Source Code\]-(.*)-[^-]/);
             return tt && byHeader([tt[1]], _, 'en');
@@ -1218,12 +1218,15 @@ a{
             return _go(byInner('#basic a.btn','GitHub Repository'));
         /* NPM */
         case 'npm.io':
-            return 'https://www.npmjs.com'+_p;
         case 'npmmirror.com':
             return 'https://www.npmjs.com'+_p;
         case 'snyk.io':
             return 'https://www.npmjs.com/package/'+_ps[3];
+        case 'socket.dev':
+            return 'https://www.npmjs.com'+_p.replace(/^\/npm/,'');
         /* Other */
+        case 'ape-ask.com':
+            return _go(all('script').filter(i => i.innerText.indexOf('originfo') != -1)[0].innerText.match(/\.text\("(.*)"\)/)[1]);
         case 'cache.one':
             return _go(startsByText('.entry-tags p', '来源：'));
         case 'cepe-eua.org':
@@ -1265,6 +1268,8 @@ a{
                 return byHeader('h1', _, 'zh', []);
             });
             return;
+        case 'libraries.io':
+            return (tt = all('p.project-links > span > a')) && _go(tt.filter(t => t.innerText.toLowerCase() == _ps[1])[0]);
         case 'macosrepo.com':
             return _go(bySel('.user-info > .seller-link'));
         case 'mediatagtw.com':

@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name         Back2source
-// @version      0.1.143
+// @version      0.1.144
 // @description  Redirecting to source sites from sites with machine translation, etc.
 // @namespace    vladgba
 // @author       vladgba@gmail.com
@@ -72,6 +72,7 @@
 // @match        *://*.ciupacabra.com/*
 // @match        *://*.cloud.tencent.com/developer/ask/*
 // @match        *://*.cndgn.com/question/*
+// @match        *://*.code-error.com/*
 // @match        *://*.code-examples.net/*/q/*
 // @match        *://*.code.i-harness.com/*/q/*
 // @match        *://*.codebug.zone/*
@@ -105,6 +106,7 @@
 // @match        *://*.debugcn.com/*article/*
 // @match        *://*.debugko.com/article/*
 // @match        *://*.desarrollo-web-br-bd.com/es/*
+// @match        *://*.dev-answers.com/solutions/*
 // @match        *://*.devasking.com/issue/*
 // @match        *://*.devdreamz.com/question/*
 // @match        *://*.develop-bugs.com/article/*
@@ -122,6 +124,7 @@
 // @match        *://*.ecnf2016.org/*
 // @match        *://*.editcode.net/article-*
 // @match        *://*.edupro.id/questions/*
+// @match        *://*.edureka.co/community/*/*
 // @match        *://*.elfishgene.com/*
 // @match        *://*.encyclopaedia.bid/*
 // @match        *://*.encyclopedia.thefreedictionary.com/*
@@ -143,6 +146,7 @@
 // @match        *://*.fullstackuser.com/questions/*
 // @match        *://*.gaz.wiki/wiki/*
 // @match        *://*.geek-tips.imtqy.com/articles/*/*.html
+// @match        *://*.geeksrepos.com/*
 // @match        *://*.generacodice.com/*
 // @match        *://*.getridbug.com/*/*
 // @match        *://*.ghcc.net/*
@@ -204,6 +208,7 @@
 // @match        *://*.knews.vip/q/*
 // @match        *://*.kompsekret.ru/q/*
 // @match        *://*.kotaeta.com/*
+// @match        *://*.learn-codes.net/*/*
 // @match        *://*.learnfk.com/*question/*
 // @match        *://*.legkovopros.ru/questions/*
 // @match        *://*.libhunt.com/r/*
@@ -249,6 +254,7 @@
 // @match        *://*.prog-help.ru/*
 // @match        *://*.progi.pro/*
 // @match        *://*.programmierfrage.com/items/*
+// @match        *://*.programming-articles.com/*
 // @match        *://*.projectbackpack.org/*
 // @match        *://*.proubuntu.ru/*/*
 // @match        *://*.pyquestions.com/*
@@ -268,6 +274,7 @@
 // @match        *://*.qi-u.com/*-1.html
 // @match        *://*.qi-u.com/qa/*
 // @match        *://*.quabr.com/*
+// @match        *://*.querythreads.com/*
 // @match        *://*.question-it.com/questions/*
 // @match        *://*.questu.ru/questions/*
 // @match        *://*.reddit.fun/*/*
@@ -317,6 +324,7 @@
 // @match        *://*.stackru.com/questions/*
 // @match        *://*.string.quest/read/*
 // @match        *://*.sunflowercreations.org/*
+// @match        *://*.super-unix.com/*/*
 // @match        *://*.swiftobc.com/repo/*
 // @match        *://*.switch-case.com/*
 // @match        *://*.syntaxfix.com/question/*
@@ -349,6 +357,7 @@
 // @match        *://*.vuejscode.com/*
 // @match        *://*.vvikipedla.com/wiki/*
 // @match        *://*.w3coded.com/questions/*/*
+// @match        *://*.w3toppers.com/*
 // @match        *://*.wake-up-neo.com/*/*
 // @match        *://*.waymanamechurch.org/*
 // @match        *://*.web-answers.ru/*/*
@@ -796,6 +805,7 @@ a{
         case 'zsharp.org':
             return (tt = _t('meta[property="og:image"]').content.split('/').pop().split('.')[0].replace(/-/g,' ')) && byHeader([tt], _, 'en', ['stackoverflow.com','superuser.com','askubuntu.com','stackexchange.com']);
         case 'androiderrors.com':
+        case 'w3toppers.com':
             return byHeader('h1', 'span.tags-links > a', 'en');
         case 'answerlib.com':
         case 'answerspoint.com':
@@ -868,6 +878,13 @@ a{
             return byHeader([dropMarks(textContent('h1'))], _, 'en');
         case 'cndgn.com':
             return 'https://' + _ps[2].replace(/(.+)stack/,'$1.stackexchange').replace(/^(stack)$/,'$1overflow') + '.com/questions/' + _ps[3];
+        case 'code-error.com':
+        case 'edureka.co':
+        case 'learn-codes.net':
+        case 'programming-articles.com':
+        case 'thecodeteacher.com':
+        case 'w3coded.com':
+            return byHeader('h1', _, 'en');
         case 'code-examples.net':
         case 'ffff65535.com':
         case 'i-harness.com':
@@ -993,6 +1010,8 @@ a{
             return (tt = '(' + getTags('.btn.btn-secondary').join('|') + ')') && byHeader([textContent('h1').replace(new RegExp('(^' + tt + ': | in ' + tt + '$)', 'i'),'')], '.btn.btn-secondary', 'en');
         case 'qapicks.com':
             return byNumber(_ps[2].split('-')[0]);
+        case 'querythreads.com':
+            return JSON.parse(textContent('script#__NEXT_DATA__')).props.pageProps.data.url;
         case 'questu.ru':
             return byInner('a', 'источник');
         case 'reddit.fun':
@@ -1024,6 +1043,8 @@ a{
             return (tt = _h.match(/^https?:\/\/stackoverflood\.com\/([a-zA-Z]{2})\/q\/(.+)/)) && byNumber(tt[2]);
         case 'string.quest':
             return byHeader([removePartBefore('h1', ' - ')], '.tag-links a', 'zh');
+        case 'super-unix.com':
+            return byHeader([removePartBefore('h1', ' – ')], '.badge', 'en', [mulReplace(_ps[1], [['superuser', 'superuser.com'], ['askdifferent', 'apple'], ['database', 'dba'], ['ubuntu', 'askubuntu.com'], ['unixlinux', 'unix']])]);
         case 'syntaxfix.com':
             return byHeader('h1', '.tag_askd>p>span>code', 'en');
         case 'sysadminde.com':
@@ -1034,9 +1055,6 @@ a{
             return byHeader([removePartBefore('h1', ' – ')], _, 'en');
         case 'tencent.com':
             return byHeader('.ask-title h2', _, 'zh');
-        case 'thecodeteacher.com':
-        case 'w3coded.com':
-            return byHeader('h1', _, 'en');
         case 'tipsfordev.com':
             return byHeader('h1', '.blog-pagination > a', 'en');
         case 'tistory.com':
@@ -1184,6 +1202,8 @@ a{
             return bySel('a.repo');
         case 'fantashit.com':
             return findByGitHubApi(textContent('h1'));
+        case 'geeksrepos.com':
+            return github(_p + location.search);
         case 'gitanswer.net':
             tt = '(\\b'+allTexts('.post-tags a.button').join('\\b|\\b')+'\\b)';
             return findByGitHubApi(textContent('h1').replace(/ - .*$/, '').replace(new RegExp('(^' + tt + ' ?| ?' + tt + '$)', 'g'), ''), _t('.avatar').parentElement.querySelector('span').innerText);
@@ -1307,6 +1327,7 @@ a{
                     'codefaq.ru': '.aa-link',
                     'codegear.dev': 'p.text-right > a',
                     'codegrepr.com': 'div.content-text > p > a',
+                    'dev-answers.com': 'div.post-info > span > a',
                     'generacodice.com': '#fontePrincipale > a.link', // site offline / site not found / 2022-07-06
                     'howtosolves.com': '#question .question .source a',
                     'husl.ru': '.source-link',

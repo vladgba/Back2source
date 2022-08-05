@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name         Back2source
-// @version      0.1.144
+// @version      0.1.145
 // @description  Redirecting to source sites from sites with machine translation, etc.
 // @namespace    vladgba
 // @author       vladgba@gmail.com
@@ -117,6 +117,7 @@
 // @match        *://*.dokry.com/*
 // @match        *://*.domainelespailles.net/*
 // @match        *://*.donolik.com/*
+// @match        *://*.doraprojects.net/questions/*
 // @match        *://*.duhoctrungquoc.vn/wiki/*/*
 // @match        *://*.duoduokou.com/*/*.html
 // @match        *://*.e-learn.cn/topic/*
@@ -264,6 +265,7 @@
 // @match        *://*.pythonlang.dev/repo/*
 // @match        *://*.pythonrepo.com/repo/*
 // @match        *://*.qa-stack.pl/*
+// @match        *://*.qandeelacademy.com/questions/*
 // @match        *://*.qapicks.com/question/*
 // @match        *://*.qarchive.ru/*
 // @match        *://*.qaru.tech/questions/*
@@ -340,6 +342,7 @@
 // @match        *://*.tistory.com/*
 // @match        *://*.tousu.in/qa/*
 // @match        *://*.tra-loi-cau-hoi-phat-trien-web.com/vi/*
+// @match        *://*.tracholar.top/*/*/*/*
 // @match        *://*.try2explore.com/*
 // @match        *://*.tutorialguruji.com/*/*
 // @match        *://*.tutorialink.com/*
@@ -826,6 +829,7 @@ a{
         case 'askdevz.com':
         case 'askvoprosy.com':
         case 'living-sun.com':
+        case 'qandeelacademy.com':
         case 'yaoply.com':
             return byPath(2);
         case 'asklobster.com':
@@ -936,6 +940,8 @@ a{
             return byHeader('h1', '.tag-list div', 'en');
         case 'dokry.com':
             return byHeader('h1', '.badge a', 'es');
+        case 'doraprojects.net':
+            return byInner('a.text-muted', 'Source');
         case 'duoduokou.com':
             return byHeader('p.post-title', 'span.category > a', 'zh');
         case 'e-learn.cn':
@@ -1059,6 +1065,8 @@ a{
             return byHeader('h1', '.blog-pagination > a', 'en');
         case 'tistory.com':
             return all('.article-view p > a').pop().href;
+        case 'tracholar.top':
+            return byPath(4);
         case 'tutorialguruji.com':
             return byHeader([textContent('h1').replace(/ *Code Answer *$/, '')], _, 'en');
         case 'tutorialink.com':

@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name         Back2source
-// @version      0.1.145
+// @version      0.1.146
 // @description  Redirecting to source sites from sites with machine translation, etc.
 // @namespace    vladgba
 // @author       vladgba@gmail.com
@@ -403,6 +403,7 @@
 // @match        *://*.wikivisually.com/wiki/*
 // @match        *://*.wikiwand.com/*/*
 // @match        *://*.wikizero.com/*/*
+// @match        *://*.wp-qa.com/*
 // @match        *://*.wujigu.com/qa/*
 // @match        *://*.xcv.wiki/*
 // @match        *://*.xiu2.net/it/details/*
@@ -1092,6 +1093,8 @@ a{
             tt = _t('section section div.footer-post div.d-inline-block button');
             tt = tt && (getAttr(tt, 'data-url', /https?:\/\/wikiroot\.ru\/comment\/new\/([0-9]+)/) || getAttr(tt, 'data-target', /#buttoncollapse-([0-9]+)/));
             return tt ? 'https://superuser.com/questions/' + tt : byHeader('h1', 'ul.tags-list li a', 'ru');
+        case 'wp-qa.com':
+            return byHeader('h1', '#content > .tags > a', 'en');
         case 'xiu2.net': // redirects to site with 502 / 2022-07-06
             addJS('var redir = window.__NUXT__.data[0].info.sourceUrl; redir && window.location.replace(redir);');
             return lng('zh') && byHeader('h1', '.contents .tag-time a[href*="/it/tag/"]', 'zh');

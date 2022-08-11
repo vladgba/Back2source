@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name         Back2source
-// @version      0.1.146
+// @version      0.1.147
 // @description  Redirecting to source sites from sites with machine translation, etc.
 // @namespace    vladgba
 // @author       vladgba@gmail.com
@@ -85,6 +85,7 @@
 // @match        *://*.codegrepr.com/question/*
 // @match        *://*.codeguides.site/questions/*
 // @match        *://*.codehunter.cc/*
+// @match        *://*.codengineering.net/q/*
 // @match        *://*.codengineering.ru/q/*
 // @match        *://*.codenong.com/*
 // @match        *://*.codepudding.com/*/*.html
@@ -178,6 +179,7 @@
 // @match        *://*.ichi.pro/*
 // @match        *://*.icode9.com/*
 // @match        *://*.icopy.site/questions/*
+// @match        *://*.idqna.com/question/*
 // @match        *://*.intellipaat.com/community/*
 // @match        *://*.intrepidgeeks.com/tutorial/*
 // @match        *://*.iquestion.pro/q/*
@@ -885,6 +887,7 @@ a{
             return 'https://' + _ps[2].replace(/(.+)stack/,'$1.stackexchange').replace(/^(stack)$/,'$1overflow') + '.com/questions/' + _ps[3];
         case 'code-error.com':
         case 'edureka.co':
+        case 'idqna.com':
         case 'learn-codes.net':
         case 'programming-articles.com':
         case 'thecodeteacher.com':
@@ -903,6 +906,8 @@ a{
             return byNumber(_ps[3]);
         case 'codehunter.cc':
             return byHeader('h1', '.badge', 'en');
+        case 'codengineering.net':
+            return (!allTexts('.tags > div > a').join().match(/[\u0400-\u04ff]/)) && byHeader('h1', '.tags > div > a', 'ru');
         case 'codengineering.ru':
             return toSearch(lastPathPart().replace(/(-closed|-duplicate)?(-\d+)?(\.html)?$/, ''), true);
         case 'codenong.com':

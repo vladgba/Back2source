@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name         Back2source
-// @version      0.1.147
+// @version      0.1.148
 // @description  Redirecting to source sites from sites with machine translation, etc.
 // @namespace    vladgba
 // @author       vladgba@gmail.com
@@ -243,6 +243,7 @@
 // @match        *://*.opensourcelibs.com/lib/*
 // @match        *://*.ostack.cn/*-1.html
 // @match        *://*.ostack.cn/qa/*
+// @match        *://*.ounapuu.ee/serverfault.com*
 // @match        *://*.ourladylakes.org/*
 // @match        *://*.overcoder.net/q/*
 // @match        *://*.overcoder.ru/q/*
@@ -1356,6 +1357,7 @@ a{
                     'linuxfixes.com': '.entry-content > a:nth-last-of-type(2)',
                     'narkive.jp': '#postq > div > div > a',
                     'nuomiphp.com': '.alert-warning a',
+                    'ounapuu.ee': '#footer > a',
                     'overcoder.net': '.info_outlink',
                     'overcoder.ru': '.info_outlink',
                     'phptime.ru': '.float-right>small>a.text-muted',

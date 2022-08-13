@@ -114,6 +114,7 @@
 // @match        *://*.developreference.com/article/*
 // @match        *://*.devfaq.fr/question/*
 // @match        *://*.devtip.in/*/*
+// @match        *://*.digitrain.ru/questions/*
 // @match        *://*.dir.md/*
 // @match        *://*.dokry.com/*
 // @match        *://*.domainelespailles.net/*
@@ -842,6 +843,7 @@ a{
         case 'cainiaojiaocheng.com':
         case 'coderquestion.ru':
         case 'coredump.biz':
+        case 'digitrain.ru':
         case 'gitrush.ru':
         case 'html-agility-pack.net':
         case 'icopy.site':

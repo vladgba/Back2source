@@ -838,8 +838,6 @@ a{
         case 'yaoply.com':
             return byPath(2);
         case 'asklobster.com':
-        case 'bestecode.com':
-        case 'bonprog.com':
         case 'cainiaojiaocheng.com':
         case 'coderquestion.ru':
         case 'coredump.biz':
@@ -848,10 +846,6 @@ a{
         case 'html-agility-pack.net':
         case 'icopy.site':
         case 'issue.life':
-        case 'profikoder.com':
-        case 'progaide.com':
-        case 'progexact.com':
-        case 'programqa.com':
         case 'qaru.tech':
         case 'stackfinder.ru':
         case 'thinbug.com':
@@ -865,8 +859,6 @@ a{
         case 'de-vraag.com':
         case 'donolik.com':
         case 'kotaeta.com':
-        case 'pytannie.com':
-        case 'sozdizimi.com':
         case 'switch-case.com':
         case 'while-do.com':
         case 'zapytay.com':
@@ -897,9 +889,7 @@ a{
         case 'w3coded.com':
             return byHeader('h1', _, 'en');
         case 'code-examples.net':
-        case 'ffff65535.com':
         case 'i-harness.com':
-        case 'src-bin.com':
             return byNumber(lastPathPart(), 16);
         case 'codebug.zone':
             return byHeader([removePartBefore('h1', ' – ')], _, 'es');
@@ -1335,7 +1325,6 @@ a{
             } else {
                 console.log('check by selectors');
                 const cssSelectors = {
-                    '4answered.com': '.view_body span a',
                     'answacode.com': '.post__source',
                     'answeright.com': 'a.link',
                     'ask-ubuntu.ru': '.q-source',
@@ -1364,13 +1353,10 @@ a{
                     'overcoder.ru': '.info_outlink',
                     'phptime.ru': '.float-right>small>a.text-muted',
                     'prog-help.ru': '.eclip > a',
-                    'programmerz.ru': '.source-share-link',
                     'python2.net': 'div.user-box > span.fr > a',
                     'pythonfixing.com': 'article > div.post-body > a:last-of-type',
                     'qarchive.ru': 'cite > a',
                     'qarus.ru': 'em > a',
-                    'qna.one': '.page-container-question .source-share-block a',
-                    'rstopup.com': '.td-post-content .origlink > a',
                     'serveanswer.com': 'a[title="Source"]',
                     'sprosi.pro': '#qsource > a',
                     'stackguides.com': 'a[title="Go to Source post"]',
@@ -1381,7 +1367,6 @@ a{
                     'ubuntuplace.info': 'div.question-text > a.a-link',
                     'uwenku.com': '.post-info a',
                     'voidcc.com': '.source > a',
-                    'wake-up-neo.com': 'span.q-source.i-source > a.gat',
                     'web-answers.ru': '.source > a',
                     'wikimho.com': '.page-footer .float-right a',
                     'yingqusp.com': '.container > div > div > div > p > a',

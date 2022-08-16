@@ -24,7 +24,6 @@
 // @match        *://*.360wiki.ru/wiki/*
 // @match        *://*.55276.net/qa/*
 // @match        *://*.5axxw.com/*/*/*
-// @match        *://*.8101010108.cn/zh/*
 // @match        *://*.9ishenzhen.com/?qa=*
 // @match        *://*.abcdef.wiki/*
 // @match        *://*.amuddycup.com/*
@@ -106,7 +105,6 @@
 // @match        *://*.de-vraag.com/*
 // @match        *://*.debugcn.com/*article/*
 // @match        *://*.debugko.com/article/*
-// @match        *://*.desarrollo-web-br-bd.com/es/*
 // @match        *://*.dev-answers.com/solutions/*
 // @match        *://*.devasking.com/issue/*
 // @match        *://*.devdreamz.com/question/*
@@ -284,10 +282,8 @@
 // @match        *://*.question-it.com/questions/*
 // @match        *://*.questu.ru/questions/*
 // @match        *://*.reddit.fun/*/*
-// @match        *://*.reponse-question-developpement-web-bd.com/fr/*
 // @match        *://*.reposhub.com/*/*
 // @match        *://*.respuestas.me/*
-// @match        *://*.risposta-alla-domanda-sullo-sviluppo-web-bd.com/it/*
 // @match        *://*.rotadev.com/*
 // @match        *://*.routinepanic.com/questions/*
 // @match        *://*.ru.encyclopedia.kz/index.php/*
@@ -345,7 +341,6 @@
 // @match        *://*.tipsfordev.com/*
 // @match        *://*.tistory.com/*
 // @match        *://*.tousu.in/qa/*
-// @match        *://*.tra-loi-cau-hoi-phat-trien-web.com/vi/*
 // @match        *://*.tracholar.top/*/*/*/*
 // @match        *://*.try2explore.com/*
 // @match        *://*.tutorialguruji.com/*/*
@@ -368,16 +363,8 @@
 // @match        *://*.wake-up-neo.net/*/*
 // @match        *://*.waymanamechurch.org/*
 // @match        *://*.web-answers.ru/*/*
-// @match        *://*.web-dev-qa-db-br.com/pt/*
-// @match        *://*.web-dev-qa-db-de.com/de/*
-// @match        *://*.web-dev-qa-db-esp.com/es/*
-// @match        *://*.web-dev-qa-db-fr.com/fr/*
 // @match        *://*.web-dev-qa-db-fra.com/fr/*
-// @match        *://*.web-dev-qa-db-ger.com/de/*
-// @match        *://*.web-dev-qa-db-it.com/it/*
 // @match        *://*.web-dev-qa-db-ja.com/ja/*
-// @match        *://*.web-dev-qa-db-pt.com/pt/*
-// @match        *://*.web-gaebal-jilmun-dabbyeon-db.com/ko/*
 // @match        *://*.web-gelistirme-sc.com/tr/*
 // @match        *://*.webdevdesigner.com/q*
 // @match        *://*.webentwicklung-frage-antwort-db.com.de/de/*
@@ -760,24 +747,11 @@ a{
             return clr('#343a40') && byHeader('h1', 'a.badge', 'en');
         case '5axxw.com':
             return byHeader('h1','.badge-tag','zh') && byHeader('h2',_,'zh');
-        case '8101010108.cn': // redirects to wake-up-neo.com / 2022-06-24
-        case 'desarrollo-web-br-bd.com': // redirects to web-dev-qa-db-esp.com / 2022-06-24
         case 'pengembangan-web-mp-pd.com':
-        case 'reponse-question-developpement-web-bd.com': // redirects to web-dev-qa-db-fra.com / 2022-06-24
-        case 'risposta-alla-domanda-sullo-sviluppo-web-bd.com': // redirects to web-dev-qa-db-it.com / 2022-06-24
-        case 'tra-loi-cau-hoi-phat-trien-web.com':
-        case 'wake-up-neo.com':
-        case 'web-dev-qa-db-br.com':
-        case 'web-dev-qa-db-de.com': // redirects to web-dev-qa-db-ger.com / 2022-06-24
-        case 'web-dev-qa-db-esp.com':
-        case 'web-dev-qa-db-fr.com': // redirects to web-dev-qa-db-fra.com / 2022-06-24
+        case 'wake-up-neo.net':
         case 'web-dev-qa-db-fra.com':
-        case 'web-dev-qa-db-ger.com':
         case 'web-dev-qa-db-ja.com':
-        case 'web-dev-qa-db-it.com':
-        case 'web-gaebal-jilmun-dabbyeon-db.com': // redirects to wake-up-neo.com / 2022-06-24
         case 'web-gelistirme-sc.com':
-        case 'web-dev-qa-db-pt.com': // redirects to wake-up-neo.com / 2022-06-24
             return bySel('.q-source > a');
         case '9ishenzhen.com':
             return !_c(/[\u4e00-\u9fa5]/) && _t('h1 a') && byHeader([removePartBefore('h1',' - ')], _, 'en');
@@ -1367,7 +1341,6 @@ a{
                     'ubuntuplace.info': 'div.question-text > a.a-link',
                     'uwenku.com': '.post-info a',
                     'voidcc.com': '.source > a',
-                    'wake-up-neo.com': 'span.q-source.i-source > a.gat',
                     'web-answers.ru': '.source > a',
                     'wikimho.com': '.page-footer .float-right a',
                     'yingqusp.com': '.container > div > div > div > p > a',

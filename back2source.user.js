@@ -34,6 +34,7 @@
 // @match        *://*.answerlib.com/question/*
 // @match        *://*.answerspoint.com/questions/*/*
 // @match        *://*.antwortenhier.me/*
+// @match        *://*.anycodings.com/*
 // @match        *://*.ape-ask.com/read-*.html
 // @match        *://*.appsloveworld.com/*/*
 // @match        *://*.arip-photo.org/*
@@ -73,6 +74,7 @@
 // @match        *://*.cndgn.com/question/*
 // @match        *://*.code-error.com/*
 // @match        *://*.code-examples.net/*/q/*
+// @match        *://*.code-hint.com/en/*
 // @match        *://*.code.i-harness.com/*/q/*
 // @match        *://*.codebug.zone/*
 // @match        *://*.codefactor.io/repository/*
@@ -311,6 +313,7 @@
 // @match        *://*.softbranchdevelopers.com/*
 // @match        *://*.softwareuser.asklobster.com/posts/*
 // @match        *://*.soinside.com/question/*
+// @match        *://*.solusi.cyou/*/*
 // @match        *://*.solveforum.com/forums/threads/*
 // @match        *://*.sprosi.pro/questions/*
 // @match        *://*.sqlite.in/*-1.html
@@ -711,7 +714,7 @@ a{
 
     var link;
     const host = location.hostname.split('.').slice(-2).join('.');
-    console.log('Checking site: ' + location.hostname + ' as ' + host);
+    console.log('Checking site: ' + location.hostname + (location.hostname != host ? ' as ' + host : ''));
 
     switch (host) {
         case '16892.net':
@@ -800,6 +803,8 @@ a{
         case 'respuestas.me':
         case 'askentire.net':
             return clr('#2c3e50') && byHeader('h1', [await transTags('ul.x-tags li a[href*="/t/"]')], document.documentElement.lang);
+        case 'anycodings.com':
+            return byHeader([removePartBefore('h2',': ')], '.no-gutters > a', 'en');
         case 'appsloveworld.com':
             tt = textContent('h1').match(/\[Source Code\]-(.*)-[^-]/);
             return tt && byHeader([tt[1]], _, 'en');
@@ -1283,6 +1288,10 @@ a{
             return _go(bySel('div.row > div:first-Child > div > p > a'));
         case 'savepearlharbor.com':
             return _go(bySel('article.post > div.entry-content > p > a[href*="://habr.com/"]'));
+        case 'solusi.cyou':
+            if (tt = _t('article > .media-body .text-right a:nth-child(3)')) return tt.href.replace('https://solusi.cyou/read-https-','https://');
+            if (_c(/^\/read-https?-/)) return _go(_h.replace(/https:\/\/solusi\.cyou\/read-(https?)-/,'$1://'));
+            return;
         default:
             if (_hst('mediawiki.feverous.co.uk')){
                 return wiki('en', 2);
@@ -1305,6 +1314,7 @@ a{
                     'askcodez.com': '.orli a',
                     'askdev.info': '.question-text > .a-link',
                     'catwolf.org': '.text-left.small > a',
+                    'code-hint.com': '.fw-bold .link-light',
                     'codefaq.info': '.aa-link',
                     'codefaq.ru': '.aa-link',
                     'codegear.dev': 'p.text-right > a',

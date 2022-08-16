@@ -365,7 +365,7 @@
 // @match        *://*.vvikipedla.com/wiki/*
 // @match        *://*.w3coded.com/questions/*/*
 // @match        *://*.w3toppers.com/*
-// @match        *://*.wake-up-neo.com/*/*
+// @match        *://*.wake-up-neo.net/*/*
 // @match        *://*.waymanamechurch.org/*
 // @match        *://*.web-answers.ru/*/*
 // @match        *://*.web-dev-qa-db-br.com/pt/*
@@ -1367,6 +1367,7 @@ a{
                     'ubuntuplace.info': 'div.question-text > a.a-link',
                     'uwenku.com': '.post-info a',
                     'voidcc.com': '.source > a',
+                    'wake-up-neo.com': 'span.q-source.i-source > a.gat',
                     'web-answers.ru': '.source > a',
                     'wikimho.com': '.page-footer .float-right a',
                     'yingqusp.com': '.container > div > div > div > p > a',

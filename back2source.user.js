@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name         Back2source
-// @version      0.1.148
+// @version      0.1.149
 // @description  Redirecting to source sites from sites with machine translation, etc.
 // @namespace    vladgba
 // @author       vladgba@gmail.com
@@ -244,7 +244,7 @@
 // @match        *://*.opensourcelibs.com/lib/*
 // @match        *://*.ostack.cn/*-1.html
 // @match        *://*.ostack.cn/qa/*
-// @match        *://*.ounapuu.ee/serverfault.com*
+// @match        *://*.ounapuu.ee/*/*
 // @match        *://*.ourladylakes.org/*
 // @match        *://*.overcoder.net/q/*
 // @match        *://*.overcoder.ru/q/*
@@ -750,12 +750,6 @@ a{
             return clr('#343a40') && byHeader('h1', 'a.badge', 'en');
         case '5axxw.com':
             return byHeader('h1','.badge-tag','zh') && byHeader('h2',_,'zh');
-        case 'pengembangan-web-mp-pd.com':
-        case 'wake-up-neo.net':
-        case 'web-dev-qa-db-fra.com':
-        case 'web-dev-qa-db-ja.com':
-        case 'web-gelistirme-sc.com':
-            return bySel('.q-source > a');
         case '9ishenzhen.com':
             return !_c(/[\u4e00-\u9fa5]/) && _t('h1 a') && byHeader([removePartBefore('h1',' - ')], _, 'en');
         case 'amuddycup.com':
@@ -984,6 +978,12 @@ a{
             return lng('zh') && byHeader('h1', [await transTags('.article-tag')], 'zh');
         case 'newbedev.com':
             return _t('article') && byHeader('h1', 'h4.tags a.item-tag', 'en', _se);
+        case 'pengembangan-web-mp-pd.com':
+        case 'wake-up-neo.net':
+        case 'web-dev-qa-db-fra.com':
+        case 'web-dev-qa-db-ja.com':
+        case 'web-gelistirme-sc.com':
+            return bySel('.q-source > a');
         case 'poweruser.guru':
             return _t('div.post-menu a.suggest-edit-post[href*="superuser.com/questions/"]');
         case 'progi.pro':
@@ -1284,6 +1284,17 @@ a{
             if (_ps[1] == 'article') _go(bySel('#social_only > h3 > a'));
             if (_ps[1] == 'exit') _go(bySel('.h5 > a'));
             return;
+        case 'ounapuu.ee':
+            tt = _ps[1].split('_')[0];
+            if (tt == 'stackoverflow.com') return byNumber(_ps[3]);
+            if (_se.some(i => tt.includes(i))) return 'https://' + tt + '/questions/' + _ps[4].replace('.html','');
+            if (tt == 'wikipedia') return wiki(_ps[1].split('_')[1], _h.split('/A/')[1]);
+            if (tt == 'developer.mozilla.org' || tt == 'lowtechmagazine.com') return _go('https://' + _h.split('/A/')[1]);
+            if (tt == 'explainxkcd') return _go('https://www.explainxkcd.com/wiki/index.php/' + _h.split('/A/')[1]);
+            if (tt == 'proofwiki') return _go('https://proofwiki.org/wiki/' + _h.split('/A/')[1]);
+            if (tt == 'archlinux') return _go('https://wiki.archlinux.org/title/' + _h.split('/A/')[1]);
+            if (tt == 'openstreetmap') return _go('https://wiki.openstreetmap.org/wiki/' + _h.split('/A/')[1]);
+            return;
         case 'runebook.dev':
             return _go(bySel('div.row > div:first-Child > div > p > a'));
         case 'savepearlharbor.com':
@@ -1332,7 +1343,6 @@ a{
                     'linuxfixes.com': '.entry-content > a:nth-last-of-type(2)',
                     'narkive.jp': '#postq > div > div > a',
                     'nuomiphp.com': '.alert-warning a',
-                    'ounapuu.ee': '#footer > a',
                     'overcoder.net': '.info_outlink',
                     'overcoder.ru': '.info_outlink',
                     'phptime.ru': '.float-right>small>a.text-muted',

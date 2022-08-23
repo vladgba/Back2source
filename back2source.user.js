@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name         Back2source
-// @version      0.1.149
+// @version      0.1.150
 // @description  Redirecting to source sites from sites with machine translation, etc.
 // @namespace    vladgba
 // @author       vladgba@gmail.com
@@ -101,6 +101,7 @@
 // @match        *://*.codetd.com/article/*
 // @match        *://*.coredump.biz/questions/*
 // @match        *://*.culinarydegree.info/*
+// @match        *://*.curatedgo.com/r/*/index.html
 // @match        *://*.dailydevsblog.com/troubleshoot/*
 // @match        *://*.daplus.net/*
 // @match        *://*.datewiki.ru/wiki/*
@@ -325,6 +326,7 @@
 // @match        *://*.stackify.dev/*
 // @match        *://*.stackoom.com/*question/*
 // @match        *://*.stackoverflood.com/*
+// @match        *://*.stackoverflowpoint.com/question/*
 // @match        *://*.stackovergo.com/*q/*
 // @match        *://*.stackru.com/questions/*
 // @match        *://*.string.quest/read/*
@@ -1025,6 +1027,8 @@ a{
             return byNumber(_t('[id^=question_content_]').id.split('_')[2]);
         case 'stackoverflood.com':
             return (tt = _h.match(/^https?:\/\/stackoverflood\.com\/([a-zA-Z]{2})\/q\/(.+)/)) && byNumber(tt[2]);
+        case 'stackoverflowpoint.com':
+            return byHeader([removePartBefore('h1', ' – ')], '.post-cat > a', 'en');
         case 'string.quest':
             return byHeader([removePartBefore('h1', ' - ')], '.tag-links a', 'zh');
         case 'super-unix.com':
@@ -1188,6 +1192,8 @@ a{
             return bySel('h1.h1 > a.btn-git');
         case 'codespots.com':
             return bySel('a.repo');
+        case 'curatedgo.com':
+            return bySel('.mt-4 .text-xs a');
         case 'fantashit.com':
             return findByGitHubApi(textContent('h1'));
         case 'geeksrepos.com':

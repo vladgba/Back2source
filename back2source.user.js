@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name         Back2source
-// @version      0.1.150
+// @version      0.1.151
 // @description  Redirecting to source sites from sites with machine translation, etc.
 // @namespace    vladgba
 // @author       vladgba@gmail.com
@@ -24,6 +24,7 @@
 // @match        *://*.360wiki.ru/wiki/*
 // @match        *://*.55276.net/qa/*
 // @match        *://*.5axxw.com/*/*/*
+// @match        *://*.955yes.com/ask/1*.html
 // @match        *://*.9ishenzhen.com/?qa=*
 // @match        *://*.abcdef.wiki/*
 // @match        *://*.amuddycup.com/*
@@ -61,6 +62,7 @@
 // @match        *://*.bilee.com/*.html
 // @match        *://*.binarydevelop.com/article/*
 // @match        *://*.bleepcoder.com/*/*
+// @match        *://*.bootpanic.com/*
 // @match        *://*.buildwiki.ru/wiki/*
 // @match        *://*.bytemeta.vip/*
 // @match        *://*.cache.one/read/*
@@ -69,8 +71,10 @@
 // @match        *://*.catwolf.org/qs*
 // @match        *://*.cepe-eua.org/*/*
 // @match        *://*.cfadnc.org/*
+// @match        *://*.chowdera.com/*.html
 // @match        *://*.ciupacabra.com/*
 // @match        *://*.cloud.tencent.com/developer/ask/*
+// @match        *://*.cmsdk.com/*/*.html
 // @match        *://*.cndgn.com/question/*
 // @match        *://*.code-error.com/*
 // @match        *://*.code-examples.net/*/q/*
@@ -99,6 +103,7 @@
 // @match        *://*.coderquestion.ru/q/*
 // @match        *://*.codespots.com/library/item/*
 // @match        *://*.codetd.com/article/*
+// @match        *://*.codeutility.org/*
 // @match        *://*.coredump.biz/questions/*
 // @match        *://*.culinarydegree.info/*
 // @match        *://*.curatedgo.com/r/*/index.html
@@ -111,6 +116,7 @@
 // @match        *://*.dev-answers.com/solutions/*
 // @match        *://*.devasking.com/issue/*
 // @match        *://*.devdreamz.com/question/*
+// @match        *://*.devebee.com/answer/*
 // @match        *://*.develop-bugs.com/article/*
 // @match        *://*.developreference.com/article/*
 // @match        *://*.devfaq.fr/question/*
@@ -121,6 +127,7 @@
 // @match        *://*.domainelespailles.net/*
 // @match        *://*.donolik.com/*
 // @match        *://*.doraprojects.net/questions/*
+// @match        *://*.dtuto.com/questions/*/*
 // @match        *://*.duhoctrungquoc.vn/wiki/*/*
 // @match        *://*.duoduokou.com/*/*.html
 // @match        *://*.e-learn.cn/topic/*
@@ -352,6 +359,7 @@
 // @match        *://*.tutorialink.com/*
 // @match        *://*.tutorialmeta.com/question/*
 // @match        *://*.tutorialmore.com/questions-*
+// @match        *://*.twblogs.net/a/*
 // @match        *://*.ubuntuaa.com/*q/*
 // @match        *://*.ubuntuplace.info/questions/*
 // @match        *://*.utyatnishna.ru/info/*
@@ -752,6 +760,8 @@ a{
             return clr('#343a40') && byHeader('h1', 'a.badge', 'en');
         case '5axxw.com':
             return byHeader('h1','.badge-tag','zh') && byHeader('h2',_,'zh');
+        case '955yes.com':
+            return byNumber(_ps[2].match(/1(\d*)\.html/)[1]);
         case '9ishenzhen.com':
             return !_c(/[\u4e00-\u9fa5]/) && _t('h1 a') && byHeader([removePartBefore('h1',' - ')], _, 'en');
         case 'amuddycup.com':
@@ -853,8 +863,7 @@ a{
             return bySel('div.cc', 'data-href');
         case 'catchconsole.com':
             return byHeader([dropMarks(textContent('h1'))], _, 'en');
-        case 'cndgn.com':
-            return 'https://' + _ps[2].replace(/(.+)stack/,'$1.stackexchange').replace(/^(stack)$/,'$1overflow') + '.com/questions/' + _ps[3];
+        case 'cmsdk.com':
         case 'code-error.com':
         case 'edureka.co':
         case 'idqna.com':
@@ -863,6 +872,8 @@ a{
         case 'thecodeteacher.com':
         case 'w3coded.com':
             return byHeader('h1', _, 'en');
+        case 'cndgn.com':
+            return 'https://' + _ps[2].replace(/(.+)stack/,'$1.stackexchange').replace(/^(stack)$/,'$1overflow') + '.com/questions/' + _ps[3];
         case 'code-examples.net':
         case 'i-harness.com':
             return byNumber(lastPathPart(), 16);
@@ -886,6 +897,8 @@ a{
             return byHeader('div.detail_title', '.hot-tags a', 'en');
         case 'coder.work':
             return bySel('div>p>a[rel="noreferrer noopener nofollow"]') || startsByText('p', 'stackoverflow链接', 'a[href*="stackoverflow.com"]') || startsByText('p', 'stackoverflow原址', 'a[href*="stackoverflow.com"]') || byHeader('h1', _, 'zh');
+        case 'codeutility.org':
+            return byHeader('h1', '.tags-links > a', 'en');
         case 'dailydevsblog.com':
             return byHeader([removePartBefore('h1', 'Resolved: ')], '.tags > a', 'en');
         case 'daplus.net':
@@ -901,6 +914,8 @@ a{
             return byHeader('h1', _, lang);
         case 'devdreamz.com':
             return byHeader('h1','[class^="ButtonTags_tags_container"] a', 'en');
+        case 'devebee.com':
+            return byHeader('h1', '.content > .tagcloud > a', 'en');
         case 'develop-bugs.com':
             tt = _t('blockquote > h2 > a').innerHTML.split('  -  ');
             return byHeader([tt[0]], tt[1], 'en');
@@ -916,6 +931,8 @@ a{
             return byHeader('h1', '.badge a', 'es');
         case 'doraprojects.net':
             return byInner('a.text-muted', 'Source');
+        case 'dtuto.com':
+            return byHeader('h5', '.tag-link', 'en');
         case 'duoduokou.com':
             return byHeader('p.post-title', 'span.category > a', 'zh');
         case 'e-learn.cn':
@@ -1245,6 +1262,8 @@ a{
             return _go(startsByText('.entry-tags p', '来源：'));
         case 'cepe-eua.org':
             return byHeader('h5', _, _ps[1], ['quora.com']);
+        case 'chowdera.com':
+            return _go(textContent('.nextinfo > p').split('\n')[2]);
         case 'codefactor.io':
             window.addEventListener('DOMContentLoaded', (e)=>{
                 if (_ps[2]=='github' && _ps[5]=='source') _go(bySel('a[title^="View on"]') + '/blob/' + _ps.splice(6).join('/'));
@@ -1309,6 +1328,8 @@ a{
             if (tt = _t('article > .media-body .text-right a:nth-child(3)')) return tt.href.replace('https://solusi.cyou/read-https-','https://');
             if (_c(/^\/read-https?-/)) return _go(_h.replace(/https:\/\/solusi\.cyou\/read-(https?)-/,'$1://'));
             return;
+        case 'twblogs.net':
+            return _go(textContent('#OSC_h3_2 ~ a'));
         default:
             if (_hst('mediawiki.feverous.co.uk')){
                 return wiki('en', 2);
@@ -1330,6 +1351,7 @@ a{
                     'ask-ubuntu.ru': '.q-source',
                     'askcodez.com': '.orli a',
                     'askdev.info': '.question-text > .a-link',
+                    'bootpanic.com': '.entry-content > p > i > a',
                     'catwolf.org': '.text-left.small > a',
                     'code-hint.com': '.fw-bold .link-light',
                     'codefaq.info': '.aa-link',

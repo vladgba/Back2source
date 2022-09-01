@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name         Back2source
-// @version      0.1.151
+// @version      0.1.152
 // @description  Redirecting to source sites from sites with machine translation, etc.
 // @namespace    vladgba
 // @author       vladgba@gmail.com
@@ -189,6 +189,7 @@
 // @match        *://*.icode9.com/*
 // @match        *://*.icopy.site/questions/*
 // @match        *://*.idqna.com/question/*
+// @match        *://*.im-coder.com/*.html
 // @match        *://*.intellipaat.com/community/*
 // @match        *://*.intrepidgeeks.com/tutorial/*
 // @match        *://*.iquestion.pro/q/*
@@ -240,6 +241,7 @@
 // @match        *://*.mlog.club/article/*
 // @match        *://*.narkive.jp/*
 // @match        *://*.newbedev.com/*
+// @match        *://*.newdevzone.com/posts/*
 // @match        *://*.nina.az/wiki/*
 // @match        *://*.noblenaz.org/*
 // @match        *://*.npm.io/package/*
@@ -346,6 +348,7 @@
 // @match        *://*.techarks.ru/qa/*
 // @match        *://*.techfeed.net/*
 // @match        *://*.techhelpnotes.com/*
+// @match        *://*.techinplanet.com/*
 // @match        *://*.territorioscuola.it/*
 // @match        *://*.thecodeteacher.com/question/*
 // @match        *://*.theshuggahpies.com/*
@@ -868,6 +871,7 @@ a{
         case 'edureka.co':
         case 'idqna.com':
         case 'learn-codes.net':
+        case 'newdevzone.com':
         case 'programming-articles.com':
         case 'thecodeteacher.com':
         case 'w3coded.com':
@@ -1058,6 +1062,8 @@ a{
             return byHeader('main h1', '.tag', 'ru');
         case 'techhelpnotes.com':
             return byHeader([removePartBefore('h1', ' – ')], _, 'en');
+        case 'techinplanet.com':
+            return byHeader('h1', '.entry-tags > a', 'en');
         case 'tencent.com':
             return byHeader('.ask-title h2', _, 'zh');
         case 'tipsfordev.com':
@@ -1362,6 +1368,7 @@ a{
                     'generacodice.com': '#fontePrincipale > a.link', // site offline / site not found / 2022-07-06
                     'howtosolves.com': '#question .question .source a',
                     'husl.ru': '.source-link',
+                    'im-coder.com': '.origlink > a',
                     'iquestion.pro': '.box-body div:nth-child(3) .pull-right',
                     'isolution.pro': '.box-body div:nth-child(3) .pull-right',
                     'itranslater.com': '.body > div:last-child > a',

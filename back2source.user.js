@@ -816,7 +816,7 @@ a{
             return byHeader([removePartBefore('h2',': ')], '.no-gutters > a', 'en');
         case 'appsloveworld.com':
             tt = textContent('h1').match(/\[Source Code\]-(.*)-[^-]/);
-            return tt && byHeader([tt[1]], _, 'en');
+            return tt ? byHeader([tt[1]], _, 'en') : byPath(4);
         case 'askdev.ru':
             return clr('#970f1b') && urlByImg('https://superuser.com/questions/') || byHeader('h1', [await transTags('.block_taxonomies a')], 'ru');
         case 'askdevz.com':

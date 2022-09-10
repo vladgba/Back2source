@@ -227,6 +227,7 @@
 // @match        *://*.libhunt.com/r/*
 // @match        *://*.libraries.io/*/*
 // @match        *://*.lifesaver.codes/answer/*
+// @match        *://*.lightrun.com/answers/*
 // @match        *://*.linuxfixes.com/*/*/*
 // @match        *://*.livepcwiki.ru/wiki/*
 // @match        *://*.living-sun.com/*/*
@@ -988,6 +989,8 @@ a{
         case 'learnfk.com':
             if (_ps[1] == 'en') return byHeader('h1', '.entry-info > .badge-tag', 'en');
             return byHeader([removePartBefore('h2.h11','\\] ')], '.entry-info > .badge-tag', 'en');
+        case 'lightrun.com':
+            return bySel("article>small>a");
         case 'localcoder.org':
             return byHeader('h1', '.categories a', 'en');
         case 'manongdao.com':

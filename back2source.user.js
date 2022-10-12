@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name         Back2source
-// @version      0.1.152
+// @version      0.1.153
 // @description  Redirecting to source sites from sites with machine translation, etc.
 // @namespace    vladgba
 // @author       vladgba@gmail.com
@@ -139,6 +139,7 @@
 // @match        *://*.elfishgene.com/*
 // @match        *://*.encyclopaedia.bid/*
 // @match        *://*.encyclopedia.thefreedictionary.com/*
+// @match        *://*.errorsandanswers.com/*
 // @match        *://*.errorsfixing.com/*
 // @match        *://*.exchangetuts.com/*-*
 // @match        *://*.explained.today/*
@@ -989,8 +990,6 @@ a{
         case 'learnfk.com':
             if (_ps[1] == 'en') return byHeader('h1', '.entry-info > .badge-tag', 'en');
             return byHeader([removePartBefore('h2.h11','\\] ')], '.entry-info > .badge-tag', 'en');
-        case 'lightrun.com':
-            return bySel("article>small>a");
         case 'localcoder.org':
             return byHeader('h1', '.categories a', 'en');
         case 'manongdao.com':
@@ -1245,6 +1244,8 @@ a{
             return github('/' + textContent('div.is-4 > p > strong'));
         case 'lifesaver.codes':
             return byInner('a[role="link"]','Original');
+        case 'lightrun.com':
+            return bySel('article > small > a');
         case 'opensourcelibs.com':
             return byInner('.repo-stats a','github.com');
         case 'pythonawesome.com':
@@ -1368,6 +1369,7 @@ a{
                     'codegear.dev': 'p.text-right > a',
                     'codegrepr.com': 'div.content-text > p > a',
                     'dev-answers.com': 'div.post-info > span > a',
+                    'errorsandanswers.com': '#source > a',
                     'generacodice.com': '#fontePrincipale > a.link', // site offline / site not found / 2022-07-06
                     'howtosolves.com': '#question .question .source a',
                     'husl.ru': '.source-link',

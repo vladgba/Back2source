@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name         Back2source
-// @version      0.1.153
+// @version      0.1.154
 // @description  Redirecting to source sites from sites with machine translation, etc.
 // @namespace    vladgba
 // @author       vladgba@gmail.com
@@ -219,6 +219,7 @@
 // @match        *://*.jscodetips.com/examples/*
 // @match        *://*.jsrepos.com/*/*
 // @match        *://*.juejin.cn/post/*
+// @match        *://*.kutombawewe.net/*/*
 // @match        *://*.knews.vip/q/*
 // @match        *://*.kompsekret.ru/q/*
 // @match        *://*.kotaeta.com/*
@@ -1003,6 +1004,7 @@ a{
             return lng('zh') && byHeader('h1', [await transTags('.article-tag')], 'zh');
         case 'newbedev.com':
             return _t('article') && byHeader('h1', 'h4.tags a.item-tag', 'en', _se);
+        case 'kutombawewe.net':
         case 'pengembangan-web-mp-pd.com':
         case 'wake-up-neo.net':
         case 'web-dev-qa-db-fra.com':

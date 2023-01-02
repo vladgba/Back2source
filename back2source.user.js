@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name         Back2source
-// @version      0.1.154
+// @version      0.1.155
 // @description  Redirecting to source sites from sites with machine translation, etc.
 // @namespace    vladgba
 // @author       vladgba@gmail.com
@@ -219,10 +219,10 @@
 // @match        *://*.jscodetips.com/examples/*
 // @match        *://*.jsrepos.com/*/*
 // @match        *://*.juejin.cn/post/*
-// @match        *://*.kutombawewe.net/*/*
 // @match        *://*.knews.vip/q/*
 // @match        *://*.kompsekret.ru/q/*
 // @match        *://*.kotaeta.com/*
+// @match        *://*.kutombawewe.net/*/*
 // @match        *://*.learn-codes.net/*/*
 // @match        *://*.learnfk.com/*question/*
 // @match        *://*.legkovopros.ru/questions/*
@@ -398,6 +398,7 @@
 // @match        *://*.wiki2.org/*
 // @match        *://*.wiki2.wiki/wiki/*
 // @match        *://*.wiki5.ru/wiki/*
+// @match        *://*.wikibrief.org/wiki/*
 // @match        *://*.wikichi.ru/wiki/*
 // @match        *://*.wikidark.ru/wiki/*
 // @match        *://*.wikidea.ru/wiki/*
@@ -988,6 +989,13 @@ a{
             return byHeader('h1', '.contentBox > div:nth-child(3) > a', 'en');
         case 'kompsekret.ru':
             return clr('#292d2f') && (urlByImg('https://superuser.com/questions/') || byHeader([lastPathPart().replace(/(-closed|-duplicate)?(\d+)?(\.html)?$/, '').replace(/-/g, ' ')], '.tags a', 'en', ['superuser.com']));
+        case 'kutombawewe.net':
+        case 'pengembangan-web-mp-pd.com':
+        case 'wake-up-neo.net':
+        case 'web-dev-qa-db-fra.com':
+        case 'web-dev-qa-db-ja.com':
+        case 'web-gelistirme-sc.com':
+            return bySel('.q-source > a');
         case 'learnfk.com':
             if (_ps[1] == 'en') return byHeader('h1', '.entry-info > .badge-tag', 'en');
             return byHeader([removePartBefore('h2.h11','\\] ')], '.entry-info > .badge-tag', 'en');
@@ -1004,13 +1012,6 @@ a{
             return lng('zh') && byHeader('h1', [await transTags('.article-tag')], 'zh');
         case 'newbedev.com':
             return _t('article') && byHeader('h1', 'h4.tags a.item-tag', 'en', _se);
-        case 'kutombawewe.net':
-        case 'pengembangan-web-mp-pd.com':
-        case 'wake-up-neo.net':
-        case 'web-dev-qa-db-fra.com':
-        case 'web-dev-qa-db-ja.com':
-        case 'web-gelistirme-sc.com':
-            return bySel('.q-source > a');
         case 'poweruser.guru':
             return _t('div.post-menu a.suggest-edit-post[href*="superuser.com/questions/"]');
         case 'progi.pro':
@@ -1123,11 +1124,12 @@ a{
         case 'vvikipedla.com':
         case 'wiki2.wiki':
         case 'wiki5.ru':
+        case 'wikibrief.org':
         case 'wikichi.ru':
         case 'wikidea.ru':
         case 'wikivisually.com':
         case 'zahn-info-portal.de':
-            return wiki('en', 2);
+            return wiki('en');
         case 'abcdef.wiki':
             return wiki('en', _p, false);
         case 'duhoctrungquoc.vn':

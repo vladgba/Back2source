@@ -226,7 +226,6 @@
 // @match        *://*.learn-codes.net/*/*
 // @match        *://*.learnfk.com/*question/*
 // @match        *://*.legkovopros.ru/questions/*
-// @match        *://*.libhunt.com/r/*
 // @match        *://*.libraries.io/*/*
 // @match        *://*.lifesaver.codes/answer/*
 // @match        *://*.lightrun.com/answers/*
@@ -1244,8 +1243,6 @@ a{
             return github(_p.replace(/^\/(repo|author)/,''));
         case 'issuehint.com':
             return findByGitHubApi(textContent('h1'));
-        case 'libhunt.com':
-            return github('/' + textContent('div.is-4 > p > strong'));
         case 'lifesaver.codes':
             return byInner('a[role="link"]','Original');
         case 'lightrun.com':

@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name         Back2source
-// @version      0.1.155
+// @version      0.1.156
 // @description  Redirecting to source sites from sites with machine translation, etc.
 // @namespace    vladgba
 // @author       vladgba@gmail.com
@@ -193,6 +193,7 @@
 // @match        *://*.im-coder.com/*.html
 // @match        *://*.intellipaat.com/community/*
 // @match        *://*.intrepidgeeks.com/tutorial/*
+// @match        *://*.ipgirl.com/*
 // @match        *://*.iquestion.pro/q/*
 // @match        *://*.isolution.pro/q/*
 // @match        *://*.issue.life/questions/*
@@ -972,6 +973,8 @@ a{
             return byHeader('.question-header>h1', _, 'en');
         case 'intellipaat.com':
             return byHeader('h1', '.qa-q-view-tag-item', 'en');
+        case 'ipgirl.com':
+            return byHeader('h1', '.breadcrumb-item > span > a', 'fr');
         case 'it1352.com':
             return byHeader([removePartBefore('h1 > em','\\] ')], 'div.arc-meta > span > a', 'en');
         case 'itbaoku.cn':

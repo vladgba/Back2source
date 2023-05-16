@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name         Back2source
-// @version      0.1.156
+// @version      0.1.157
 // @description  Redirecting to source sites from sites with machine translation, etc.
 // @namespace    vladgba
 // @author       vladgba@gmail.com
@@ -872,7 +872,6 @@ a{
             return byHeader([dropMarks(textContent('h1'))], _, 'en');
         case 'cmsdk.com':
         case 'code-error.com':
-        case 'edureka.co':
         case 'idqna.com':
         case 'learn-codes.net':
         case 'newdevzone.com':
@@ -947,6 +946,8 @@ a{
             return startsByText('div.content p:last-child', '来源：');
         case 'editcode.net':
             return byHeader([removePartBefore('h1', ':')], _,'en');
+        case 'edureka.co':
+            return byHeader([JSON.parse(textContent('[type="application/ld+json"]')).name], _,'en');
         case 'errorsfixing.com':
             return bySel('div.entry-content.boxed > p:nth-last-of-type(3) > a');
         case 'exchangetuts.com':

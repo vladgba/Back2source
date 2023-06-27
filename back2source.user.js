@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name         Back2source
-// @version      0.1.157
+// @version      0.1.158
 // @description  Redirecting to source sites from sites with machine translation, etc.
 // @namespace    vladgba
 // @author       vladgba@gmail.com
@@ -28,6 +28,7 @@
 // @match        *://*.9ishenzhen.com/?qa=*
 // @match        *://*.abcdef.wiki/*
 // @match        *://*.amuddycup.com/*
+// @match        *://*.androidalle.com/pregunta/*
 // @match        *://*.androiderrors.com/*
 // @match        *://*.androidrepo.com/repo/*
 // @match        *://*.answacode.com/*
@@ -1361,6 +1362,7 @@ a{
             } else {
                 console.log('check by selectors');
                 const cssSelectors = {
+                    'androidalle.com': '.item-content > a.track',
                     'answacode.com': '.post__source',
                     'answeright.com': 'a.link',
                     'ask-ubuntu.ru': '.q-source',

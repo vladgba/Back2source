@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name         Back2source
-// @version      0.1.158
+// @version      0.1.159
 // @description  Redirecting to source sites from sites with machine translation, etc.
 // @namespace    vladgba
 // @author       vladgba@gmail.com
@@ -819,9 +819,12 @@ a{
             return clr('#2c3e50') && byHeader('h1', [await transTags('ul.x-tags li a[href*="/t/"]')], document.documentElement.lang);
         case 'anycodings.com':
             return byHeader([removePartBefore('h2',': ')], '.no-gutters > a', 'en');
-        case 'appsloveworld.com':
-            tt = textContent('h1').match(/\[Source Code\]-(.*)-[^-]/);
-            return tt ? byHeader([tt[1]], _, 'en') : byPath(4);
+        case 'appsloveworld.com':{
+            let title = dropMarks(textContent('h1#posttitle'));
+            let matches = title.match(/^(\[.+\]-)?(.+?)-([\w+#]+(?:[\-\s.]\w+)?)$/i);
+            if (matches) return byHeader([matches[2]], [matches[3].replace(/\s+/,'-')], 'en');
+            else return byHeader([title], _, 'en');
+        }
         case 'askdev.ru':
             return clr('#970f1b') && urlByImg('https://superuser.com/questions/') || byHeader('h1', [await transTags('.block_taxonomies a')], 'ru');
         case 'askdevz.com':

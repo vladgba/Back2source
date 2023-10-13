@@ -820,10 +820,17 @@ a{
         case 'anycodings.com':
             return byHeader([removePartBefore('h2',': ')], '.no-gutters > a', 'en');
         case 'appsloveworld.com':{
-            let title = dropMarks(textContent('h1#posttitle'));
-            let matches = title.match(/^(\[.+\]-)?(.+?)-([\w+#]+(?:[\-\s.]\w+)?)$/i);
-            if (matches) return byHeader([matches[2]], [matches[3].replace(/\s+/,'-')], 'en');
-            else return byHeader([title], _, 'en');
+            let title = textContent('h1#posttitle');
+            let crop_start = title.match(/^((?:\w+[\-\s]*)?\[?(?:SOLVED|SOLUTION)\]?\s*-\s*)/i);
+            let matches = title.match(/\s?(?:\s*-\s*([\w+#]+(?:[\-\s.]\w+)?))?$/i);
+            if (crop_start != null) title = title.replace(crop_start, '');
+
+            let tag = false;
+            if (matches != null) {
+                title = title.replace(matches[0], '');
+                tag = matches[1];
+            }
+            return byHeader([title], tag ? [tag] : [], 'en');
         }
         case 'askdev.ru':
             return clr('#970f1b') && urlByImg('https://superuser.com/questions/') || byHeader('h1', [await transTags('.block_taxonomies a')], 'ru');

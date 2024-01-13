@@ -17,7 +17,6 @@
 // @connect      api.browser.yandex.ru
 // @connect      api.github.com
 // @connect      api.stackexchange.com
-// @connect      api.zcxv.icu
 // @noframes
 // @match        *://*.16892.net/qa/*
 // @match        *://*.1r1g.com/sf/ask/*
@@ -532,22 +531,8 @@
     var db = JSON.parse(GM_getValue('b2s') || '{}');
     for (var y in db) if (location.href == db[y][0]) return _go(db[y][1]);
 
-    /** Gets a redirect for the opened site from an online database */
-    var dfgdr = fetch(`https://api.zcxv.icu/b2s.php?q=get&url=${encodeURIComponent(_h)}`, { credentials: 'omit' })
-    .then(r => r.json())
-    .then(r => r.res && r.response && _go(r.response));
-
-    /** Allows the user to specify a url to which the opened site should be redirected */
-    GM_registerMenuCommand('Redirect', () => {
-        var re = prompt('Enter source url:');
-        var dfgdr = re && fetch(
-            `https://api.zcxv.icu/b2s.php?q=set&url=${encodeURIComponent(_h)}&redir=${encodeURIComponent(re)}`, {
-                method: 'GET', credentials: 'omit'
-            });
-    });
-
     /** Adds the given JavaScript code as inline code to the opened site */
-    function addJS(code){
+    function addJS(code) {
         var scriptElm = document.createElement('script');
         var inlineCode = document.createTextNode(code);
         scriptElm.appendChild(inlineCode);
@@ -645,6 +630,7 @@ a{
     }
 
     var auxiliaryRe = null;
+
     /** Removes auxiliary words of a given string */
     function removeAuxiliary(s) {
         return s && s.replace(auxiliaryRe || (auxiliaryRe = new RegExp([
@@ -682,6 +668,7 @@ a{
         .then(r => r?.items[0]?.link);
         return dfgdr;
     }
+
     /** Searches an issue text with the Github API, optionally with the user */
     async function findByGitHubApi(q, user) {
         var dfgdr = q && fetch(
@@ -693,6 +680,7 @@ a{
         .then(r => r?.items[0]?.html_url);
         return dfgdr;
     }
+
     /**
      * Takes the slightly aligned text of the header or a given selector, optionally translates it, tries to find it per API and otherwise creates the bottom bar to search for
      * @param {string|array} [h] - header selector (def: 'h1')
@@ -1428,9 +1416,6 @@ a{
     }
     return link;
 })().then(link => {
-    /** Saves the redirect to an online database */
-    var sredir = (r) => r && fetch(`https://api.zcxv.icu/b2s.php?q=set&url=${encodeURIComponent(location.href)}&redir=${encodeURIComponent(r)}`, { method: 'GET', credentials: 'omit' });
-
     /** Saves the clone url and the source url in a local db */
     function cbufw(u, s) {
         var count = 10;
@@ -1444,7 +1429,7 @@ a{
 
     /** Saves the redirect online and local, redirects to source */
     function run(u) {
-        console.log('Redirect link: ' + u) || sredir(u);
+        console.log('Redirect link: ' + u);
         cbufw(location.href, u) || window.location.replace(u);
     }
 
@@ -1464,6 +1449,7 @@ a{
         /^https?:\/\/www\.npmjs\.com\/package\/(.+)/.test(link)) {
         return run(link);
     }
+
     fix(/^https?:\/\/((pt|ja|ru|es)\.)?stackoverflow\.com\/([a-z]+)\/([0-9]{1,12})/, 'https://$1stackoverflow.com/questions/$4') ||
     fix(/^https?:\/\/([a-z]+\.)?stackexchange\.com\/[qa]\/([0-9]{1,12})/, 'https://$1stackexchange.com/questions/$2') ||
     fix(/^https?:\/\/([a-z]+\.)?stackexchange\.com\/([a-z]+)\/([0-9]{1,12})/, 'https://$2.stackexchange.com/questions/$3') ||

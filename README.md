@@ -1,12 +1,15 @@
+**THIS PROJECT IS CURRENTLY OUTDATED AND MAY NOT WORK AS EXPECTED. IT IS ALSO NOT CURRENTLY IN ACTIVE DEVELOPMENT OR MAINTENANCE.**
+
+- If you have a problem or have an idea for improvement, please create an **[Issue](https://github.com/vladgba/Back2source/issues)**. However, please note that processing the issue may take a long time.
+
+- If you have ready-made code to make changes, **we recommend creating a pull request**. Such input will be the fastest way to discuss and integrate changes into the project. Pull requests will be processed within a week.
+
 # Back2source
 Userscript for redirect to stackoverflow & wikipedia from machine-translated sites & clones.
 
 [Click to install](https://github.com/vladgba/Back2source/raw/master/back2source.user.js)
 
 Required [Tampermonkey](https://tampermonkey.net/) or [Greasemonkey](https://www.greasespot.net/) or [Violentmonkey](https://violentmonkey.github.io/get-it/) or another browser extension for userscript support.
-
-# Data protection
-When using this script, the original and clone url will be saved serverside. Further personal data is not collected. The extent of the use of the collected data is visible in the serverside source code, which can be viewed at [b2s.php](https://github.com/vladgba/Back2source/blob/master/b2s.php). The collected data is necessary to support the function of this script to redirect users when sites don't link back to the original.
 
 # Supported sites:
 - nina.az
